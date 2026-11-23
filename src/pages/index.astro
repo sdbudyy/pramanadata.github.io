@@ -1,0 +1,30 @@
+---
+import Base from '../layouts/Base.astro';
+import Logo from '../components/Logo.astro';
+import { SITE } from '../site.config';
+import { url } from '../lib/url';
+---
+<Base>
+  <section class="grid-bg hold">
+    <div class="wrap inner">
+      <span class="mark"><Logo size={88} label="Pramana logo" /></span>
+      <p class="eyebrow">Pramana · launching soon</p>
+      <h1>Calgary, Alberta and Canada,<br />in data. No spin.</h1>
+      <p class="muted lead">Data studies that show every source, rate how much to trust it, and log every correction. Plus a few things I’m building.</p>
+      <div class="actions">
+        <a class="btn btn-primary" href={SITE.xUrl} rel="noopener" target="_blank">Follow on X</a>
+        <a class="btn btn-ghost" href={url('learn/')}>How data gets spun</a>
+      </div>
+      <p class="mono note">Placeholder homepage · the real one is built in stage 3</p>
+    </div>
+  </section>
+</Base>
+<style>
+  .hold { border-bottom: 1px solid var(--line); }
+  .inner { padding-block: clamp(64px, 12vw, 128px); display: flex; flex-direction: column; gap: 20px; }
+  .mark { color: var(--text); }
+  h1 { font-size: clamp(36px, 7vw, 64px); letter-spacing: -0.03em; }
+  .lead { font-size: 19px; max-width: 640px; }
+  .actions { display: flex; flex-wrap: wrap; gap: 12px; }
+  .note { font-size: 12px; color: var(--warn); }
+</style>

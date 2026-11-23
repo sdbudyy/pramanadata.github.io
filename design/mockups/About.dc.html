@@ -1,0 +1,367 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>About: how it's made, and who made it</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+body{margin:0}
+a{color:#FF9A66}a:hover{color:#FFC2A0}
+@keyframes travel{0%{left:0%}100%{left:100%}}
+@keyframes glow{0%,100%{box-shadow:0 0 0 0 #FF7A3D00;border-color:#4A7176}6%{box-shadow:0 0 0 6px #FF7A3D44;border-color:#FF7A3D}14%{box-shadow:0 0 0 0 #FF7A3D00;border-color:#4A7176}}
+@keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+@keyframes drawdown{from{transform:scaleY(0)}to{transform:scaleY(1)}}
+@keyframes blinkc{0%,49%{opacity:1}50%,100%{opacity:0}}
+@keyframes roleA{0%{opacity:0;transform:translateY(10px)}100%{opacity:1;transform:none}}
+@keyframes roleB{0%{opacity:0;transform:translateY(10px)}100%{opacity:1;transform:none}}
+.packet{position:absolute;top:50%;width:14px;height:14px;margin:-7px 0 0 -7px;border-radius:50%;background:#FF7A3D;box-shadow:0 0 12px #FF7A3D;animation:travel 5.6s linear infinite}
+.station{animation:glow 5.6s linear infinite}
+.rise{animation:rise .6s cubic-bezier(.2,.7,.2,1) both}
+.drawdown{transform-origin:top center;animation:drawdown .5s cubic-bezier(.2,.7,.2,1) both}
+.caret{display:inline-block;width:3px;height:1em;background:#FF7A3D;vertical-align:-0.12em;margin-left:4px;animation:blinkc 1s steps(1) infinite}
+.roleA{display:inline-block;animation:roleA .45s cubic-bezier(.2,.7,.2,1) both}
+.roleB{display:inline-block;animation:roleB .45s cubic-bezier(.2,.7,.2,1) both}
+.seg{transition:width 1.1s cubic-bezier(.2,.7,.2,1),opacity .4s}
+.flip{perspective:900px}
+.flip-inner{position:relative;width:100%;height:100%;transition:transform .7s cubic-bezier(.2,.7,.2,1);transform-style:preserve-3d}
+.flip:hover .flip-inner,.flip:focus-within .flip-inner{transform:rotateY(180deg)}
+.face{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;border-radius:16px;padding:22px;display:flex;flex-direction:column;gap:10px}
+.back{transform:rotateY(180deg)}
+.tabbtn{transition:background-color .2s,border-color .2s}
+@media (prefers-reduced-motion: reduce){.packet{display:none}.station,.rise,.drawdown,.caret,.roleA,.roleB{animation:none}.seg,.flip-inner{transition:none}}
+</style>
+</helmet>
+<div style="font-family: 'IBM Plex Sans', system-ui, sans-serif; color: #ECE6D6; background: #10282B; font-size: 16px; line-height: 1.6">
+
+<header style="border-bottom: 1px solid #24474A">
+<nav aria-label="Main" style="max-width: 1200px; margin: 0 auto; padding: 18px 24px; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px">
+<a href="LayoutHomeA.dc.html" style="font-family: 'IBM Plex Mono', monospace; font-weight: 600; font-size: 19px; color: #ECE6D6; text-decoration: none">Pramana</a>
+<div style="display: flex; flex-wrap: wrap; align-items: center; gap: 28px; font-size: 15px">
+<a href="LayoutHomeA.dc.html" style="color: #B3C2BB; text-decoration: none">Data</a>
+<a href="Sandbox.dc.html" style="color: #B3C2BB; text-decoration: none">Sandbox</a>
+<a href="Learn.dc.html" style="color: #B3C2BB; text-decoration: none">Learn</a>
+<a href="#top" style="color: #ECE6D6; text-decoration: none; font-weight: 500">About</a>
+<a href="#me" style="background: {{accent}}; color: #10282B; text-decoration: none; padding: 10px 18px; border-radius: 8px; font-weight: 600">Contact</a>
+</div>
+</nav>
+</header>
+
+<section id="top" style="background-image: linear-gradient(#ECE6D60D 1px, transparent 1px), linear-gradient(90deg, #ECE6D60D 1px, transparent 1px); background-size: 40px 40px; border-bottom: 1px solid #24474A">
+<div style="max-width: 1200px; margin: 0 auto; padding: 96px 24px 72px; display: flex; flex-direction: column; gap: 26px">
+<p class="rise" style="margin: 0; font-family: 'IBM Plex Mono', monospace; font-size: 13px; letter-spacing: 0.08em; color: {{accent}}">ABOUT · TRANSPARENCY FIRST</p>
+<h1 class="rise" style="margin: 0; font-family: 'IBM Plex Mono', monospace; font-weight: 600; font-size: 80px; line-height: 1; letter-spacing: -0.04em; animation-delay: .1s">Show your work.<span class="caret" aria-hidden="true"></span></h1>
+<p class="rise" style="margin: 0; font-size: 20px; color: #B3C2BB; max-width: 680px; animation-delay: .2s">Every number on this site travels the same line, from a question to a published chart. Here’s each stop, what happens there, and what you can check yourself. Who I am comes after, because the method matters more.</p>
+<div aria-hidden="true" class="rise" style="position: relative; margin-top: 18px; padding: 0 12px; animation-delay: .3s">
+<div style="position: absolute; left: 12px; right: 12px; top: 50%; height: 2px; background: #4A7176"></div>
+<div style="position: relative; height: 2px; top: 23px; margin: 0 22px"><span class="packet"></span></div>
+<div style="position: relative; display: flex; justify-content: space-between; gap: 6px">
+<sc-for list="{{stations}}" as="st" hint-placeholder-count="7"><span class="station" style="width: 46px; height: 46px; border-radius: 50%; border: 2px solid #4A7176; background: #0C2124; display: flex; align-items: center; justify-content: center; font-family: 'IBM Plex Mono', monospace; font-size: 14px; animation-delay: {{st.glowDelay}}s">{{st.num}}</span></sc-for>
+</div>
+<div style="display: flex; justify-content: space-between; gap: 6px; margin-top: 10px">
+<sc-for list="{{stations}}" as="st" hint-placeholder-count="7"><span style="width: 90px; margin: 0 -22px; text-align: center; font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: #8FA6A0">{{st.short}}</span></sc-for>
+</div>
+</div>
+</div>
+</section>
+
+<section style="max-width: 1200px; margin: 0 auto; padding: 80px 24px; display: flex; flex-direction: column; gap: 28px">
+<div style="display: flex; flex-direction: column; gap: 8px">
+<p style="margin: 0; font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: {{accent}}">PART 1 · HOW THE DATA AND SIMULATIONS ARE MADE</p>
+<h2 style="margin: 0; font-family: 'IBM Plex Mono', monospace; font-size: 40px; font-weight: 600; letter-spacing: -0.02em">Open the hood</h2>
+<p style="margin: 0; color: #B3C2BB; max-width: 720px">Pick a stop on the line. Each one shows the real artefact it produces, using the rent-vs-wages study as the example.</p>
+</div>
+
+<div role="tablist" aria-label="Pipeline stops" style="display: flex; flex-wrap: wrap; gap: 8px">
+<sc-for list="{{stations}}" as="st" hint-placeholder-count="7">
+<sc-if value="{{st.on}}" hint-placeholder-val="{{false}}"><button type="button" role="tab" aria-selected="true" onClick="{{st.pick}}" class="tabbtn" style="min-height: 44px; padding: 8px 14px; border-radius: 8px; border: 1px solid {{accent}}; background: {{accent}}; color: #10282B; font-family: inherit; font-size: 14px; font-weight: 600"><span style="font-family: 'IBM Plex Mono', monospace">{{st.num}}</span> {{st.title}}</button></sc-if>
+<sc-if value="{{st.off}}" hint-placeholder-val="{{true}}"><button type="button" role="tab" aria-selected="false" onClick="{{st.pick}}" class="tabbtn" style="min-height: 44px; padding: 8px 14px; border-radius: 8px; border: 1px solid #4A7176; background: transparent; color: #ECE6D6; font-family: inherit; font-size: 14px"><span style="font-family: 'IBM Plex Mono', monospace; color: #8FA6A0">{{st.num}}</span> {{st.title}}</button></sc-if>
+</sc-for>
+</div>
+
+<div role="tabpanel" style="display: flex; flex-wrap: wrap; gap: 24px; align-items: stretch">
+<div class="rise" style="flex: 1 1 340px; min-width: 0; display: flex; flex-direction: column; gap: 12px; animation-delay: 0s">
+<p style="margin: 0; font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: {{accent}}">STOP {{cur.num}} OF 7</p>
+<h3 style="margin: 0; font-family: 'IBM Plex Mono', monospace; font-size: 30px; font-weight: 600; line-height: 1.15">{{cur.title}}</h3>
+<p style="margin: 0; font-size: 17px; color: #B3C2BB">{{cur.body}}</p>
+<div style="border-left: 2px solid #FFB08A; border-radius: 0; padding-left: 14px; display: flex; flex-direction: column; gap: 2px"><span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #FFB08A">WHAT YOU CAN CHECK</span><span>{{cur.check}}</span></div>
+</div>
+
+<div style="flex: 1.3 1 460px; min-width: 0; background: #0C2124; border: 1px solid #24474A; border-radius: 16px; padding: 22px; display: flex; flex-direction: column; gap: 12px">
+<p style="margin: 0; font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #8FA6A0">ARTEFACT · {{cur.artefact}}</p>
+
+<sc-if value="{{show.q}}" hint-placeholder-val="{{true}}">
+<div style="display: flex; flex-direction: column; gap: 12px">
+<p style="margin: 0; font-size: 15px; color: #8FA6A0; text-decoration: line-through; text-decoration-color: #E24B4A">“How bad has the rent crisis gotten?”</p>
+<p style="margin: 0; font-family: 'IBM Plex Mono', monospace; font-size: 22px; font-weight: 600">“Has Calgary rent outpaced wages since 2020?”</p>
+<div style="display: flex; flex-wrap: wrap; gap: 8px; font-family: 'IBM Plex Mono', monospace; font-size: 12px"><span style="border: 1px solid #4A7176; border-radius: 4px; padding: 2px 8px">logged [date], before any data</span><span style="border: 1px solid #4A7176; border-radius: 4px; padding: 2px 8px">prediction: rent ahead by [X] pts</span></div>
+</div>
+</sc-if>
+
+<sc-if value="{{show.s}}" hint-placeholder-val="{{false}}">
+<div style="display: flex; flex-direction: column; gap: 10px">
+<sc-for list="{{sources}}" as="so" hint-placeholder-count="2">
+<div style="border: 1px solid #24474A; border-radius: 10px; padding: 12px 14px; background: #10282B; display: flex; flex-wrap: wrap; justify-content: space-between; gap: 6px 16px"><span style="font-weight: 600">{{so.name}}</span><span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #8FA6A0">{{so.meta}}</span></div>
+</sc-for>
+<p style="margin: 0; font-size: 14px; color: #B3C2BB">Also considered and rejected: [listings-site asking rents] (not a random sample).</p>
+</div>
+</sc-if>
+
+<sc-if value="{{show.r}}" hint-placeholder-val="{{false}}">
+<div style="display: flex; flex-direction: column; gap: 8px">
+<div style="display: flex; justify-content: space-between; align-items: baseline"><span style="font-weight: 600">[Rental Market Survey]</span><span style="font-family: 'IBM Plex Mono', monospace; font-size: 26px; font-weight: 600; color: {{accent}}">4.6</span></div>
+<sc-for list="{{criteria}}" as="cr" hint-placeholder-count="5">
+<div style="display: flex; align-items: center; gap: 10px; font-size: 14px"><span style="width: 130px; flex: none; color: #B3C2BB">{{cr.name}}</span><span style="flex: 1; height: 8px; border-radius: 4px; background: #173538"><span class="seg" style="display: block; height: 8px; border-radius: 4px; width: {{cr.w}}%; background: {{accent}}"></span></span><span style="width: 18px; font-family: 'IBM Plex Mono', monospace">{{cr.v}}</span></div>
+</sc-for>
+</div>
+</sc-if>
+
+<sc-if value="{{show.c}}" hint-placeholder-val="{{false}}">
+<div style="display: flex; flex-direction: column; gap: 10px">
+<div role="group" aria-label="Table view" style="display: flex; gap: 6px">
+<button type="button" onClick="{{viewRaw}}" aria-pressed="{{isRaw}}" style="min-height: 36px; padding: 6px 12px; border-radius: 6px; border: 1px solid #E24B4A; background: {{rawBg}}; color: #ECE6D6; font-family: inherit; font-size: 13px">Raw download</button>
+<button type="button" onClick="{{viewClean}}" aria-pressed="{{isClean}}" style="min-height: 36px; padding: 6px 12px; border-radius: 6px; border: 1px solid #9FE0B8; background: {{cleanBg}}; color: #ECE6D6; font-family: inherit; font-size: 13px">After cleaning</button>
+</div>
+<div style="overflow-x: auto"><table style="width: 100%; min-width: 420px; border-collapse: collapse; font-family: 'IBM Plex Mono', monospace; font-size: 13px">
+<thead><tr style="color: #8FA6A0; text-align: left"><th scope="col" style="padding: 6px 8px; font-weight: 500; border-bottom: 1px solid #24474A">{{th1}}</th><th scope="col" style="padding: 6px 8px; font-weight: 500; border-bottom: 1px solid #24474A">{{th2}}</th><th scope="col" style="padding: 6px 8px; font-weight: 500; border-bottom: 1px solid #24474A">{{th3}}</th></tr></thead>
+<tbody><sc-for list="{{rows}}" as="rw" hint-placeholder-count="4"><tr class="rise" style="animation-delay: {{rw.d}}s"><td style="padding: 6px 8px; border-bottom: 1px solid #24474A; color: {{rw.c1}}">{{rw.a}}</td><td style="padding: 6px 8px; border-bottom: 1px solid #24474A; color: {{rw.c2}}">{{rw.b}}</td><td style="padding: 6px 8px; border-bottom: 1px solid #24474A; color: {{rw.c3}}">{{rw.cc}}</td></tr></sc-for></tbody>
+</table></div>
+<p style="margin: 0; font-size: 13px; color: #B3C2BB">{{cleanNote}}</p>
+</div>
+</sc-if>
+
+<sc-if value="{{show.m}}" hint-placeholder-val="{{false}}">
+<div style="display: flex; flex-direction: column; gap: 10px">
+<p style="margin: 0; font-family: 'IBM Plex Mono', monospace; font-size: 17px">index<sub>t</sub> = value<sub>t</sub> ÷ value<sub>2020</sub> × 100</p>
+<p style="margin: 0; font-family: 'IBM Plex Mono', monospace; font-size: 17px">gap = rent growth − wage growth</p>
+<pre style="margin: 0; padding: 12px 14px; border-radius: 8px; background: #081719; border: 1px solid #24474A; font-family: 'IBM Plex Mono', monospace; font-size: 13px; line-height: 1.6; color: #B3C2BB; overflow-x: auto"><span style="color: #8FA6A0"># the whole model, no hidden steps</span>
+idx = df / df.loc[2020] * 100
+gap = idx["rent"] - idx["wage"]
+<span style="color: #8FA6A0"># robustness: every start year</span>
+for y in range(2015, 2023):
+    check[y] = growth(df, y)</pre>
+</div>
+</sc-if>
+
+<sc-if value="{{show.v}}" hint-placeholder-val="{{false}}">
+<div style="display: flex; flex-direction: column; gap: 8px; font-size: 14px">
+<div style="display: flex; justify-content: space-between; gap: 8px; padding: 8px 0; border-bottom: 1px solid #24474A"><span style="color: #B3C2BB">Backtest error vs naive baseline</span><span style="font-family: 'IBM Plex Mono', monospace">7.5% vs 12.6% <span style="color: #9FE0B8">✓</span></span></div>
+<div style="display: flex; justify-content: space-between; gap: 8px; padding: 8px 0; border-bottom: 1px solid #24474A"><span style="color: #B3C2BB">Holds for every start year 2015–22?</span><span style="font-family: 'IBM Plex Mono', monospace">yes <span style="color: #9FE0B8">✓</span></span></div>
+<div style="display: flex; justify-content: space-between; gap: 8px; padding: 8px 0; border-bottom: 1px solid #24474A"><span style="color: #B3C2BB">Tried to build the opposite headline</span><span style="font-family: 'IBM Plex Mono', monospace">failed <span style="color: #9FE0B8">✓</span></span></div>
+<div style="display: flex; justify-content: space-between; gap: 8px; padding: 8px 0"><span style="color: #B3C2BB">Overfit risk</span><span style="font-family: 'IBM Plex Mono', monospace; color: #FFB08A">stated: high for sandbox</span></div>
+<p style="margin: 0; font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #8FA6A0">Sample values</p>
+</div>
+</sc-if>
+
+<sc-if value="{{show.p}}" hint-placeholder-val="{{false}}">
+<div style="display: flex; flex-direction: column; gap: 8px; font-family: 'IBM Plex Mono', monospace; font-size: 13px">
+<span style="display: flex; justify-content: space-between; border: 1px solid #24474A; border-radius: 8px; padding: 10px 12px"><span>rent_vs_wages_clean.csv</span><span style="color: #FF9A66">↓</span></span>
+<span style="display: flex; justify-content: space-between; border: 1px solid #24474A; border-radius: 8px; padding: 10px 12px"><span>analysis.ipynb</span><span style="color: #FF9A66">↓</span></span>
+<span style="display: flex; justify-content: space-between; border: 1px solid #24474A; border-radius: 8px; padding: 10px 12px"><span>github.com/[you]/rent-study</span><span style="color: #FF9A66">↗</span></span>
+<span style="margin-top: 6px; color: #8FA6A0">REVISIONS</span>
+<span><span style="color: #8FA6A0">v1.1 [date]</span> fixed wage table vintage, gap −0.4 pts</span>
+<span><span style="color: #8FA6A0">v1.0 [date]</span> published</span>
+</div>
+</sc-if>
+</div>
+</div>
+</section>
+
+<section style="background: #0C2124; border-top: 1px solid #24474A; border-bottom: 1px solid #24474A">
+<div style="max-width: 1200px; margin: 0 auto; padding: 80px 24px; display: flex; flex-wrap: wrap; gap: 40px; align-items: flex-start">
+<div style="flex: 1 1 360px; min-width: 0; display: flex; flex-direction: column; gap: 12px">
+<p style="margin: 0; font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: {{accent}}">TRACE A NUMBER</p>
+<h2 style="margin: 0; font-family: 'IBM Plex Mono', monospace; font-size: 36px; font-weight: 600; letter-spacing: -0.02em">Every figure has a paper trail</h2>
+<p style="margin: 0; color: #B3C2BB">Click the number to follow it all the way back to the source table. Every headline figure on the site works this way.</p>
+<button type="button" onClick="{{traceToggle}}" aria-expanded="{{traced}}" style="align-self: flex-start; margin-top: 8px; min-height: 64px; padding: 10px 26px; border-radius: 14px; border: 2px solid {{accent}}; background: {{traceBg}}; color: {{traceFg}}; font-family: 'IBM Plex Mono', monospace; font-size: 40px; font-weight: 600; cursor: pointer">+48%</button>
+<span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #8FA6A0">{{traceHint}}</span>
+</div>
+<div style="flex: 1.4 1 480px; min-width: 0; display: flex; flex-direction: column; align-items: stretch">
+<sc-if value="{{traced}}" hint-placeholder-val="{{false}}">
+<sc-for list="{{trail}}" as="tr" hint-placeholder-count="4">
+<div style="display: flex; flex-direction: column; align-items: center">
+<sc-if value="{{tr.notFirst}}" hint-placeholder-val="{{true}}"><span class="drawdown" style="width: 2px; height: 34px; background: {{accent}}; animation-delay: {{tr.lineDelay}}s"></span></sc-if>
+<div class="rise" style="width: 100%; border: 1px solid {{tr.border}}; border-radius: 12px; background: #10282B; padding: 14px 18px; display: flex; flex-wrap: wrap; justify-content: space-between; gap: 6px 16px; animation-delay: {{tr.delay}}s"><span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #8FA6A0">{{tr.step}}</span><span style="font-family: 'IBM Plex Mono', monospace; font-size: 16px; font-weight: 600">{{tr.value}}</span><span style="flex: 1 1 100%; font-size: 14px; color: #B3C2BB">{{tr.note}}</span></div>
+</div>
+</sc-for>
+</sc-if>
+<sc-if value="{{untraced}}" hint-placeholder-val="{{true}}">
+<div style="min-height: 320px; border: 1px dashed #4A7176; border-radius: 12px; display: flex; align-items: center; justify-content: center; color: #8FA6A0; font-family: 'IBM Plex Mono', monospace; font-size: 14px; text-align: center; padding: 24px">The paper trail appears here ↓</div>
+</sc-if>
+</div>
+</div>
+</section>
+
+<section style="max-width: 1200px; margin: 0 auto; padding: 80px 24px; display: flex; flex-direction: column; gap: 24px">
+<div style="display: flex; flex-direction: column; gap: 8px">
+<p style="margin: 0; font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: {{accent}}">SIMULATIONS</p>
+<h2 style="margin: 0; font-family: 'IBM Plex Mono', monospace; font-size: 36px; font-weight: 600; letter-spacing: -0.02em">What’s measured, and what’s assumed</h2>
+<p style="margin: 0; color: #B3C2BB; max-width: 720px">Sandbox models mix real data with estimates and assumptions. This is the breakdown for the rent-to-income model, and every model page carries one.</p>
+</div>
+<div role="img" aria-label="Rent-to-income model inputs: {{mix.aria}}" style="display: flex; height: 56px; border-radius: 12px; overflow: hidden; border: 1px solid #24474A">
+<sc-for list="{{mix.segs}}" as="sg" hint-placeholder-count="3"><div class="seg" style="width: {{sg.w}}%; background: {{sg.color}}; display: flex; align-items: center; padding: 0 14px; color: #10282B; font-family: 'IBM Plex Mono', monospace; font-size: 14px; font-weight: 600; white-space: nowrap; overflow: hidden; opacity: {{sg.op}}">{{sg.label}}</div></sc-for>
+</div>
+<div style="display: flex; flex-wrap: wrap; gap: 16px">
+<sc-for list="{{mix.segs}}" as="sg" hint-placeholder-count="3">
+<button type="button" onClick="{{sg.pick}}" aria-pressed="{{sg.on}}" style="flex: 1 1 300px; min-width: 0; text-align: left; border: 1px solid {{sg.border}}; border-radius: 14px; background: #0C2124; padding: 18px; display: flex; flex-direction: column; gap: 8px; color: #ECE6D6; font-family: inherit; cursor: pointer">
+<span style="display: flex; align-items: center; gap: 8px; font-weight: 600"><span style="width: 14px; height: 14px; border-radius: 4px; background: {{sg.color}}"></span>{{sg.name}} · {{sg.count}}</span>
+<span style="font-size: 14px; color: #B3C2BB">{{sg.items}}</span>
+</button>
+</sc-for>
+</div>
+</section>
+
+<section style="background: #0C2124; border-top: 1px solid #24474A; border-bottom: 1px solid #24474A">
+<div style="max-width: 1200px; margin: 0 auto; padding: 80px 24px; display: flex; flex-direction: column; gap: 24px">
+<div style="display: flex; flex-direction: column; gap: 8px">
+<p style="margin: 0; font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: {{accent}}">MY RULES</p>
+<h2 style="margin: 0; font-family: 'IBM Plex Mono', monospace; font-size: 36px; font-weight: 600; letter-spacing: -0.02em">Six promises. Hover to see the proof.</h2>
+</div>
+<div style="display: flex; flex-wrap: wrap; gap: 16px">
+<sc-for list="{{rules}}" as="ru" hint-placeholder-count="6">
+<div class="flip" tabindex="0" style="flex: 1 1 340px; min-width: 0; height: 190px; outline-offset: 4px">
+<div class="flip-inner">
+<div class="face" style="background: #10282B; border: 1px solid {{ru.color}}"><span style="font-family: 'IBM Plex Mono', monospace; font-size: 30px; font-weight: 600; color: {{ru.color}}">{{ru.num}}</span><span style="font-family: 'IBM Plex Mono', monospace; font-size: 20px; font-weight: 600; line-height: 1.25">{{ru.rule}}</span><span style="margin-top: auto; font-size: 12px; color: #8FA6A0">hover or focus to flip ↻</span></div>
+<div class="face back" style="background: {{ru.color}}; color: #10282B"><span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; font-weight: 600">HOW YOU CAN TELL</span><span style="font-size: 17px; font-weight: 500; line-height: 1.4">{{ru.proof}}</span></div>
+</div>
+</div>
+</sc-for>
+</div>
+</div>
+</section>
+
+<section id="me" style="max-width: 1200px; margin: 0 auto; padding: 88px 24px; display: flex; flex-direction: column; gap: 32px">
+<div style="display: flex; flex-direction: column; gap: 8px">
+<p style="margin: 0; font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: {{accent}}">PART 2 · WHO I AM</p>
+</div>
+<div style="display: flex; flex-wrap: wrap; gap: 40px; align-items: center">
+<div style="flex: 0 1 260px; min-width: 0; aspect-ratio: 1 / 1; border-radius: 24px; border: 1px solid #24474A; background: #173538; display: flex; align-items: center; justify-content: center; color: #8FA6A0; font-size: 14px; text-align: center; padding: 20px">[Photo of you]</div>
+<div style="flex: 1 1 480px; min-width: 0; display: flex; flex-direction: column; gap: 16px">
+<h2 style="margin: 0; font-family: 'IBM Plex Mono', monospace; font-size: 44px; font-weight: 600; line-height: 1.15; letter-spacing: -0.03em">I’m Shaurya Dave,<br><span style="color: {{accent}}">a <span class="{{roleCls}}">{{role}}</span></span>.</h2>
+<p style="margin: 0; font-size: 18px; color: #B3C2BB; max-width: 620px">I study Mechanical Engineering and Finance at the University of Calgary. I build hardware, model public data on Calgary, Alberta and Canada, and publish everything I find, method included. [One line on what you’re looking for: internships, collaborators, data requests.]</p>
+<p style="margin: 0; font-size: 15px; color: #B3C2BB; border-left: 2px solid #FFB08A; border-radius: 0; padding-left: 12px"><span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #FFB08A">DISCLOSURE ›</span> [Any personal stake, e.g. a family business in engineering or real estate. Flagged on every study it could touch.] No sponsors, no paid posts.</p>
+<div style="display: flex; flex-wrap: wrap; gap: 12px">
+<sc-for list="{{counters}}" as="ct" hint-placeholder-count="3">
+<div style="flex: 1 1 140px; border: 1px solid #24474A; border-radius: 12px; background: #0C2124; padding: 14px 16px; display: flex; flex-direction: column"><span style="font-family: 'IBM Plex Mono', monospace; font-size: 34px; font-weight: 600; color: {{ct.color}}">{{ct.value}}</span><span style="font-size: 13px; color: #B3C2BB">{{ct.label}}</span></div>
+</sc-for>
+</div>
+<p style="margin: 0; font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: #8FA6A0">Example figures. Corrections are counted on purpose.</p>
+<div style="display: flex; flex-wrap: wrap; gap: 10px">
+<a href="#me" style="background: {{accent}}; color: #10282B; text-decoration: none; padding: 12px 20px; border-radius: 8px; font-weight: 600">Email me</a>
+<a href="#me" style="border: 1px solid #FFB08A; color: #FFB08A; text-decoration: none; padding: 11px 20px; border-radius: 8px; font-weight: 500">Found a mistake? Report it</a>
+<a href="#me" style="border: 1px solid #4A7176; color: #ECE6D6; text-decoration: none; padding: 11px 18px; border-radius: 8px">X</a>
+<a href="#me" style="border: 1px solid #4A7176; color: #ECE6D6; text-decoration: none; padding: 11px 18px; border-radius: 8px">LinkedIn</a>
+<a href="#me" style="border: 1px solid #4A7176; color: #ECE6D6; text-decoration: none; padding: 11px 18px; border-radius: 8px">GitHub</a>
+</div>
+</div>
+</div>
+</section>
+
+<footer style="border-top: 1px solid #24474A">
+<div style="max-width: 1200px; margin: 0 auto; padding: 28px 24px; display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px; font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: #8FA6A0">
+<span>© [Year] Pramana · Shaurya Dave · Calgary, AB</span>
+<span>Methods, rubric and corrections policy: <a href="#top">editorial standards</a></span>
+</div>
+</footer>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"accent":{"editor":"color","default":"#FF7A3D","options":["#FF7A3D","#E8D44D","#9FE0B8","#9CD3F0"]},"$preview":{"width":1440,"height":4300}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { st: 0, raw: true, traced: false, seg: -1, roleI: 0, tick: 0 };
+    this.stationsDef = [
+      { short: 'question', title: 'Ask the question', body: 'I write the question, and my prediction, before touching any data, in words that don’t assume the answer.', check: 'The question and prediction are timestamped on the study page.', artefact: 'THE LOGGED QUESTION', k: 'q' },
+      { short: 'source', title: 'Find the sources', body: 'I go to the most direct official source first, note every alternative I considered, and say why I rejected it.', check: 'Every dataset is linked, with its publisher, geography, years and licence.', artefact: 'SOURCE LIST', k: 's' },
+      { short: 'rate', title: 'Rate each source', body: 'Each dataset is scored 1–5 on authority, published method, recency, fit to the question and independence.', check: 'The rubric is public, and every score has a one-line reason.', artefact: 'SOURCE CHECK', k: 'r' },
+      { short: 'clean', title: 'Clean and align', body: 'Messy downloads get fixed: units, geographies, missing values, inflation. Every change is written down.', check: 'Download both the raw and cleaned files and compare them.', artefact: 'BEFORE / AFTER', k: 'c' },
+      { short: 'model', title: 'Build the model', body: 'The simplest model that answers the question. No black boxes: the full code is a few readable lines.', check: 'The notebook runs in your browser with one click.', artefact: 'THE MODEL', k: 'm' },
+      { short: 'test', title: 'Try to break it', body: 'Backtest against a naive baseline, test every start year, and deliberately try to build the opposite headline.', check: 'The report card shows passes and failures alike.', artefact: 'REPORT CARD', k: 'v' },
+      { short: 'publish', title: 'Publish and correct', body: 'Chart, data, code and caveats go out together. Mistakes are fixed in public, with what changed and when.', check: 'The revision log on every study, and the corrections count below.', artefact: 'FILES + REVISION LOG', k: 'p' }
+    ];
+    this.roles = ['mechanical engineering student', 'finance student', 'data modeller', 'hardware tinkerer', 'Calgarian'];
+  }
+  componentDidMount() {
+    this.iv = setInterval(() => this.setState({ roleI: (this.state.roleI + 1) % this.roles.length }), 2400);
+    const start = Date.now();
+    this.cu = setInterval(() => {
+      const t = Math.min(1, (Date.now() - start) / 1600);
+      this.setState({ tick: t });
+      if (t >= 1) clearInterval(this.cu);
+    }, 40);
+  }
+  componentWillUnmount() { clearInterval(this.iv); clearInterval(this.cu); }
+  renderVals() {
+    const s = this.state;
+    const accent = this.props.accent ?? '#FF7A3D';
+    const D = this.stationsDef;
+    const stations = D.map((x, i) => ({ num: '0' + (i + 1), short: x.short, title: x.title, on: i === s.st, off: i !== s.st, pick: () => this.setState({ st: i }), glowDelay: (i * 5.6 / 6 - 0.34).toFixed(2) }));
+    const c = D[s.st];
+    const show = { q: c.k === 'q', s: c.k === 's', r: c.k === 'r', c: c.k === 'c', m: c.k === 'm', v: c.k === 'v', p: c.k === 'p' };
+    const rawRows = [
+      { a: 'Calgary (CMA) ', b: '2020', cc: '"1,210.00"', c1: '#FFB08A', c2: '#ECE6D6', c3: '#FFB08A' },
+      { a: 'Calgary', b: '2021', cc: 'n/a', c1: '#ECE6D6', c2: '#ECE6D6', c3: '#E24B4A' },
+      { a: 'CALGARY CMA', b: '2022', cc: '1330', c1: '#FFB08A', c2: '#ECE6D6', c3: '#ECE6D6' },
+      { a: 'Calgary (CMA)', b: 'Oct-23', cc: '1500 $', c1: '#ECE6D6', c2: '#FFB08A', c3: '#FFB08A' }
+    ];
+    const cleanRows = [
+      { a: 'calgary_cma', b: '2020', cc: '1210', c1: '#9FE0B8', c2: '#ECE6D6', c3: '#9FE0B8' },
+      { a: 'calgary_cma', b: '2021', cc: '1230 *', c1: '#9FE0B8', c2: '#ECE6D6', c3: '#9FE0B8' },
+      { a: 'calgary_cma', b: '2022', cc: '1330', c1: '#9FE0B8', c2: '#ECE6D6', c3: '#ECE6D6' },
+      { a: 'calgary_cma', b: '2023', cc: '1500', c1: '#9FE0B8', c2: '#9FE0B8', c3: '#9FE0B8' }
+    ];
+    const rows = (s.raw ? rawRows : cleanRows).map((r, i) => Object.assign({ d: (i * 0.08).toFixed(2) }, r));
+    const crit = [['Authority', 5], ['Method published', 5], ['Recency', 4], ['Fit to question', 4], ['Independence', 5]];
+    const trail = [
+      { step: 'HEADLINE', value: '+48%', note: 'Calgary median rent, 2015 to 2025', border: accent },
+      { step: 'CALCULATION', value: '$1,700 ÷ $1,150 − 1 = 0.478', note: 'Rounded to the nearest whole percent', border: '#4A7176' },
+      { step: 'CLEAN TABLE', value: 'rent_vs_wages_clean.csv · rows 2015, 2025', note: 'Column: median_rent_2bed. Unchanged from the source apart from formatting.', border: '#4A7176' },
+      { step: 'ORIGINAL SOURCE', value: '[CMHC Rental Market Survey]', note: 'Calgary CMA, 2-bedroom, October survey · source rating 4.6 · link ↗ (sample values)', border: '#9FE0B8' }
+    ].map((t, i) => Object.assign({}, t, { notFirst: i > 0, delay: (i * 0.35 + 0.15).toFixed(2), lineDelay: (i * 0.35).toFixed(2) }));
+    const segDef = [
+      { name: 'Measured data', count: '4 inputs', items: 'Population, housing stock, median rent, median earnings (2019–2025).', w: 50, color: '#9FE0B8' },
+      { name: 'Estimated from data', count: '2 inputs', items: 'Rent sensitivity to tightness; household size (2.5 people per home).', w: 25, color: '#9CD3F0' },
+      { name: 'Assumptions', count: '2 inputs', items: 'Migration feedback factor (0.3) and the 30% affordability threshold. Both clearly labelled, both adjustable.', w: 25, color: '#FFB08A' }
+    ];
+    const mix = {
+      segs: segDef.map((g, i) => ({ name: g.name, count: g.count, items: g.items, color: g.color, w: s.tick > 0 ? g.w : 0, label: g.name, op: s.seg === -1 || s.seg === i ? 1 : 0.3, on: s.seg === i, border: s.seg === i ? g.color : '#24474A', pick: () => this.setState({ seg: s.seg === i ? -1 : i }) })),
+      aria: segDef.map((g) => g.name + ' ' + g.w + '%').join(', ')
+    };
+    const rules = [
+      { rule: 'The question comes before the data', proof: 'Each study shows the question and prediction with a timestamp from before the analysis.', color: '#FF7A3D' },
+      { rule: 'Every chart ships with its data', proof: 'Look for the CSV, notebook and GitHub links on every study page.', color: '#9CD3F0' },
+      { rule: 'Medians before averages', proof: 'Typical values use the median. If an average is shown, the reason is stated.', color: '#FFB08A' },
+      { rule: 'Neutral words only', proof: 'Headlines are questions or plain statements. No “soaring”, no “crisis”.', color: '#ED93B1' },
+      { rule: 'My stakes are disclosed', proof: 'A disclosure line appears on any study my own interests could touch.', color: '#E8D44D' },
+      { rule: 'Mistakes are fixed in public', proof: 'Every study has a revision log, and total corrections are counted below.', color: '#9FE0B8' }
+    ].map((r, i) => Object.assign({ num: '0' + (i + 1) }, r));
+    const ease = 1 - Math.pow(1 - s.tick, 3);
+    const counters = [
+      { label: 'studies published', value: Math.round(12 * ease), color: accent },
+      { label: 'datasets rated', value: Math.round(31 * ease), color: '#9CD3F0' },
+      { label: 'corrections logged', value: Math.round(3 * ease), color: '#FFB08A' }
+    ];
+    return {
+      accent: accent, stations: stations, cur: { num: s.st + 1, title: c.title, body: c.body, check: c.check, artefact: c.artefact }, show: show,
+      sources: [{ name: '[Rental Market Survey]', meta: 'CMHC · Calgary CMA · annual · 2015–2025 · open licence' }, { name: '[Earnings table]', meta: 'Statistics Canada · Alberta · annual · 2015–2025 · open licence' }],
+      criteria: crit.map((x) => ({ name: x[0], v: x[1], w: x[1] * 20 })),
+      rows: rows, isRaw: s.raw, isClean: !s.raw, rawBg: s.raw ? '#3A1F1C' : 'transparent', cleanBg: s.raw ? 'transparent' : '#1E3F35',
+      viewRaw: () => this.setState({ raw: true }), viewClean: () => this.setState({ raw: false }),
+      th1: s.raw ? 'GEO' : 'geo', th2: s.raw ? 'REF_DATE' : 'year', th3: s.raw ? 'VALUE' : 'median_rent',
+      cleanNote: s.raw ? 'Four spellings of one city, text in number fields, a missing year and a month-coded date.' : 'One geography code, numbers as numbers, years as years. * 2021 filled from CMHC’s revised table, noted in the log.',
+      traced: s.traced, untraced: !s.traced, trail: trail,
+      traceToggle: () => this.setState({ traced: !s.traced }), traceBg: s.traced ? accent : 'transparent', traceFg: s.traced ? '#10282B' : accent,
+      traceHint: s.traced ? 'click again to hide the trail' : '↑ click me',
+      mix: mix, rules: rules, counters: counters,
+      role: this.roles[s.roleI], roleCls: s.roleI % 2 ? 'roleA' : 'roleB'
+    };
+  }
+}
+</script>
+</body>
+</html>

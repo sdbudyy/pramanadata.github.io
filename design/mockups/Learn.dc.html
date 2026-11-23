@@ -1,0 +1,934 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Learn: same data, two stories</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+body{margin:0}
+a{color:#FF9A66}a:hover{color:#FFC2A0}
+@keyframes swapA{0%,42%{opacity:1;transform:none}50%,92%{opacity:0;transform:translateY(-10px)}100%{opacity:1;transform:none}}
+@keyframes swapB{0%,42%{opacity:0;transform:translateY(10px)}50%,92%{opacity:1;transform:none}100%{opacity:0;transform:translateY(10px)}}
+@keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+@keyframes draw{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 #FF7A3D66}50%{box-shadow:0 0 0 8px #FF7A3D00}}
+.swapA{animation:swapA 7s ease-in-out infinite}
+.swapB{animation:swapB 7s ease-in-out infinite}
+.rise{animation:rise .7s cubic-bezier(.2,.7,.2,1) both}
+.draw{transform-origin:left center;animation:draw 1.6s cubic-bezier(.2,.7,.2,1) .3s both}
+.pulse{animation:pulse 2s ease-in-out infinite}
+.bar{transition:height .8s cubic-bezier(.2,.7,.2,1),background-color .5s,opacity .5s}
+@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
+@keyframes talk{0%,100%{transform:scaleY(1)}50%{transform:scaleY(.35)}}
+@keyframes blink{0%,92%,100%{transform:scaleY(1)}95%{transform:scaleY(.1)}}
+@keyframes wave{0%,100%{transform:rotate(0)}50%{transform:rotate(-14deg)}}
+@keyframes live{0%,100%{opacity:1}50%{opacity:.45}}
+@keyframes ticker{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+@keyframes popA{0%{opacity:0;transform:translateY(6px)}100%{opacity:1;transform:none}}
+@keyframes popB{0%{opacity:0;transform:translateY(6px)}100%{opacity:1;transform:none}}
+.bob{animation:bob 1.6s ease-in-out infinite}
+.bob2{animation:bob 2.6s ease-in-out infinite}
+.talk{transform-box:fill-box;transform-origin:center;animation:talk .28s ease-in-out infinite}
+.blink{transform-box:fill-box;transform-origin:center;animation:blink 4s infinite}
+.wave{transform-box:fill-box;transform-origin:50% 90%;animation:wave .9s ease-in-out infinite}
+.live{animation:live 1.2s ease-in-out infinite}
+.ticker{display:inline-block;animation:ticker 18s linear infinite}
+.popA{animation:popA .45s cubic-bezier(.2,.7,.2,1)}
+.popB{animation:popB .45s cubic-bezier(.2,.7,.2,1)}
+@keyframes stamp{0%{opacity:0;transform:scale(2.2) rotate(-14deg)}70%{opacity:1;transform:scale(.95) rotate(-8deg)}100%{opacity:1;transform:scale(1) rotate(-8deg)}}
+.stamp{transform:rotate(-8deg);animation:stamp .5s cubic-bezier(.2,.7,.2,1) both}
+.line{transition:bottom .8s cubic-bezier(.2,.7,.2,1)}
+.shootbar{transition:height 1.1s cubic-bezier(.3,1.5,.5,1),background-color .5s}
+.pull{transition:height .9s cubic-bezier(.2,.7,.2,1) .25s,bottom .8s cubic-bezier(.2,.7,.2,1)}
+@keyframes wander{0%,100%{transform:translate(0,0)}25%{transform:translate(4px,-3px)}50%{transform:translate(-3px,4px)}75%{transform:translate(3px,3px)}}
+.wander{animation:wander 6s ease-in-out infinite}
+@keyframes fall{0%{transform:translateY(0) rotate(0);opacity:1}90%{opacity:1}100%{transform:translateY(105vh) rotate(720deg);opacity:0}}
+.confetti{animation-name:fall;animation-timing-function:linear;animation-iteration-count:2;animation-fill-mode:both}
+@keyframes congrats{0%{opacity:0;transform:translate(-50%,24px) scale(.88)}100%{opacity:1;transform:translate(-50%,0) scale(1)}}
+.congrats{transform:translateX(-50%);animation:congrats .6s cubic-bezier(.3,1.4,.5,1) both}
+@keyframes badgepop{0%{transform:scale(.3) rotate(-25deg)}70%{transform:scale(1.15) rotate(4deg)}100%{transform:none}}
+.badgepop{animation:badgepop .55s cubic-bezier(.3,1.4,.5,1)}
+@keyframes slidein{from{opacity:0;transform:translateX(16px)}to{opacity:1;transform:none}}
+.slidein{animation:slidein .35s cubic-bezier(.2,.7,.2,1) both}
+@keyframes nudge{0%,100%{transform:translateX(0);box-shadow:0 0 0 0 #FF7A3D00}15%{transform:translateX(-14px)}30%{transform:translateX(0);box-shadow:0 0 0 6px #FF7A3D55}45%{transform:translateX(-8px)}60%{transform:translateX(0);box-shadow:0 0 0 0 #FF7A3D00}}
+.nudge{animation:nudge 1.4s ease-in-out .2s 3}
+@keyframes hintin{0%{opacity:0;transform:translateX(12px)}100%{opacity:1;transform:none}}
+.hintin{animation:hintin .45s cubic-bezier(.2,.7,.2,1) both}
+.jump{transition:background-color .2s}.jump:hover,.jump:focus-visible{background-color:#173538}
+.rainbow{background:linear-gradient(90deg,#FF7A3D,#E24B4A,#FFB08A,#9CD3F0,#ED93B1,#9FE0B8,#E8D44D)}
+.lrn{container-type:inline-size;container-name:learn}
+.navmenu,.mbar{display:none}
+@keyframes sheetup{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+.sheetup{animation:sheetup .3s cubic-bezier(.2,.7,.2,1) both}
+@container learn (max-width: 640px){
+.navlinks,.sidewrap{display:none !important}
+.navmenu,.mbar{display:flex}
+.hero{padding:56px 18px 52px !important;gap:20px !important}
+.h1{font-size:44px !important}
+.swap{height:84px !important}
+.swap p{font-size:20px !important;padding:0 6px}
+.sec{padding:48px 16px !important;gap:20px !important}
+.h2{font-size:28px !important;line-height:1.2}
+.chips{flex-wrap:nowrap !important;overflow-x:auto;margin:0 -16px;padding:0 16px 4px;scrollbar-width:none}
+.chips::-webkit-scrollbar{display:none}
+.chips button{flex:none;white-space:nowrap}
+.stick{position:sticky;top:0;z-index:30;padding:12px 14px !important;gap:8px 12px !important;box-shadow:0 12px 24px #0000004D}
+.stick output{font-size:24px !important;min-width:0 !important}
+.stick6{background:#0C2124;border:1px solid #24474A;border-radius:16px}
+.stick6 button{min-height:40px !important;padding:8px 14px !important;font-size:14px !important}
+.avmChart{gap:3px !important;padding:0 2px !important}
+.avmChart > div > span:first-child{font-size:9px !important}
+.corSvg{height:auto !important}
+.spotChart{padding:0 16px !important}
+.mk{flex-direction:column;flex-wrap:nowrap !important;align-items:stretch !important}
+.mkL,.mkR{display:contents !important}
+.mkGoals{order:1}.mkMeter{order:2;position:sticky;top:0;z-index:30;padding:8px 14px !important;gap:10px !important;flex-wrap:nowrap !important;box-shadow:0 12px 24px #0000004D}
+.meterSvg{width:110px !important;height:64px !important}
+.mkTricks{order:3}.mkFigs{order:4}.mkBtns{order:5}
+}
+@media (prefers-reduced-motion: reduce){.swapA,.swapB,.rise,.draw,.pulse,.bob,.bob2,.talk,.blink,.wave,.live,.ticker,.popA,.popB,.stamp,.wander,.congrats,.badgepop,.slidein,.nudge,.hintin,.sheetup{animation:none}.confetti{display:none}.line,.shootbar,.pull{transition:none}.swapB{opacity:0}.bar{transition:none}}
+</style>
+</helmet>
+<div class="lrn" style="font-family: 'IBM Plex Sans', system-ui, sans-serif; color: #ECE6D6; background: #10282B; font-size: 16px; line-height: 1.6">
+
+<header style="border-bottom: 1px solid #24474A">
+<nav aria-label="Main" style="max-width: 1200px; margin: 0 auto; padding: 18px 24px; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px">
+<a href="LayoutHomeA.dc.html" style="font-family: 'IBM Plex Mono', monospace; font-weight: 600; font-size: 19px; color: #ECE6D6; text-decoration: none">Pramana</a>
+<div class="navlinks" style="display: flex; flex-wrap: wrap; align-items: center; gap: 28px; font-size: 15px">
+<a href="LayoutHomeA.dc.html" style="color: #B3C2BB; text-decoration: none">Data</a>
+<a href="Sandbox.dc.html" style="color: #B3C2BB; text-decoration: none">Sandbox</a>
+<a href="#top" style="color: #ECE6D6; text-decoration: none; font-weight: 500">Learn</a>
+<a href="LayoutHomeA.dc.html" style="color: #B3C2BB; text-decoration: none">About</a>
+<a href="#end" style="background: {{accent}}; color: #10282B; text-decoration: none; padding: 10px 18px; border-radius: 8px; font-weight: 600">Subscribe</a>
+</div>
+<div class="navmenu" style="align-items: center; gap: 10px"><a href="#end" style="background: {{accent}}; color: #10282B; text-decoration: none; padding: 8px 14px; border-radius: 8px; font-weight: 600; font-size: 14px">Subscribe</a><button type="button" aria-label="Menu" style="width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; border: 0; background: transparent; padding: 0"><svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7h18M3 12h18M3 17h18" stroke="#ECE6D6" stroke-width="2" stroke-linecap="round"></path></svg></button></div>
+</nav>
+</header>
+<div style="position: sticky; top: 0; height: 0; z-index: 40">
+<div class="sidewrap" onMouseEnter="{{prog.enter}}" onMouseLeave="{{prog.leave}}" style="position: absolute; right: 0; top: 34vh; display: flex; align-items: flex-start; gap: 8px">
+<sc-if value="{{prog.showHint}}" hint-placeholder-val="{{false}}"><div class="hintin" role="status" style="align-self: center; max-width: 220px; background: #ECE6D6; color: #10282B; border-radius: 12px; padding: 10px 14px; font-size: 14px; font-weight: 500; line-height: 1.35; box-shadow: 0 6px 18px #00000055; position: relative"><strong style="color: #A84A1E">7 quick lessons.</strong> Track your progress and jump to any part from here →</div></sc-if>
+<sc-if value="{{prog.open}}" hint-placeholder-val="{{false}}">
+<div class="slidein" role="region" aria-label="Lesson progress" style="width: 210px; background: #0C2124F5; border: 1px solid #24474A; border-radius: 14px; padding: 14px; display: flex; flex-direction: column; gap: 8px; box-shadow: 0 8px 24px #00000055">
+<div style="display: flex; justify-content: space-between; align-items: baseline"><span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: #8FA6A0">JUMP TO A LESSON</span><span style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; font-weight: 600; color: {{accent}}">{{prog.count}} / 7</span></div>
+<div aria-hidden="true" style="height: 4px; border-radius: 2px; background: #173538"><div class="rainbow" style="height: 4px; border-radius: 2px; width: {{prog.pct}}%; transition: width .8s cubic-bezier(.2,.7,.2,1)"></div></div>
+<ol style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 4px">
+<li><a href="#top" class="jump" style="display: flex; align-items: center; gap: 8px; min-height: 32px; padding: 2px 8px 2px 4px; border-radius: 8px; color: #B3C2BB; text-decoration: none; font-size: 13px"><span style="width: 22px; height: 22px; display: flex; align-items: center; justify-content: center; flex: none">↑</span>Back to the top</a></li>
+<sc-for list="{{prog.badges}}" as="bd" hint-placeholder-count="7">
+<li>
+<sc-if value="{{bd.done}}" hint-placeholder-val="{{false}}"><a href="#{{bd.id}}" class="jump" style="display: flex; align-items: center; gap: 8px; min-height: 32px; padding: 2px 8px 2px 4px; border-radius: 8px; color: #ECE6D6; text-decoration: none; font-size: 13px"><span class="badgepop" style="width: 22px; height: 22px; border-radius: 50%; background: {{bd.color}}; color: #10282B; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; flex: none">✓</span>{{bd.name}}</a></sc-if>
+<sc-if value="{{bd.todo}}" hint-placeholder-val="{{true}}"><a href="#{{bd.id}}" class="jump" style="display: flex; align-items: center; gap: 8px; min-height: 32px; padding: 2px 8px 2px 4px; border-radius: 8px; color: #B3C2BB; text-decoration: none; font-size: 13px"><span style="width: 22px; height: 22px; border-radius: 50%; border: 1px dashed {{bd.color}}; color: {{bd.color}}; display: flex; align-items: center; justify-content: center; font-family: 'IBM Plex Mono', monospace; font-size: 11px; flex: none">{{bd.num}}</span>{{bd.name}}</a></sc-if>
+</li>
+</sc-for>
+</ol>
+</div>
+</sc-if>
+<button type="button" class="{{prog.tabCls}}" onClick="{{prog.toggle}}" onFocus="{{prog.enter}}" aria-expanded="{{prog.open}}" aria-label="Lesson progress, {{prog.count}} of 7 complete" style="display: flex; flex-direction: column; align-items: center; gap: 5px; padding: 10px 7px; border: 1px solid #24474A; border-right: 0; border-radius: 12px 0 0 12px; background: #0C2124EE; color: #ECE6D6; font-family: 'IBM Plex Mono', monospace; font-size: 11px; cursor: pointer; opacity: {{prog.tabOp}}; transition: opacity .3s">
+<sc-for list="{{prog.badges}}" as="bd" hint-placeholder-count="7">
+<sc-if value="{{bd.done}}" hint-placeholder-val="{{false}}"><span class="badgepop" style="width: 10px; height: 10px; border-radius: 50%; background: {{bd.color}}"></span></sc-if>
+<sc-if value="{{bd.todo}}" hint-placeholder-val="{{true}}"><span style="width: 10px; height: 10px; border-radius: 50%; border: 1px solid {{bd.color}}; opacity: .6"></span></sc-if>
+</sc-for>
+<span style="margin-top: 2px; font-weight: 600; color: {{accent}}">{{prog.count}}/7</span>
+</button>
+</div>
+
+<sc-if value="{{prog.celebrate}}" hint-placeholder-val="{{false}}">
+<div aria-hidden="true" style="position: absolute; top: 0; left: 0; right: 0; height: 100vh; pointer-events: none; overflow: hidden">
+<sc-for list="{{prog.confetti}}" as="cf" hint-placeholder-count="20"><span class="confetti" style="position: absolute; top: -20px; left: {{cf.left}}%; width: {{cf.w}}px; height: {{cf.h}}px; background: {{cf.color}}; border-radius: {{cf.round}}; animation-duration: {{cf.dur}}s; animation-delay: {{cf.delay}}s"></span></sc-for>
+</div>
+<div role="dialog" aria-labelledby="congrats-title" class="congrats" style="position: absolute; top: 18vh; left: 50%; width: min(560px, calc(100% - 32px)); background: #0C2124; border: 2px solid {{accent}}; border-radius: 20px; padding: 32px; display: flex; flex-direction: column; gap: 14px; align-items: center; text-align: center; box-shadow: 0 0 0 6px #FF7A3D22">
+<div style="display: flex; gap: 6px; flex-wrap: wrap; justify-content: center"><sc-for list="{{prog.badges}}" as="bd" hint-placeholder-count="7"><span style="width: 30px; height: 30px; border-radius: 50%; background: {{bd.color}}; color: #10282B; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700">✓</span></sc-for></div>
+<h2 id="congrats-title" style="margin: 0; font-family: 'IBM Plex Mono', monospace; font-size: 32px; font-weight: 600; line-height: 1.15">Congratulations!</h2>
+<p style="margin: 0; font-size: 20px; font-weight: 600; color: {{accent}}">You’re now a little more educated, and a lot harder to fool with data.</p>
+<p style="margin: 0; color: #B3C2BB">You can spot a cropped axis, a cherry-picked window, a skewed average, a fake correlation, a spun headline and a biased sample.</p>
+<div style="display: flex; flex-wrap: wrap; gap: 10px; justify-content: center">
+<a href="Sandbox.dc.html" style="background: {{accent}}; color: #10282B; text-decoration: none; padding: 12px 20px; border-radius: 8px; font-weight: 600">Test yourself in the sandbox</a>
+<button type="button" onClick="{{prog.dismiss}}" style="min-height: 44px; padding: 10px 18px; border-radius: 8px; border: 1px solid #4A7176; background: transparent; color: #ECE6D6; font-family: inherit; font-size: 15px">Close</button>
+</div>
+</div>
+</sc-if>
+</div>
+
+<section id="top" style="background-image: linear-gradient(#ECE6D60D 1px, transparent 1px), linear-gradient(90deg, #ECE6D60D 1px, transparent 1px); background-size: 40px 40px; border-bottom: 1px solid #24474A">
+<div class="hero" style="max-width: 1200px; margin: 0 auto; padding: 96px 24px 88px; display: flex; flex-direction: column; gap: 28px; align-items: center; text-align: center">
+<p class="rise" style="margin: 0; font-family: 'IBM Plex Mono', monospace; font-size: 13px; letter-spacing: 0.08em; color: {{accent}}">LEARN · HOW DATA GETS SPUN</p>
+<h1 class="rise h1" style="margin: 0; font-family: 'IBM Plex Mono', monospace; font-weight: 600; font-size: 72px; line-height: 1.02; letter-spacing: -0.04em; animation-delay: .1s">Same numbers.<br>Two stories.</h1>
+<div class="swap" aria-live="off" style="position: relative; height: 64px; width: 100%; max-width: 760px">
+<p class="swapA" style="position: absolute; inset: 0; margin: 0; display: flex; align-items: center; justify-content: center; font-size: 26px; font-weight: 600; color: {{accent}}">“Calgary rent is exploding.”</p>
+<p class="swapB" style="position: absolute; inset: 0; margin: 0; display: flex; align-items: center; justify-content: center; font-size: 26px; font-weight: 600; color: #9CD3F0">“Calgary rent has barely moved.”</p>
+</div>
+<p class="rise" style="margin: 0; font-size: 19px; color: #B3C2BB; max-width: 640px; animation-delay: .25s">Both headlines can be built from the exact same dataset. Here are the four most common tricks, two newsrooms spinning the same figure live, and a quick test of your own eye.</p>
+<a class="rise pulse" href="#tricks" style="background: {{accent}}; color: #10282B; text-decoration: none; padding: 14px 24px; border-radius: 999px; font-weight: 600; animation-delay: .4s">See how it's done ↓</a>
+</div>
+</section>
+
+<section id="tricks" class="sec" style="max-width: 1200px; margin: 0 auto; padding: 80px 24px; display: flex; flex-direction: column; gap: 28px">
+<div style="display: flex; flex-direction: column; gap: 8px">
+<p style="margin: 0; font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: {{accent}}">PART 1</p>
+<h2 class="h2" style="margin: 0; font-family: 'IBM Plex Mono', monospace; font-size: 40px; font-weight: 600; letter-spacing: -0.02em">Four tricks, one dataset</h2>
+<p style="margin: 0; color: #B3C2BB; max-width: 680px">Pick a trick, then flip between the two stories. The numbers never change, only the framing does.</p>
+</div>
+
+<div class="chips" role="tablist" aria-label="Tricks" style="display: flex; flex-wrap: wrap; gap: 8px">
+<sc-for list="{{trickTabs}}" as="t" hint-placeholder-count="4">
+<sc-if value="{{t.on}}" hint-placeholder-val="{{false}}"><button type="button" role="tab" aria-selected="true" onClick="{{t.pick}}" style="min-height: 44px; padding: 10px 18px; border-radius: 8px; border: 1px solid {{accent}}; background: {{accent}}; color: #10282B; font-family: inherit; font-size: 15px; font-weight: 600"><span style="font-family: 'IBM Plex Mono', monospace">{{t.num}}</span> {{t.name}}</button></sc-if>
+<sc-if value="{{t.off}}" hint-placeholder-val="{{true}}"><button type="button" role="tab" aria-selected="false" onClick="{{t.pick}}" style="min-height: 44px; padding: 10px 18px; border-radius: 8px; border: 1px solid #4A7176; background: transparent; color: #ECE6D6; font-family: inherit; font-size: 15px"><span style="font-family: 'IBM Plex Mono', monospace; color: #8FA6A0">{{t.num}}</span> {{t.name}}</button></sc-if>
+</sc-for>
+</div>
+
+<div style="display: flex; flex-wrap: wrap; gap: 24px; align-items: stretch">
+<figure style="flex: 3 1 560px; min-width: 0; margin: 0; background: #0C2124; border: 1px solid #24474A; border-radius: 16px; padding: 24px; display: flex; flex-direction: column; gap: 16px">
+<div role="group" aria-label="Story" style="display: flex; flex-wrap: wrap; gap: 8px">
+<sc-for list="{{modeTabs}}" as="m" hint-placeholder-count="3">
+<sc-if value="{{m.on}}" hint-placeholder-val="{{false}}"><button type="button" aria-pressed="true" onClick="{{m.pick}}" style="min-height: 40px; padding: 8px 16px; border-radius: 999px; border: 1px solid {{m.color}}; background: {{m.color}}; color: #10282B; font-family: inherit; font-size: 14px; font-weight: 600">{{m.label}}</button></sc-if>
+<sc-if value="{{m.off}}" hint-placeholder-val="{{true}}"><button type="button" aria-pressed="false" onClick="{{m.pick}}" style="min-height: 40px; padding: 8px 16px; border-radius: 999px; border: 1px solid #4A7176; background: transparent; color: #ECE6D6; font-family: inherit; font-size: 14px">{{m.label}}</button></sc-if>
+</sc-for>
+</div>
+<p style="margin: 0; font-family: 'IBM Plex Mono', monospace; font-size: 24px; font-weight: 600; line-height: 1.25; color: {{cur.color}}; min-height: 60px">{{cur.headline}}</p>
+<div style="display: flex; gap: 12px">
+<div aria-hidden="true" style="display: flex; flex-direction: column; justify-content: space-between; height: 260px; font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #8FA6A0; text-align: right; min-width: 52px"><span>{{cur.axisTop}}</span><span>{{cur.axisBottom}}</span></div>
+<div role="img" aria-label="{{cur.chartLabel}}" style="flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 8px">
+<div style="height: 260px; display: flex; align-items: flex-end; gap: 8px; border-left: 1px solid #4A7176; border-bottom: 1px solid #4A7176; padding: 0 8px">
+<sc-for list="{{cur.bars}}" as="b" hint-placeholder-count="6">
+<div style="flex: 1 1 0; min-width: 0; height: 100%; display: flex; flex-direction: column; justify-content: flex-end; align-items: center; gap: 4px">
+<span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: #B3C2BB; opacity: {{b.op}}">{{b.valueLabel}}</span>
+<span class="bar" style="width: 100%; border-radius: 4px 4px 0 0; height: {{b.h}}%; background: {{b.color}}; opacity: {{b.op}}"></span>
+</div>
+</sc-for>
+</div>
+<div style="display: flex; gap: 8px; padding: 0 8px">
+<sc-for list="{{cur.bars}}" as="b" hint-placeholder-count="6"><span style="flex: 1 1 0; min-width: 0; text-align: center; font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: #8FA6A0; opacity: {{b.op}}">{{b.label}}</span></sc-for>
+</div>
+</div>
+</div>
+<figcaption style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #8FA6A0">{{cur.note}} · illustrative numbers</figcaption>
+</figure>
+
+<aside style="flex: 2 1 340px; min-width: 0; display: flex; flex-direction: column; gap: 16px">
+<div style="background: #0C2124; border: 1px solid #24474A; border-radius: 16px; padding: 24px; display: flex; flex-direction: column; gap: 10px">
+<p style="margin: 0; font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #8FA6A0">THE TRICK</p>
+<h3 style="margin: 0; font-family: 'IBM Plex Mono', monospace; font-size: 22px; font-weight: 600">{{trick.name}}</h3>
+<p style="margin: 0; color: #B3C2BB">{{trick.what}}</p>
+</div>
+<div style="background: #33261B; border: 1px solid #FF7A3D66; border-radius: 16px; padding: 24px; display: flex; flex-direction: column; gap: 10px">
+<p style="margin: 0; font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #FFB08A">HOW TO SPOT IT</p>
+<p style="margin: 0">{{trick.spot}}</p>
+</div>
+<div style="background: #1E3F35; border: 1px solid #9FE0B866; border-radius: 16px; padding: 24px; display: flex; flex-direction: column; gap: 10px">
+<p style="margin: 0; font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #9FE0B8">WHAT I DO INSTEAD</p>
+<p style="margin: 0">{{trick.fix}}</p>
+</div>
+</aside>
+</div>
+</section>
+
+<section style="background: #0C2124; border-top: 1px solid #24474A; border-bottom: 1px solid #24474A">
+<div class="sec" style="max-width: 1200px; margin: 0 auto; padding: 80px 24px; display: flex; flex-direction: column; gap: 28px">
+<div style="display: flex; flex-direction: column; gap: 8px">
+<span id="l2"></span><p style="margin: 0; font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: {{accent}}">PART 2</p>
+<h2 class="h2" style="margin: 0; font-family: 'IBM Plex Mono', monospace; font-size: 40px; font-weight: 600; letter-spacing: -0.02em">One number, two newsrooms</h2>
+<p style="margin: 0; color: #B3C2BB; max-width: 720px">Set this year’s change in Calgary rent. Two reporters with opposite leanings get the same figure, and both find a way to tell their story.</p>
+</div>
+
+<div class="stick" style="display: flex; flex-wrap: wrap; align-items: center; gap: 16px 24px; border: 1px solid #4A7176; border-radius: 16px; padding: 20px 24px; background: #10282B">
+<label for="rentChange" style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: #8FA6A0">RENT CHANGE THIS YEAR</label>
+<input id="rentChange" type="range" min="-6" max="12" step="0.5" value="{{rv.value}}" onChange="{{rv.onChange}}" style="flex: 1 1 300px; min-width: 0; height: 28px">
+<output for="rentChange" style="font-family: 'IBM Plex Mono', monospace; font-size: 34px; font-weight: 600; min-width: 120px; text-align: right; color: {{accent}}">{{rv.label}}</output>
+</div>
+
+<div style="display: flex; flex-wrap: wrap; gap: 24px">
+<article aria-label="Station A, leans alarming" style="flex: 1 1 460px; min-width: 0; border: 1px solid #24474A; border-radius: 16px; overflow: hidden; background: #10282B; display: flex; flex-direction: column">
+<svg role="img" aria-label="Reporter at the Station A news desk, looking alarmed" viewBox="0 0 480 300" style="width: 100%; height: auto; display: block">
+<rect x="0" y="0" width="480" height="300" fill="{{repA.bg}}" style="transition: fill .6s"></rect>
+<rect x="250" y="34" width="196" height="120" rx="6" fill="#00000033" stroke="#FFB08A55"></rect>
+<g font-family="IBM Plex Mono, monospace"><text x="348" y="82" text-anchor="middle" font-size="30" font-weight="600" fill="#FFB08A">{{rv.label}}</text><text x="348" y="110" text-anchor="middle" font-size="12" fill="#FFB08A">RENT</text><text x="348" y="134" text-anchor="middle" font-size="12" fill="#FFB08A">{{repA.arrow}}</text></g>
+<g class="live"><rect x="20" y="20" width="58" height="22" rx="3" fill="#E24B4A"></rect><text x="49" y="35" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="12" font-weight="600" fill="#FFFFFF">LIVE</text></g>
+<g class="bob">
+<rect x="96" y="176" width="140" height="110" rx="34" fill="#3B2A4A"></rect>
+<path d="M150 178 L166 214 L182 178 Z" fill="#ECE6D6"></path>
+<path d="M162 182 L166 230 L170 182 Z" fill="#E24B4A"></path>
+<rect x="154" y="150" width="24" height="30" rx="8" fill="#C98E6B"></rect>
+<circle cx="166" cy="124" r="40" fill="#D9A07C"></circle>
+<path d="M126 118 C128 78 204 74 206 118 C200 98 140 96 126 118 Z" fill="#2A1C14"></path>
+<g class="blink"><ellipse cx="152" cy="124" rx="5" ry="6" fill="#1A1A1A"></ellipse><ellipse cx="180" cy="124" rx="5" ry="6" fill="#1A1A1A"></ellipse></g>
+<path d="M142 110 L160 116 M190 110 L172 116" stroke="#2A1C14" stroke-width="3.5" stroke-linecap="round" fill="none"></path>
+<ellipse class="talk" cx="166" cy="146" rx="9" ry="7" fill="#5A1E1E"></ellipse>
+<rect class="wave" x="220" y="182" width="22" height="70" rx="11" fill="#3B2A4A"></rect>
+<circle class="wave" cx="231" cy="178" r="12" fill="#D9A07C"></circle>
+</g>
+<rect x="0" y="252" width="480" height="48" fill="#1A0F0C"></rect>
+<rect x="70" y="236" width="10" height="24" rx="3" fill="#888780"></rect><ellipse cx="75" cy="232" rx="10" ry="12" fill="#2C2C2A"></ellipse>
+</svg>
+<div style="display: flex; align-items: stretch; background: #FFFFFF; color: #1A0F0C">
+<span style="flex: none; display: flex; align-items: center; padding: 0 12px; background: #E24B4A; color: #FFFFFF; font-family: 'IBM Plex Mono', monospace; font-size: 12px; font-weight: 600">BREAKING</span>
+<p class="{{popClass}}" style="margin: 0; padding: 10px 14px; font-size: 18px; font-weight: 600; line-height: 1.3">{{repA.headline}}</p>
+</div>
+<div style="overflow: hidden; background: #1A0F0C; border-top: 1px solid #E24B4A55"><p class="ticker" style="margin: 0; white-space: nowrap; padding: 6px 0; font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #FFB08A">STATION A · {{repA.ticker}} · STATION A · {{repA.ticker}} · STATION A · {{repA.ticker}}</p></div>
+<div style="padding: 18px 20px; display: flex; flex-direction: column; gap: 8px">
+<div style="display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px"><span style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; font-weight: 600">STATION A</span><span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #FFB08A; border: 1px solid #FFB08A66; padding: 1px 8px; border-radius: 4px">LEANS ALARMING</span></div>
+<p style="margin: 0; font-size: 15px; color: #B3C2BB"><span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #8FA6A0">WHAT THEY LEFT OUT ›</span> {{repA.leftOut}}</p>
+</div>
+</article>
+
+<article aria-label="Station B, leans reassuring" style="flex: 1 1 460px; min-width: 0; border: 1px solid #24474A; border-radius: 16px; overflow: hidden; background: #10282B; display: flex; flex-direction: column">
+<svg role="img" aria-label="Reporter at the Station B news desk, looking calm and smiling" viewBox="0 0 480 300" style="width: 100%; height: auto; display: block">
+<rect x="0" y="0" width="480" height="300" fill="#14324A"></rect>
+<rect x="34" y="34" width="196" height="120" rx="6" fill="#00000033" stroke="#9CD3F055"></rect>
+<g font-family="IBM Plex Mono, monospace"><text x="132" y="82" text-anchor="middle" font-size="30" font-weight="600" fill="#9CD3F0">{{rv.label}}</text><text x="132" y="110" text-anchor="middle" font-size="12" fill="#9CD3F0">RENT</text><text x="132" y="134" text-anchor="middle" font-size="12" fill="#9CD3F0">{{repB.arrow}}</text></g>
+<g class="live"><rect x="402" y="20" width="58" height="22" rx="3" fill="#378ADD"></rect><text x="431" y="35" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="12" font-weight="600" fill="#FFFFFF">LIVE</text></g>
+<g class="bob2">
+<rect x="244" y="176" width="140" height="110" rx="34" fill="#22404F"></rect>
+<path d="M298 178 L314 214 L330 178 Z" fill="#ECE6D6"></path>
+<path d="M310 182 L314 230 L318 182 Z" fill="#378ADD"></path>
+<rect x="302" y="150" width="24" height="30" rx="8" fill="#8A5A3C"></rect>
+<circle cx="314" cy="124" r="40" fill="#A46B47"></circle>
+<path d="M272 128 C268 70 360 70 356 128 C354 104 344 92 314 90 C284 92 274 104 272 128 Z" fill="#1A1A1A"></path>
+<g class="blink"><ellipse cx="300" cy="124" rx="5" ry="5" fill="#1A1A1A"></ellipse><ellipse cx="328" cy="124" rx="5" ry="5" fill="#1A1A1A"></ellipse></g>
+<path d="M290 112 Q300 106 310 112 M318 112 Q328 106 338 112" stroke="#1A1A1A" stroke-width="3" stroke-linecap="round" fill="none"></path>
+<path class="talk" d="M302 142 Q314 154 326 142 Q314 150 302 142 Z" fill="#5A2E1E"></path>
+</g>
+<rect x="0" y="252" width="480" height="48" fill="#0B1E2C"></rect>
+<rect x="400" y="236" width="10" height="24" rx="3" fill="#888780"></rect><ellipse cx="405" cy="232" rx="10" ry="12" fill="#2C2C2A"></ellipse>
+</svg>
+<div style="display: flex; align-items: stretch; background: #FFFFFF; color: #0B1E2C">
+<span style="flex: none; display: flex; align-items: center; padding: 0 12px; background: #185FA5; color: #FFFFFF; font-family: 'IBM Plex Mono', monospace; font-size: 12px; font-weight: 600">TODAY</span>
+<p class="{{popClass}}" style="margin: 0; padding: 10px 14px; font-size: 18px; font-weight: 600; line-height: 1.3">{{repB.headline}}</p>
+</div>
+<div style="overflow: hidden; background: #0B1E2C; border-top: 1px solid #378ADD55"><p class="ticker" style="margin: 0; white-space: nowrap; padding: 6px 0; font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #9CD3F0">STATION B · {{repB.ticker}} · STATION B · {{repB.ticker}} · STATION B · {{repB.ticker}}</p></div>
+<div style="padding: 18px 20px; display: flex; flex-direction: column; gap: 8px">
+<div style="display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px"><span style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; font-weight: 600">STATION B</span><span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #9CD3F0; border: 1px solid #9CD3F066; padding: 1px 8px; border-radius: 4px">LEANS REASSURING</span></div>
+<p style="margin: 0; font-size: 15px; color: #B3C2BB"><span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #8FA6A0">WHAT THEY LEFT OUT ›</span> {{repB.leftOut}}</p>
+</div>
+</article>
+</div>
+
+<div role="status" style="display: flex; flex-wrap: wrap; gap: 20px; align-items: center; border: 1px solid #9FE0B8; background: #1E3F35; border-radius: 16px; padding: 22px 24px">
+<div style="flex: 1 1 360px; min-width: 0; display: flex; flex-direction: column; gap: 6px">
+<p style="margin: 0; font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #9FE0B8">THE HONEST VERSION</p>
+<p class="{{popClass}}" style="margin: 0; font-size: 19px; font-weight: 600">{{honest.headline}}</p>
+<p style="margin: 0; font-size: 14px; color: #B3C2BB">Context both stations had: wages rose {{honest.wage}} and prices rose {{honest.cpi}} this year (illustrative).</p>
+</div>
+<dl style="flex: 1 1 300px; min-width: 0; margin: 0; display: flex; flex-wrap: wrap; gap: 12px">
+<div style="flex: 1 1 120px; border: 1px solid #9FE0B855; border-radius: 10px; padding: 10px 14px"><dt style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: #9FE0B8">VS WAGES</dt><dd style="margin: 0; font-family: 'IBM Plex Mono', monospace; font-size: 22px; font-weight: 600">{{honest.vsWage}}</dd></div>
+<div style="flex: 1 1 120px; border: 1px solid #9FE0B855; border-radius: 10px; padding: 10px 14px"><dt style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: #9FE0B8">AFTER INFLATION</dt><dd style="margin: 0; font-family: 'IBM Plex Mono', monospace; font-size: 22px; font-weight: 600">{{honest.real}}</dd></div>
+</dl>
+</div>
+<p style="margin: 0; font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #8FA6A0">Both stations are fictional. Every headline above is technically defensible, which is exactly the problem.</p>
+</div>
+</section>
+
+<section class="sec" style="max-width: 1200px; margin: 0 auto; padding: 80px 24px; display: flex; flex-direction: column; gap: 28px">
+<div style="display: flex; flex-direction: column; gap: 8px">
+<span id="l3"></span><p style="margin: 0; font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: {{accent}}">PART 3</p>
+<h2 class="h2" style="margin: 0; font-family: 'IBM Plex Mono', monospace; font-size: 40px; font-weight: 600; letter-spacing: -0.02em">Average vs median: one person changes everything</h2>
+<p style="margin: 0; color: #B3C2BB; max-width: 720px">Ten Calgary renters and their incomes. Invite one very high earner into the room, then read the two press releases written about the same eleven people.</p>
+</div>
+
+<div class="stick" style="display: flex; flex-wrap: wrap; align-items: center; gap: 16px 24px; border: 1px solid #4A7176; border-radius: 16px; padding: 18px 22px; background: #0C2124">
+<sc-if value="{{avm.in}}" hint-placeholder-val="{{false}}"><button type="button" onClick="{{avm.toggle}}" aria-pressed="true" style="min-height: 44px; padding: 10px 18px; border-radius: 8px; border: 1px solid {{accent}}; background: {{accent}}; color: #10282B; font-family: inherit; font-size: 15px; font-weight: 600">High earner is in the room ✓</button></sc-if>
+<sc-if value="{{avm.out}}" hint-placeholder-val="{{true}}"><button type="button" onClick="{{avm.toggle}}" aria-pressed="false" style="min-height: 44px; padding: 10px 18px; border-radius: 8px; border: 1px solid {{accent}}; background: transparent; color: #ECE6D6; font-family: inherit; font-size: 15px; font-weight: 600">+ Invite one high earner</button></sc-if>
+<label for="hiIncome" style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: #8FA6A0">THEIR INCOME</label>
+<input id="hiIncome" type="range" min="200" max="5000" step="50" value="{{avm.hi}}" onChange="{{avm.onHi}}" style="flex: 1 1 240px; min-width: 0; height: 28px">
+<output for="hiIncome" style="font-family: 'IBM Plex Mono', monospace; font-size: 22px; font-weight: 600; min-width: 110px; text-align: right; color: {{accent}}">{{avm.hiLabel}}</output>
+</div>
+
+<div style="display: flex; flex-wrap: wrap; gap: 24px; align-items: stretch">
+<figure style="flex: 3 1 560px; min-width: 0; margin: 0; background: #0C2124; border: 1px solid #24474A; border-radius: 16px; padding: 24px; display: flex; flex-direction: column; gap: 12px">
+<div class="avmChart" role="img" aria-label="{{avm.chartLabel}}" style="position: relative; height: 580px; border-bottom: 1px solid #4A7176; display: flex; align-items: flex-end; gap: 10px; padding: 0 8px">
+<sc-for list="{{avm.people}}" as="pp" hint-placeholder-count="11">
+<div style="flex: 1 1 0; min-width: 0; height: 100%; display: flex; flex-direction: column; justify-content: flex-end; align-items: center; gap: 4px; opacity: {{pp.op}}; transition: opacity .5s">
+<span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; font-weight: {{pp.weight}}; color: {{pp.labelColor}}; text-align: center; line-height: 1.25">{{pp.label}}</span>
+<sc-if value="{{pp.capped}}" hint-placeholder-val="{{false}}"><span aria-hidden="true" style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: {{accent}}; text-align: center; line-height: 1.2">↑ keeps going<br>{{avm.times}}× this chart</span></sc-if>
+<span style="width: 18px; height: 18px; border-radius: 50%; background: {{pp.color}}; flex: none"></span>
+<span class="{{pp.cls}}" style="width: 70%; border-radius: 6px 6px 0 0; height: {{pp.h}}px; background: {{pp.color}}; border-top: {{pp.topBorder}}"></span>
+</div>
+</sc-for>
+<sc-if value="{{avm.in}}" hint-placeholder-val="{{false}}">
+<div class="line" style="position: absolute; left: 0; right: 0; bottom: {{avm.ghostPos}}px; border-top: 2px dotted #8FA6A0; opacity: .8"></div>
+<div aria-hidden="true" class="pull" style="position: absolute; left: 30%; bottom: {{avm.ghostPos}}px; height: {{avm.pullH}}px; width: 3px; background: {{accent}}; border-radius: 2px"><span style="position: absolute; top: -9px; left: -7px; width: 0; height: 0; border-left: 8px solid transparent; border-right: 8px solid transparent; border-bottom: 12px solid {{accent}}"></span></div>
+<div class="line" style="position: absolute; left: calc(30% + 14px); bottom: {{avm.pullMid}}px; transition: bottom .8s cubic-bezier(.2,.7,.2,1); max-width: 46%; background: #0C2124; border: 1px solid {{accent}}; border-radius: 8px; padding: 8px 12px; font-size: 14px; line-height: 1.35"><strong style="color: {{accent}}; font-family: 'IBM Plex Mono', monospace">+{{avm.pullLabel}}</strong> One person pulled the average up from {{avm.ghostLabel}} to {{avm.meanLabel}}.</div>
+</sc-if>
+<div class="line" style="position: absolute; left: 0; right: 0; bottom: {{avm.medPos}}px; border-top: 2px dashed #9CD3F0"><span style="position: absolute; left: 8px; top: -22px; font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #9CD3F0; background: #0C2124; padding: 0 4px">MEDIAN {{avm.medLabel}}</span></div>
+<div class="line" style="position: absolute; left: 0; right: 0; bottom: {{avm.meanPos}}px; border-top: 2px solid {{accent}}"><span style="position: absolute; right: 8px; top: -22px; font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: {{accent}}; background: #0C2124; padding: 0 4px">AVERAGE {{avm.meanLabel}}{{avm.offChart}}</span></div>
+</div>
+<figcaption style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #8FA6A0">{{avm.caption}}</figcaption>
+</figure>
+
+<div style="flex: 2 1 340px; min-width: 0; display: flex; flex-direction: column; gap: 16px">
+<article class="{{popClass}}" style="background: #ECE6D6; color: #1A1A1A; border-radius: 6px; padding: 20px 22px; display: flex; flex-direction: column; gap: 8px; box-shadow: 6px 6px 0 #FF7A3D">
+<p style="margin: 0; font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.06em; color: #6B4A2A">PRESS RELEASE · PROPERTY OWNERS’ GROUP (FICTIONAL)</p>
+<p style="margin: 0; font-size: 19px; font-weight: 600; line-height: 1.3">“{{avm.pr1}}”</p>
+<p style="margin: 0; font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #6B4A2A">Uses: the average</p>
+</article>
+<article class="{{popClass}}" style="background: #ECE6D6; color: #1A1A1A; border-radius: 6px; padding: 20px 22px; display: flex; flex-direction: column; gap: 8px; box-shadow: 6px 6px 0 #9CD3F0">
+<p style="margin: 0; font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.06em; color: #1F4A66">PRESS RELEASE · RENTERS’ COALITION (FICTIONAL)</p>
+<p style="margin: 0; font-size: 19px; font-weight: 600; line-height: 1.3">“{{avm.pr2}}”</p>
+<p style="margin: 0; font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #1F4A66">Uses: the median</p>
+</article>
+<div style="border: 1px solid #9FE0B8; background: #1E3F35; border-radius: 12px; padding: 16px 18px; display: flex; flex-direction: column; gap: 4px">
+<p style="margin: 0; font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #9FE0B8">THE HONEST VERSION</p>
+<p style="margin: 0">{{avm.honest}}</p>
+</div>
+</div>
+</div>
+</section>
+
+<section style="background: #0C2124; border-top: 1px solid #24474A; border-bottom: 1px solid #24474A">
+<div class="sec" style="max-width: 1200px; margin: 0 auto; padding: 80px 24px; display: flex; flex-direction: column; gap: 28px">
+<div style="display: flex; flex-direction: column; gap: 8px">
+<span id="l4"></span><p style="margin: 0; font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: {{accent}}">PART 4</p>
+<h2 class="h2" style="margin: 0; font-family: 'IBM Plex Mono', monospace; font-size: 40px; font-weight: 600; letter-spacing: -0.02em">Correlation isn’t causation</h2>
+<p style="margin: 0; color: #B3C2BB; max-width: 720px">Pick a pair. They move together, and a viral post says one causes the other. Then strip out the shared pattern and see what’s left.</p>
+</div>
+
+<div style="display: flex; flex-wrap: wrap; gap: 8px; align-items: center">
+<sc-for list="{{cor.pairs}}" as="cp" hint-placeholder-count="3">
+<sc-if value="{{cp.on}}" hint-placeholder-val="{{false}}"><button type="button" onClick="{{cp.pick}}" aria-pressed="true" style="min-height: 44px; padding: 10px 16px; border-radius: 8px; border: 1px solid {{accent}}; background: {{accent}}; color: #10282B; font-family: inherit; font-size: 14px; font-weight: 600">{{cp.name}}</button></sc-if>
+<sc-if value="{{cp.off}}" hint-placeholder-val="{{true}}"><button type="button" onClick="{{cp.pick}}" aria-pressed="false" style="min-height: 44px; padding: 10px 16px; border-radius: 8px; border: 1px solid #4A7176; background: transparent; color: #ECE6D6; font-family: inherit; font-size: 14px">{{cp.name}}</button></sc-if>
+</sc-for>
+<span style="flex: 1 1 20px"></span>
+<sc-if value="{{cor.raw}}" hint-placeholder-val="{{true}}"><button type="button" onClick="{{cor.toggle}}" style="min-height: 44px; padding: 10px 18px; border-radius: 999px; border: 1px solid #9FE0B8; background: transparent; color: #9FE0B8; font-family: inherit; font-size: 14px; font-weight: 600">Remove the shared {{cor.pattern}} →</button></sc-if>
+<sc-if value="{{cor.clean}}" hint-placeholder-val="{{false}}"><button type="button" onClick="{{cor.toggle}}" style="min-height: 44px; padding: 10px 18px; border-radius: 999px; border: 1px solid #9FE0B8; background: #1E3F35; color: #9FE0B8; font-family: inherit; font-size: 14px; font-weight: 600">← Show the raw data</button></sc-if>
+</div>
+
+<div style="display: flex; flex-wrap: wrap; gap: 24px; align-items: stretch">
+<figure style="flex: 3 1 560px; min-width: 0; margin: 0; background: #10282B; border: 1px solid #24474A; border-radius: 16px; padding: 24px; display: flex; flex-direction: column; gap: 12px">
+<div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 8px">
+<figcaption style="font-weight: 600">{{cor.title}}</figcaption>
+<span style="font-family: 'IBM Plex Mono', monospace; font-size: 14px">correlation r = <strong style="font-size: 22px; color: {{cor.rColor}}">{{cor.r}}</strong></span>
+</div>
+<svg class="corSvg" role="img" aria-label="{{cor.chartLabel}}" viewBox="0 0 640 260" style="width: 100%; height: 260px">
+<g stroke="#24474A" stroke-width="1"><line x1="40" y1="20" x2="600" y2="20"></line><line x1="40" y1="120" x2="600" y2="120"></line><line x1="40" y1="220" x2="600" y2="220"></line></g>
+<polyline points="{{cor.ptsA}}" fill="none" stroke="{{accent}}" stroke-width="2.5" style="transition: all .6s"></polyline>
+<polyline points="{{cor.ptsB}}" fill="none" stroke="#9CD3F0" stroke-width="2.5" stroke-dasharray="6 4"></polyline>
+<g font-family="IBM Plex Mono, monospace" font-size="11" fill="#8FA6A0"><text x="40" y="246">{{cor.xStart}}</text><text x="600" y="246" text-anchor="end">{{cor.xEnd}}</text><text x="34" y="24" text-anchor="end">{{cor.axisA}}</text><text x="606" y="24" fill="#9CD3F0">{{cor.axisB}}</text></g>
+</svg>
+<div style="display: flex; flex-wrap: wrap; gap: 8px 20px; font-size: 14px; color: #B3C2BB"><span><span style="color: {{accent}}">━━</span> {{cor.nameA}}</span><span><span style="color: #9CD3F0">╌╌</span> {{cor.nameB}}</span><span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #8FA6A0">{{cor.modeNote}} · illustrative data</span></div>
+</figure>
+
+<div style="flex: 2 1 340px; min-width: 0; display: flex; flex-direction: column; gap: 16px">
+<article style="position: relative; background: #ECE6D6; color: #1A1A1A; border-radius: 16px; padding: 18px 20px; display: flex; flex-direction: column; gap: 10px; overflow: hidden">
+<div style="display: flex; align-items: center; gap: 10px"><span style="width: 40px; height: 40px; border-radius: 50%; background: #FF7A3D; flex: none"></span><div style="display: flex; flex-direction: column; line-height: 1.2"><span style="font-weight: 600">TotallyRealFacts</span><span style="font-size: 13px; color: #5F5E5A">@totally_real_facts · fictional</span></div></div>
+<p style="margin: 0; font-size: 18px; line-height: 1.35">{{cor.viral}}</p>
+<p style="margin: 0; font-size: 13px; color: #5F5E5A">↻ shared · ♡ liked · 1 chart, 0 sources</p>
+<sc-if value="{{cor.clean}}" hint-placeholder-val="{{false}}"><div class="stamp" style="position: absolute; right: 14px; bottom: 16px; border: 3px solid #A32D2D; color: #A32D2D; border-radius: 6px; padding: 4px 10px; font-family: 'IBM Plex Mono', monospace; font-size: 14px; font-weight: 600; background: #ECE6D6E6">{{cor.stamp}}</div></sc-if>
+</article>
+<div style="border: 1px solid #24474A; border-radius: 12px; padding: 16px; background: #10282B; display: flex; flex-direction: column; gap: 10px">
+<p style="margin: 0; font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #8FA6A0">WHAT’S REALLY CONNECTING THEM</p>
+<div aria-label="{{cor.diagramLabel}}" role="img" style="display: flex; flex-direction: column; align-items: center; gap: 6px">
+<span style="border: 1px solid #9FE0B8; color: #9FE0B8; border-radius: 8px; padding: 6px 14px; font-weight: 600">{{cor.hidden}}</span>
+<span style="font-family: 'IBM Plex Mono', monospace; color: #8FA6A0">↙ ↘</span>
+<div style="display: flex; gap: 10px; flex-wrap: wrap; justify-content: center"><span style="border: 1px solid {{accent}}; border-radius: 8px; padding: 6px 12px; font-size: 14px">{{cor.nameA}}</span><span style="border: 1px solid #9CD3F0; border-radius: 8px; padding: 6px 12px; font-size: 14px">{{cor.nameB}}</span></div>
+</div>
+<p style="margin: 0; font-size: 15px; color: #B3C2BB">{{cor.lesson}}</p>
+</div>
+</div>
+</div>
+</div>
+</section>
+
+<section class="sec" style="max-width: 1200px; margin: 0 auto; padding: 80px 24px; display: flex; flex-direction: column; gap: 28px">
+<div style="display: flex; flex-direction: column; gap: 8px">
+<span id="l5"></span><p style="margin: 0; font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: {{accent}}">PART 5</p>
+<h2 class="h2" style="margin: 0; font-family: 'IBM Plex Mono', monospace; font-size: 40px; font-weight: 600; letter-spacing: -0.02em">Make it misleading</h2>
+<p style="margin: 0; color: #B3C2BB; max-width: 720px">Your turn to spin. Choose the story you want to sell, stack the tricks, and watch the spin meter climb. The honest chart stays next to yours the whole time.</p>
+</div>
+
+<div class="mk" style="display: flex; flex-wrap: wrap; gap: 24px; align-items: flex-start">
+<div class="mkL" style="flex: 1 1 300px; min-width: 0; display: flex; flex-direction: column; gap: 18px">
+<div class="mkGoals" style="display: flex; flex-direction: column; gap: 8px">
+<p style="margin: 0; font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #8FA6A0">1 · THE STORY YOU’RE SELLING</p>
+<div style="display: flex; flex-wrap: wrap; gap: 8px">
+<sc-for list="{{mk.goals}}" as="gl" hint-placeholder-count="2">
+<sc-if value="{{gl.on}}" hint-placeholder-val="{{false}}"><button type="button" onClick="{{gl.pick}}" aria-pressed="true" style="flex: 1 1 120px; min-height: 48px; padding: 10px 14px; border-radius: 10px; border: 1px solid {{gl.color}}; background: {{gl.color}}; color: #10282B; font-family: inherit; font-size: 15px; font-weight: 600">{{gl.label}}</button></sc-if>
+<sc-if value="{{gl.off}}" hint-placeholder-val="{{true}}"><button type="button" onClick="{{gl.pick}}" aria-pressed="false" style="flex: 1 1 120px; min-height: 48px; padding: 10px 14px; border-radius: 10px; border: 1px solid #4A7176; background: transparent; color: #ECE6D6; font-family: inherit; font-size: 15px">{{gl.label}}</button></sc-if>
+</sc-for>
+</div>
+</div>
+<div class="mkTricks" style="display: flex; flex-direction: column; gap: 8px">
+<p style="margin: 0; font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #8FA6A0">2 · STACK THE TRICKS</p>
+<sc-for list="{{mk.tricks}}" as="tk" hint-placeholder-count="5">
+<sc-if value="{{tk.on}}" hint-placeholder-val="{{false}}"><button type="button" onClick="{{tk.pick}}" aria-pressed="true" style="min-height: 52px; text-align: left; padding: 10px 14px; border-radius: 10px; border: 1px solid {{accent}}; background: #33261B; color: #ECE6D6; font-family: inherit; font-size: 15px; display: flex; justify-content: space-between; gap: 10px"><span><strong>✓ {{tk.name}}</strong><br><span style="font-size: 13px; color: #B3C2BB">{{tk.desc}}</span></span><span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: {{accent}}">+20</span></button></sc-if>
+<sc-if value="{{tk.off}}" hint-placeholder-val="{{true}}"><button type="button" onClick="{{tk.pick}}" aria-pressed="false" style="min-height: 52px; text-align: left; padding: 10px 14px; border-radius: 10px; border: 1px solid #4A7176; background: transparent; color: #ECE6D6; font-family: inherit; font-size: 15px; display: flex; justify-content: space-between; gap: 10px"><span><strong>{{tk.name}}</strong><br><span style="font-size: 13px; color: #8FA6A0">{{tk.desc}}</span></span><span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #8FA6A0">+20</span></button></sc-if>
+</sc-for>
+</div>
+</div>
+
+<div class="mkR" style="flex: 2 1 560px; min-width: 0; display: flex; flex-direction: column; gap: 16px">
+<div class="mkMeter" style="display: flex; flex-wrap: wrap; gap: 16px; align-items: center; border: 1px solid #24474A; border-radius: 16px; background: #0C2124; padding: 16px 20px">
+<svg class="meterSvg" role="img" aria-label="Spin meter at {{mk.score}} out of 100" viewBox="0 0 200 116" style="width: 180px; height: 104px; flex: none">
+<path d="M20 100 A80 80 0 0 1 180 100" fill="none" stroke="#173538" stroke-width="16" stroke-linecap="round"></path>
+<path d="M20 100 A80 80 0 0 1 180 100" fill="none" stroke="{{mk.meterColor}}" stroke-width="16" stroke-linecap="round" stroke-dasharray="251.3" stroke-dashoffset="{{mk.offset}}" style="transition: stroke-dashoffset .8s cubic-bezier(.2,.7,.2,1), stroke .5s"></path>
+<text x="100" y="92" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="30" font-weight="600" fill="#ECE6D6">{{mk.score}}</text>
+<text x="100" y="112" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="11" fill="#8FA6A0">SPIN METER</text>
+</svg>
+<div style="flex: 1 1 220px; min-width: 0; display: flex; flex-direction: column; gap: 4px"><span style="font-family: 'IBM Plex Mono', monospace; font-size: 20px; font-weight: 600; color: {{mk.meterColor}}">{{mk.verdict}}</span><span style="font-size: 14px; color: #B3C2BB">{{mk.verdictNote}}</span></div>
+</div>
+
+<div class="mkFigs" style="display: flex; flex-wrap: wrap; gap: 16px">
+<figure style="flex: 3 1 340px; min-width: 0; margin: 0; background: #ECE6D6; color: #1A1A1A; border-radius: 12px; padding: 18px; display: flex; flex-direction: column; gap: 10px; position: relative; overflow: hidden">
+<p style="margin: 0; font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: #5F5E5A">YOUR CHART</p>
+<p class="{{popClass}}" style="margin: 0; font-size: 21px; font-weight: 700; line-height: 1.2; color: {{mk.headColor}}">{{mk.headline}}</p>
+<div style="display: flex; gap: 8px">
+<div aria-hidden="true" style="display: flex; flex-direction: column; justify-content: space-between; height: 180px; font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: #5F5E5A; text-align: right; min-width: 44px"><span>{{mk.top}}</span><span>{{mk.bottom}}</span></div>
+<div role="img" aria-label="{{mk.headline}}" style="flex: 1; min-width: 0; height: 180px; display: flex; align-items: flex-end; gap: 4px; border-left: 1px solid #888780; border-bottom: 1px solid #888780; padding: 0 4px">
+<sc-for list="{{mk.bars}}" as="mb" hint-placeholder-count="11"><span class="bar" style="flex: 1 1 0; min-width: 0; border-radius: 3px 3px 0 0; height: {{mb.h}}%; background: {{mb.color}}; opacity: {{mb.op}}"></span></sc-for>
+</div>
+</div>
+<p style="margin: 0; font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: #5F5E5A">{{mk.foot}}</p>
+<div style="align-self: flex-start; border: 2px solid #A32D2D; color: #A32D2D; border-radius: 4px; padding: 3px 8px; font-family: 'IBM Plex Mono', monospace; font-size: 11px; font-weight: 700; transform: rotate(-2deg)">I MADE THIS MISLEADING ON PURPOSE · [yoursite]/learn</div>
+</figure>
+<figure style="flex: 2 1 240px; min-width: 0; margin: 0; background: #1E3F35; border: 1px solid #9FE0B8; border-radius: 12px; padding: 18px; display: flex; flex-direction: column; gap: 10px">
+<p style="margin: 0; font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: #9FE0B8">THE HONEST CHART</p>
+<p style="margin: 0; font-size: 17px; font-weight: 600; line-height: 1.3">Rent +48% since 2015; wages +16%</p>
+<div role="img" aria-label="Honest chart: rent from $1,150 in 2015 to $1,700 in 2025, axis from zero" style="height: 150px; display: flex; align-items: flex-end; gap: 3px; border-left: 1px solid #4A7176; border-bottom: 1px solid #4A7176; padding: 0 4px">
+<sc-for list="{{mk.honestBars}}" as="hb" hint-placeholder-count="11"><span style="flex: 1 1 0; min-width: 0; border-radius: 3px 3px 0 0; height: {{hb.h}}%; background: #9FE0B8"></span></sc-for>
+</div>
+<p style="margin: 0; font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: #B3C2BB">Full range · axis from $0 · wages shown · source: [CMHC, StatCan]</p>
+</figure>
+</div>
+<div class="mkBtns" style="display: flex; flex-wrap: wrap; gap: 10px">
+<button type="button" style="min-height: 44px; padding: 10px 16px; border-radius: 8px; border: 0; background: {{accent}}; color: #10282B; font-family: inherit; font-size: 14px; font-weight: 600">Download image</button>
+<button type="button" style="min-height: 44px; padding: 10px 16px; border-radius: 8px; border: 1px solid #4A7176; background: transparent; color: #ECE6D6; font-family: inherit; font-size: 14px">Post to X</button>
+<button type="button" onClick="{{mk.reset}}" style="min-height: 44px; padding: 10px 16px; border-radius: 8px; border: 1px solid #4A7176; background: transparent; color: #ECE6D6; font-family: inherit; font-size: 14px">Undo all the spin</button>
+</div>
+</div>
+</div>
+</section>
+
+<section style="background: #0C2124; border-top: 1px solid #24474A; border-bottom: 1px solid #24474A">
+<div class="sec" style="max-width: 1200px; margin: 0 auto; padding: 80px 24px; display: flex; flex-direction: column; gap: 28px">
+<div style="display: flex; flex-direction: column; gap: 8px">
+<span id="l6"></span><p style="margin: 0; font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: #9FE0B8">PART 6</p>
+<h2 class="h2" style="margin: 0; font-family: 'IBM Plex Mono', monospace; font-size: 40px; font-weight: 600; letter-spacing: -0.02em">Where you ask decides what you hear</h2>
+<p style="margin: 0; color: #B3C2BB; max-width: 720px">200 Calgarians are out and about. You want to know how many take transit to work. Choose where to run your 25-person survey, then compare it with the truth.</p>
+</div>
+
+<div class="stick stick6" style="display: flex; flex-wrap: wrap; gap: 10px; align-items: center">
+<span style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: #8FA6A0">RUN THE SURVEY:</span>
+<sc-for list="{{sv.spots}}" as="sp" hint-placeholder-count="3">
+<sc-if value="{{sp.on}}" hint-placeholder-val="{{false}}"><button type="button" onClick="{{sp.pick}}" aria-pressed="true" style="min-height: 46px; padding: 10px 18px; border-radius: 999px; border: 2px solid {{sp.color}}; background: {{sp.color}}; color: #10282B; font-family: inherit; font-size: 15px; font-weight: 600">{{sp.label}}</button></sc-if>
+<sc-if value="{{sp.off}}" hint-placeholder-val="{{true}}"><button type="button" onClick="{{sp.pick}}" aria-pressed="false" style="min-height: 46px; padding: 10px 18px; border-radius: 999px; border: 2px solid {{sp.color}}; background: transparent; color: #ECE6D6; font-family: inherit; font-size: 15px; font-weight: 600">{{sp.label}}</button></sc-if>
+</sc-for>
+<span style="flex: 1 1 10px"></span>
+<button type="button" onClick="{{sv.toggleReveal}}" aria-pressed="{{sv.reveal}}" style="min-height: 46px; padding: 10px 18px; border-radius: 999px; border: 2px solid #E8D44D; background: {{sv.revealBg}}; color: {{sv.revealFg}}; font-family: inherit; font-size: 15px; font-weight: 600">{{sv.revealLabel}}</button>
+</div>
+
+<div style="display: flex; flex-wrap: wrap; gap: 24px; align-items: stretch">
+<figure style="flex: 3 1 560px; min-width: 0; margin: 0; background: #10282B; border: 1px solid #24474A; border-radius: 16px; padding: 16px; display: flex; flex-direction: column; gap: 10px">
+<svg role="img" aria-label="{{sv.fieldLabel}}" viewBox="0 0 640 360" style="width: 100%; height: auto; display: block">
+<rect x="0" y="0" width="640" height="360" rx="12" fill="#0B2023"></rect>
+<g stroke="#ECE6D60A"><line x1="0" y1="120" x2="640" y2="120"></line><line x1="0" y1="240" x2="640" y2="240"></line><line x1="213" y1="0" x2="213" y2="360"></line><line x1="426" y1="0" x2="426" y2="360"></line></g>
+<rect x="24" y="24" width="180" height="128" rx="14" fill="{{sv.zoneStationFill}}" stroke="#FF7A3D" stroke-width="{{sv.zoneStationW}}" stroke-dasharray="6 5" style="transition: fill .5s"></rect>
+<text x="36" y="44" font-family="IBM Plex Mono, monospace" font-size="12" font-weight="600" fill="#FF9A66">C-TRAIN STATION</text>
+<rect x="436" y="208" width="180" height="128" rx="14" fill="{{sv.zoneMallFill}}" stroke="#ED93B1" stroke-width="{{sv.zoneMallW}}" stroke-dasharray="6 5" style="transition: fill .5s"></rect>
+<text x="448" y="328" font-family="IBM Plex Mono, monospace" font-size="12" font-weight="600" fill="#ED93B1">MALL PARKING LOT</text>
+<sc-for list="{{sv.dots}}" as="d" hint-placeholder-count="40">
+<g class="wander" style="animation-duration: {{d.dur}}s; animation-delay: -{{d.delay}}s"><circle cx="{{d.x}}" cy="{{d.y}}" r="{{d.r}}" style="fill: {{d.fill}}; opacity: {{d.op}}; transition: fill .5s, opacity .5s"></circle></g>
+</sc-for>
+</svg>
+<div style="display: flex; flex-wrap: wrap; gap: 8px 18px; font-size: 13px; color: #B3C2BB"><span><span style="color: #FF7A3D">●</span> takes transit</span><span><span style="color: #9CD3F0">●</span> doesn’t</span><span><span style="color: #4A7176">●</span> not asked yet</span><span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #8FA6A0">Illustrative crowd · truth: {{sv.truthLabel}} take transit</span></div>
+</figure>
+
+<div style="flex: 2 1 340px; min-width: 0; display: flex; flex-direction: column; gap: 16px">
+<article style="background: #FFF8E8; color: #1A1A1A; border-radius: 6px; padding: 20px 22px; display: flex; flex-direction: column; gap: 10px; box-shadow: 6px 6px 0 {{sv.cardShadow}}; transition: box-shadow .5s">
+<p style="margin: 0; font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.06em; color: #6B4A2A">SURVEY REPORT · FICTIONAL</p>
+<p class="{{popClass}}" style="margin: 0; font-size: 22px; font-weight: 700; line-height: 1.25">{{sv.headline}}</p>
+<p style="margin: 0; font-family: 'IBM Plex Mono', monospace; font-size: {{sv.fineSize}}px; line-height: 1.4; color: #5F5E5A; background: {{sv.fineBg}}; padding: 2px 4px; border-radius: 3px; transition: font-size .5s cubic-bezier(.2,.7,.2,1), background-color .5s">Fine print: {{sv.fine}}</p>
+<button type="button" onClick="{{sv.toggleFine}}" style="align-self: flex-start; min-height: 38px; padding: 6px 12px; border-radius: 6px; border: 1px solid #1A1A1A; background: transparent; color: #1A1A1A; font-family: inherit; font-size: 13px; font-weight: 600">{{sv.fineBtn}}</button>
+</article>
+
+<div style="border: 1px solid #24474A; border-radius: 12px; background: #10282B; padding: 18px; display: flex; flex-direction: column; gap: 12px">
+<p style="margin: 0; font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #8FA6A0">YOUR SURVEY VS THE WHOLE CITY</p>
+<div style="display: flex; flex-direction: column; gap: 6px">
+<div style="display: flex; justify-content: space-between; font-size: 14px"><span>Your sample</span><span style="font-family: 'IBM Plex Mono', monospace; font-weight: 600; color: {{sv.resColor}}">{{sv.resLabel}}</span></div>
+<div style="position: relative; height: 16px; border-radius: 8px; background: #173538; overflow: visible"><span style="position: absolute; left: 0; top: 0; height: 16px; border-radius: 8px; width: {{sv.resPct}}%; background: {{sv.resColor}}; transition: width 1s cubic-bezier(.3,1.3,.5,1), background-color .5s"></span><span aria-hidden="true" style="position: absolute; top: -6px; left: {{sv.truthPct}}%; width: 3px; height: 28px; background: #E8D44D; border-radius: 2px"></span></div>
+<div style="display: flex; justify-content: space-between; font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #8FA6A0"><span>0%</span><span style="color: #E8D44D">▲ truth {{sv.truthLabel}}</span><span>100%</span></div>
+</div>
+<p class="{{popClass}}" style="margin: 0; font-size: 18px; font-weight: 600; color: {{sv.gapColor}}">{{sv.gapLine}}</p>
+<p style="margin: 0; font-size: 15px; color: #B3C2BB">{{sv.lesson}}</p>
+</div>
+</div>
+</div>
+</div>
+</section>
+
+<section class="sec" style="max-width: 1200px; margin: 0 auto; padding: 80px 24px; display: flex; flex-direction: column; gap: 24px">
+<div style="display: flex; flex-direction: column; gap: 8px">
+<span id="l7"></span><p style="margin: 0; font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: {{accent}}">PART 7</p>
+<h2 class="h2" style="margin: 0; font-family: 'IBM Plex Mono', monospace; font-size: 40px; font-weight: 600; letter-spacing: -0.02em">Spot the trick</h2>
+<p style="margin: 0; color: #B3C2BB">A real-looking headline. What's wrong with it?</p>
+</div>
+<div style="display: flex; flex-wrap: wrap; gap: 24px; align-items: stretch">
+<figure style="flex: 1 1 420px; min-width: 0; margin: 0; background: #0C2124; border: 1px solid #24474A; border-radius: 16px; padding: 24px; display: flex; flex-direction: column; gap: 14px">
+<p style="margin: 0; font-family: 'IBM Plex Mono', monospace; font-size: 24px; font-weight: 600; color: {{accent}}">“Break-ins on our street up 300%!”</p>
+<div role="img" aria-label="Bar chart: 2 break-ins last year, 8 this year" style="height: 200px; display: flex; align-items: flex-end; gap: 24px; border-bottom: 1px solid #4A7176; padding: 0 40px" class="spotChart">
+<div style="flex: 1; display: flex; flex-direction: column; align-items: center; gap: 6px; height: 100%; justify-content: flex-end"><span style="font-family: 'IBM Plex Mono', monospace; font-size: 13px">2</span><span style="width: 100%; height: 25%; border-radius: 4px 4px 0 0; background: #4A7176"></span></div>
+<div style="flex: 1; display: flex; flex-direction: column; align-items: center; gap: 6px; height: 100%; justify-content: flex-end"><span style="font-family: 'IBM Plex Mono', monospace; font-size: 13px">8</span><span style="width: 100%; height: 100%; border-radius: 4px 4px 0 0; background: {{accent}}"></span></div>
+</div>
+<div style="display: flex; justify-content: space-around; font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #8FA6A0"><span>Last year</span><span>This year</span></div>
+</figure>
+<div style="flex: 1 1 420px; min-width: 0; display: flex; flex-direction: column; gap: 10px">
+<sc-for list="{{quiz}}" as="q" hint-placeholder-count="4">
+<sc-if value="{{q.neutral}}" hint-placeholder-val="{{true}}"><button type="button" onClick="{{q.pick}}" style="min-height: 52px; text-align: left; padding: 12px 16px; border-radius: 12px; border: 1px solid #4A7176; background: transparent; color: #ECE6D6; font-family: inherit; font-size: 16px">{{q.text}}</button></sc-if>
+<sc-if value="{{q.right}}" hint-placeholder-val="{{false}}"><button type="button" onClick="{{q.pick}}" aria-pressed="true" style="min-height: 52px; text-align: left; padding: 12px 16px; border-radius: 12px; border: 1px solid #9FE0B8; background: #1E3F35; color: #ECE6D6; font-family: inherit; font-size: 16px">✓ {{q.text}}</button></sc-if>
+<sc-if value="{{q.wrong}}" hint-placeholder-val="{{false}}"><button type="button" onClick="{{q.pick}}" aria-pressed="true" style="min-height: 52px; text-align: left; padding: 12px 16px; border-radius: 12px; border: 1px solid #FFB08A; background: #33261B; color: #ECE6D6; font-family: inherit; font-size: 16px">✕ {{q.text}}</button></sc-if>
+</sc-for>
+<sc-if value="{{answered}}" hint-placeholder-val="{{false}}">
+<div role="status" class="rise" style="border-radius: 12px; border: 1px solid #24474A; background: #0C2124; padding: 16px 18px; display: flex; flex-direction: column; gap: 6px">
+<p style="margin: 0; font-weight: 600; color: {{feedbackColor}}">{{feedbackTitle}}</p>
+<p style="margin: 0; color: #B3C2BB">Going from 2 to 8 is +300%, but it's 6 extra incidents on one street. With a base this small, percentages make random noise look like a trend. The honest version: “6 more break-ins than last year; too few to call a trend.”</p>
+</div>
+</sc-if>
+</div>
+</div>
+</section>
+
+<section id="end" style="background: #0C2124; border-top: 1px solid #24474A">
+<div style="max-width: 1200px; margin: 0 auto; padding: 72px 24px; display: flex; flex-wrap: wrap; gap: 32px; align-items: center; justify-content: space-between">
+<div style="flex: 1 1 420px; min-width: 0; display: flex; flex-direction: column; gap: 8px">
+<h2 style="margin: 0; font-family: 'IBM Plex Mono', monospace; font-size: 32px; font-weight: 600">Now try it yourself</h2>
+<p style="margin: 0; color: #B3C2BB">Build a model in the sandbox and see how far the assumptions can push the answer, or read a study and check my method.</p>
+</div>
+<div style="display: flex; flex-wrap: wrap; gap: 12px">
+<a href="Sandbox.dc.html" style="background: {{accent}}; color: #10282B; text-decoration: none; padding: 14px 22px; border-radius: 8px; font-weight: 600">Open the sandbox</a>
+<a href="StudyPage.dc.html" style="border: 1px solid #4A7176; color: #ECE6D6; text-decoration: none; padding: 13px 22px; border-radius: 8px; font-weight: 500">Read a study</a>
+</div>
+</div>
+</section>
+<div class="mbar" style="position: sticky; bottom: 14px; z-index: 45; justify-content: center; padding: 0 14px; pointer-events: none">
+<div style="position: relative; display: flex; flex-direction: column; align-items: center; gap: 10px; pointer-events: auto; width: 100%">
+<sc-if value="{{prog.open}}" hint-placeholder-val="{{false}}">
+<div class="sheetup" role="region" aria-label="Lesson progress" style="width: 100%; box-sizing: border-box; background: #0C2124F7; border: 1px solid #24474A; border-radius: 18px; padding: 14px; display: flex; flex-direction: column; gap: 8px; box-shadow: 0 -8px 30px #00000066">
+<div style="display: flex; justify-content: space-between; align-items: baseline"><span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: #8FA6A0">JUMP TO A LESSON</span><span style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; font-weight: 600; color: {{accent}}">{{prog.count}} / 7</span></div>
+<div aria-hidden="true" style="height: 4px; border-radius: 2px; background: #173538"><div class="rainbow" style="height: 4px; border-radius: 2px; width: {{prog.pct}}%; transition: width .8s cubic-bezier(.2,.7,.2,1)"></div></div>
+<ol style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column">
+<li><a href="#top" onClick="{{prog.toggle}}" class="jump" style="display: flex; align-items: center; gap: 10px; min-height: 44px; padding: 2px 8px; border-radius: 8px; color: #B3C2BB; text-decoration: none; font-size: 15px"><span style="width: 24px; text-align: center; flex: none">↑</span>Back to the top</a></li>
+<sc-for list="{{prog.badges}}" as="bd" hint-placeholder-count="7">
+<li>
+<sc-if value="{{bd.done}}" hint-placeholder-val="{{false}}"><a href="#{{bd.id}}" onClick="{{prog.toggle}}" class="jump" style="display: flex; align-items: center; gap: 10px; min-height: 44px; padding: 2px 8px; border-radius: 8px; color: #ECE6D6; text-decoration: none; font-size: 15px"><span style="width: 24px; height: 24px; border-radius: 50%; background: {{bd.color}}; color: #10282B; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; flex: none">✓</span>{{bd.name}}</a></sc-if>
+<sc-if value="{{bd.todo}}" hint-placeholder-val="{{true}}"><a href="#{{bd.id}}" onClick="{{prog.toggle}}" class="jump" style="display: flex; align-items: center; gap: 10px; min-height: 44px; padding: 2px 8px; border-radius: 8px; color: #B3C2BB; text-decoration: none; font-size: 15px"><span style="width: 24px; height: 24px; border-radius: 50%; border: 1px dashed {{bd.color}}; color: {{bd.color}}; display: flex; align-items: center; justify-content: center; font-family: 'IBM Plex Mono', monospace; font-size: 11px; flex: none">{{bd.num}}</span>{{bd.name}}</a></sc-if>
+</li>
+</sc-for>
+</ol>
+</div>
+</sc-if>
+<sc-if value="{{prog.showHint}}" hint-placeholder-val="{{false}}"><div class="hintin" role="status" style="max-width: 260px; background: #ECE6D6; color: #10282B; border-radius: 12px; padding: 9px 13px; font-size: 14px; font-weight: 500; line-height: 1.35; text-align: center; box-shadow: 0 6px 18px #00000055"><strong style="color: #A84A1E">7 quick lessons.</strong> Tap below to track progress and jump around ↓</div></sc-if>
+<button type="button" class="{{prog.tabCls}}" onClick="{{prog.toggle}}" aria-expanded="{{prog.open}}" aria-label="Lesson progress, {{prog.count}} of 7 complete" style="display: flex; align-items: center; gap: 10px; min-height: 46px; padding: 8px 16px; border: 1px solid #2F5659; border-radius: 999px; background: #0C2124F2; color: #ECE6D6; font-family: 'IBM Plex Mono', monospace; font-size: 13px; cursor: pointer; box-shadow: 0 8px 24px #00000066">
+<span style="display: flex; gap: 5px; align-items: center"><sc-for list="{{prog.badges}}" as="bd" hint-placeholder-count="7"><sc-if value="{{bd.done}}" hint-placeholder-val="{{false}}"><span class="badgepop" style="width: 9px; height: 9px; border-radius: 50%; background: {{bd.color}}"></span></sc-if><sc-if value="{{bd.todo}}" hint-placeholder-val="{{true}}"><span style="width: 9px; height: 9px; border-radius: 50%; border: 1px solid {{bd.color}}; opacity: .7"></span></sc-if></sc-for></span>
+<span style="font-weight: 600; color: {{accent}}">{{prog.count}}/7</span><span style="color: #B3C2BB">lessons</span>
+</button>
+</div>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"accent":{"editor":"color","default":"#FF7A3D","options":["#FF7A3D","#E8D44D","#9FE0B8","#9CD3F0"]},"$preview":{"width":1440,"height":6700}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { trick: 0, mode: 'a', step: 0, quiz: null, rent: 4, flip: false, hiOn: false, hi: 1500, pair: 0, detrend: false, goal: 'crisis', tricks: { crop: false, cherry: false, frame: false, context: false, words: false }, poll: null, reveal: false, fine: false, done: {}, dismissed: false, progOpen: false, hover: false, nudge: false };
+    const yrs = ['15','16','17','18','19','20','21','22','23','24','25'];
+    const rent = [1150,1170,1180,1190,1200,1210,1230,1330,1500,1620,1700];
+    const scale = (vals, lo, hi) => vals.map((v) => Math.max(2, (v - lo) / (hi - lo) * 100));
+    const money = (v) => '$' + v.toLocaleString('en-CA');
+    this.tricks = [
+      { name: 'Cropped axis', what: 'Start the y-axis just below the smallest value, so a small change fills the whole chart.', spot: 'Look at where the y-axis starts. If it isn’t zero on a bar chart, the bars are exaggerating.', fix: 'Bar charts always start at zero. If a small change matters, I say so in words and show the actual numbers.',
+        modes: { a: { headline: 'Rent SOARS in one year', top: '$1,710', bottom: '$1,600', labels: ['2024','2025'], vals: [1620,1700], h: scale([1620,1700], 1600, 1710), note: 'Axis starts at $1,600' },
+                 b: { headline: 'Rent edges up slightly', top: '$4,000', bottom: '$0', labels: ['2024','2025'], vals: [1620,1700], h: scale([1620,1700], 0, 4000), note: 'Axis stretched to $4,000' },
+                 h: { headline: 'Rent rose $80 (about 5%)', top: '$1,800', bottom: '$0', labels: ['2024','2025'], vals: [1620,1700], h: scale([1620,1700], 0, 1800), note: 'Axis from zero, sized to the data' } } },
+      { name: 'Cherry-picked window', what: 'Choose the start and end years that tell the story you want, and leave out the rest.', spot: 'Ask why the chart starts and ends where it does. Look for the longest range the data allows.', fix: 'I show the full history, explain my chosen window, and test whether the result holds for other start years.',
+        modes: { a: { headline: 'Rent up 38% in four years', window: [6, 10] }, b: { headline: 'Rent up just 5% in five years', window: [0, 5] }, h: { headline: '+48% over ten years, mostly since 2022', window: [0, 10] } },
+        yrs: yrs, rent: rent },
+      { name: 'Totals vs per person', what: 'Report a raw total when the population is growing, or a rate when the total is what matters.', spot: 'Check whether the number is a total or per person, per vehicle or per household, and whether the population changed.', fix: 'I show both when the base is growing, and say which one answers the question.',
+        modes: { a: { headline: 'Collisions hit a record high', top: '10,500', bottom: '0', labels: ['2022','2023','2024','2025'], vals: [9000,9400,9800,10100], h: scale([9000,9400,9800,10100], 0, 10500), fmt: 'int', note: 'Total collisions' },
+                 b: { headline: 'Roads are getting safer', top: '16', bottom: '0', labels: ['2022','2023','2024','2025'], vals: [15.0,14.7,14.2,13.7], h: scale([15,14.7,14.2,13.7], 0, 16), fmt: 'dec', note: 'Collisions per 1,000 vehicles' },
+                 h: { headline: 'More crashes, more cars: rate down 9%', top: '16', bottom: '0', labels: ['2022','2023','2024','2025'], vals: [15.0,14.7,14.2,13.7], h: scale([15,14.7,14.2,13.7], 0, 16), fmt: 'dec', note: 'Rate per 1,000 vehicles, with totals in the text' } } },
+      { name: 'Percent vs points', what: 'A rate going from 4% to 6% can be called “up 2 points” or “up 50%”. Both are true; one sounds alarming.', spot: 'When a percentage changes, check whether the headline means percentage points or percent change.', fix: 'I report percentage points for rates and give the starting level, so readers can judge the size themselves.',
+        modes: { a: { headline: 'Unemployment up 50%!', top: '7%', bottom: '0%', labels: ['Last year','This year'], vals: [4,6], h: scale([4,6], 0, 7), fmt: 'pct', note: 'Unemployment rate' },
+                 b: { headline: 'Unemployment ticks up 2 points', top: '7%', bottom: '0%', labels: ['Last year','This year'], vals: [4,6], h: scale([4,6], 0, 7), fmt: 'pct', note: 'Same chart, different words' },
+                 h: { headline: 'Up 2 points, from 4% to 6%', top: '7%', bottom: '0%', labels: ['Last year','This year'], vals: [4,6], h: scale([4,6], 0, 7), fmt: 'pct', note: 'Points and starting level, together' } } }
+    ];
+    const rg = (seed) => { let q = seed >>> 0; return () => { q = (q + 0x6D2B79F5) >>> 0; let t = q; t = Math.imul(t ^ (t >>> 15), t | 1); t ^= t + Math.imul(t ^ (t >>> 7), t | 61); return ((t ^ (t >>> 14)) >>> 0) / 4294967296; }; };
+    const R = rg(2026);
+    const shuffle = (a, rr) => { const b = a.slice(); for (let i = b.length - 1; i > 0; i--) { const j = Math.floor(rr() * (i + 1)); const t = b[i]; b[i] = b[j]; b[j] = t; } return b; };
+    const inZone = (x, y, m) => (x > 24 - m && x < 204 + m && y > 24 - m && y < 152 + m) || (x > 436 - m && x < 616 + m && y > 208 - m && y < 336 + m);
+    const dots = [];
+    const mkGroup = (count, yesCount, zone) => {
+      const yesFlags = shuffle(Array.from({ length: count }, (_, i) => i < yesCount), R);
+      for (let i = 0; i < count; i++) {
+        let x, y;
+        if (zone === 'station') { x = 40 + R() * 150; y = 56 + R() * 86; }
+        else if (zone === 'mall') { x = 450 + R() * 150; y = 220 + R() * 90; }
+        else { do { x = 14 + R() * 612; y = 14 + R() * 332; } while (inZone(x, y, 10)); }
+        dots.push({ x: x.toFixed(1), y: y.toFixed(1), yes: yesFlags[i], zone: zone, dur: (4 + R() * 4).toFixed(2), delay: (R() * 6).toFixed(2) });
+      }
+    };
+    mkGroup(30, 24, 'station'); mkGroup(40, 1, 'mall'); mkGroup(130, 5, 'city');
+    this.dots = dots;
+    const idx = (z) => dots.map((d, i) => (d.zone === z ? i : -1)).filter((i) => i >= 0);
+    this.samples = { station: idx('station').slice(0, 25), mall: idx('mall').slice(0, 25), random: shuffle(dots.map((_, i) => i), rg(3)).slice(0, 25) };
+    const C = rg(99), cols = ['#FF7A3D', '#E24B4A', '#FFB08A', '#9CD3F0', '#ED93B1', '#9FE0B8', '#E8D44D', '#ECE6D6'];
+    this.confetti = Array.from({ length: 90 }, () => ({ left: (C() * 100).toFixed(1), w: Math.round(6 + C() * 8), h: Math.round(8 + C() * 10), color: cols[Math.floor(C() * cols.length)], round: C() > 0.6 ? '50%' : '2px', dur: (2.4 + C() * 2.4).toFixed(2), delay: (C() * 1.4).toFixed(2) }));
+    this.money = money;
+    this.steps = [
+      { title: 'Ask a neutral question', body: 'Write the question before looking at any data, in words that don’t assume the answer.', example: '“Has rent outpaced wages since 2020?” rather than “How bad is the rent crisis?”', guards: 'Framing bias: deciding the story before seeing the evidence.' },
+      { title: 'Find the data', body: 'Look for the most direct, official source first, then any alternatives that measure the same thing differently.', example: 'CMHC’s Rental Market Survey for rent; Statistics Canada for earnings.', guards: 'Convenience bias: using whatever dataset is easiest to find.' },
+      { title: 'Rate the sources', body: 'Score each dataset for authority, published method, recency, fit to the question and independence.', example: 'Earnings scored 3.8 because it is Alberta-wide, not Calgary-only.', guards: 'Treating every number as equally trustworthy.' },
+      { title: 'Clean and align', body: 'Match geographies, time periods and units, and write down every adjustment.', example: 'Both series indexed to 2020 = 100 and adjusted with Alberta CPI.', guards: 'Apples-to-oranges comparisons.' },
+      { title: 'Model and test', body: 'Fit the simplest model that answers the question, then backtest it against a naive baseline.', example: 'The rent model beat a flat-rent baseline on 2019–25 data.', guards: 'Overfitting and false precision.' },
+      { title: 'Look for the other story', body: 'Deliberately try to build the opposite headline from the same data. If it’s easy, the finding is weak.', example: 'Checked the result for every start year from 2015 to 2022.', guards: 'Confirmation bias: only looking for support.' },
+      { title: 'Publish with the method', body: 'Release the chart, the data, the code, the caveats and any personal stake, all on the same page.', example: 'Method, source check, files and disclosure on the study page.', guards: 'Hidden assumptions nobody can check.' },
+      { title: 'Log corrections', body: 'When someone finds a mistake, fix it publicly and record what changed and when.', example: 'Revision log: v1.1, with what was corrected.', guards: 'Quietly editing history.' }
+    ];
+  }
+  componentDidMount() {
+    let seen = false;
+    try { seen = window.localStorage.getItem('learnNudged') === '1'; } catch (e) {}
+    if (seen) return;
+    this.t1 = setTimeout(() => {
+      const top = (window.scrollY || 0) < 500;
+      if (!top) return;
+      this.setState({ nudge: true });
+      try { window.localStorage.setItem('learnNudged', '1'); } catch (e) {}
+      this.t2 = setTimeout(() => this.setState({ nudge: false }), 6500);
+    }, 1800);
+  }
+  componentWillUnmount() { clearTimeout(this.t1); clearTimeout(this.t2); }
+  fmt(v, f) {
+    if (f === 'int') return v.toLocaleString('en-CA');
+    if (f === 'dec') return v.toFixed(1);
+    if (f === 'pct') return v + '%';
+    return this.money(v);
+  }
+  renderVals() {
+    const s = this.state;
+    const accent = this.props.accent ?? '#FF7A3D';
+    const mark = (k) => Object.assign({}, s.done, { [k]: true });
+    const colors = { a: accent, b: '#9CD3F0', h: '#ECE6D6' };
+    const t = this.tricks[s.trick];
+    const m = t.modes[s.mode];
+    let cur;
+    if (t.yrs) {
+      const w = m.window;
+      const inW = (i) => i >= w[0] && i <= w[1];
+      const lo = 0, hi = 1800;
+      cur = {
+        headline: m.headline, color: colors[s.mode], axisTop: '$1,800', axisBottom: '$0',
+        note: 'Showing 20' + t.yrs[w[0]] + '–20' + t.yrs[w[1]],
+        bars: t.rent.map((v, i) => ({ label: '’' + t.yrs[i], valueLabel: '', h: inW(i) ? ((v - lo) / (hi - lo) * 100).toFixed(1) : 2, op: inW(i) ? 1 : 0.15, color: colors[s.mode] })),
+        chartLabel: m.headline
+      };
+    } else {
+      cur = {
+        headline: m.headline, color: colors[s.mode], axisTop: m.top, axisBottom: m.bottom, note: m.note,
+        bars: m.vals.map((v, i) => ({ label: m.labels[i], valueLabel: this.fmt(v, m.fmt), h: m.h[i].toFixed(1), op: 1, color: colors[s.mode] })),
+        chartLabel: m.headline + ': ' + m.vals.map((v, i) => m.labels[i] + ' ' + this.fmt(v, m.fmt)).join(', ')
+      };
+    }
+    const trickTabs = this.tricks.map((x, i) => ({ num: '0' + (i + 1), name: x.name, on: i === s.trick, off: i !== s.trick, pick: () => this.setState({ trick: i, mode: 'a' }) }));
+    const modeTabs = [['a', 'Story A'], ['b', 'Story B'], ['h', 'Honest version']].map((p) => ({ label: p[1], color: colors[p[0]], on: s.mode === p[0], off: s.mode !== p[0], pick: () => this.setState({ mode: p[0], done: p[0] === 'h' ? mark('l1') : s.done }) }));
+    const steps = this.steps.map((x, i) => ({ num: i + 1, title: x.title, on: i === s.step, off: i !== s.step, delay: (0.1 + i * 0.08).toFixed(2), pick: () => this.setState({ step: i }) }));
+    const st = this.steps[s.step];
+    const r = s.rent, a = Math.abs(r), wage = 3.0, cpi = 2.5;
+    const f1 = (v) => (v > 0 ? '+' : v < 0 ? '−' : '') + Math.abs(v).toFixed(1);
+    let A, B;
+    if (r >= 8) { A = { h: 'Rents SKYROCKET ' + r.toFixed(1) + '%. Calgarians priced out!', t: 'Families forced out' }; B = { h: 'Booming demand: everyone wants to live in Calgary', t: 'City on the rise' }; }
+    else if (r >= 3) { A = { h: 'Rent up ' + r.toFixed(1) + '% AGAIN, beating inflation for another year', t: 'Renters squeezed' }; B = { h: 'Rent growth of ' + r.toFixed(1) + '% shows a healthy, growing city', t: 'Steady growth' }; }
+    else if (r > 0) { A = { h: 'Rents still climbing, up ' + r.toFixed(1) + '%. No relief in sight', t: 'Still rising' }; B = { h: r < cpi ? 'Rents up only ' + r.toFixed(1) + '%, slower than inflation' : 'Rents up ' + r.toFixed(1) + '%, in line with inflation', t: 'Rents under control' }; }
+    else if (r === 0) { A = { h: 'Rents frozen at record highs. Renters get no break', t: 'Stuck at the top' }; B = { h: 'Rents hold steady: stability for renters', t: 'Calm market' }; }
+    else if (r > -3) { A = { h: 'Rents dip just ' + a.toFixed(1) + '%, still near all-time highs', t: 'Barely a dent' }; B = { h: 'Good news for renters: rents fall ' + a.toFixed(1) + '%', t: 'Relief arrives' }; }
+    else { A = { h: 'Rents PLUNGE ' + a.toFixed(1) + '%. Is Calgary’s economy collapsing?', t: 'Warning signs' }; B = { h: 'Big win for renters: rents drop ' + a.toFixed(1) + '%', t: 'Renters win' }; }
+    const leftA = r > 0 ? (r <= wage ? 'Wages rose ' + wage.toFixed(1) + '%, faster than rent.' : 'Wages also rose ' + wage.toFixed(1) + '%, so the real squeeze is ' + (r - wage).toFixed(1) + ' points, not ' + r.toFixed(1) + '%.') : (r === 0 ? 'Flat rent while wages rose ' + wage.toFixed(1) + '% means rent got more affordable.' : 'Falling rent makes housing more affordable for most renters.');
+    const leftB = r > wage ? 'Rent grew ' + (r - wage).toFixed(1) + ' points faster than wages, so renters fell further behind.' : (r > 0 ? 'Rent is still rising from an already high level.' : 'Rents can fall because demand weakens, and that can come with job losses.');
+    const vsW = r - wage, real = r - cpi;
+    const honest = r > wage ? 'Rent rose ' + r.toFixed(1) + '%, ' + vsW.toFixed(1) + ' points faster than wages.' : (r > 0 ? 'Rent rose ' + r.toFixed(1) + '%, slower than wages (' + wage.toFixed(1) + '%), so it got slightly more affordable.' : (r === 0 ? 'Rent was flat while wages rose ' + wage.toFixed(1) + '%.' : 'Rent fell ' + a.toFixed(1) + '% while wages rose ' + wage.toFixed(1) + '%.'));
+    const intensity = Math.min(1, Math.abs(r - 2) / 8);
+    const mix = (c1, c2, t) => '#' + [0, 2, 4].map((i) => Math.round(parseInt(c1.substr(i + 1, 2), 16) * (1 - t) + parseInt(c2.substr(i + 1, 2), 16) * t).toString(16).padStart(2, '0')).join('');
+    const rv = { value: r, label: f1(r) + '%', onChange: (e) => this.setState({ rent: Number(e.target.value), flip: !s.flip, done: mark('l2') }) };
+    const repA = { headline: A.h, ticker: A.t.toUpperCase(), leftOut: leftA, arrow: r > 0 ? '▲ RISING' : r < 0 ? '▼ FALLING' : '■ FLAT', bg: mix('#3A2418', '#7A1F14', intensity) };
+    const repB = { headline: B.h, ticker: B.t.toUpperCase(), leftOut: leftB, arrow: r > 0 ? '▲ GROWING' : r < 0 ? '▼ EASING' : '■ STEADY' };
+    const honestV = { headline: honest, wage: '+' + wage.toFixed(1) + '%', cpi: '+' + cpi.toFixed(1) + '%', vsWage: f1(vsW) + ' pts', real: f1(real) + '%' };
+    const flipS = (o) => this.setState(Object.assign({ flip: !s.flip }, o));
+    const kfmt = (v) => v >= 1000 ? '$' + (v / 1000).toFixed(1) + 'M' : '$' + Math.round(v) + 'k';
+    const base = [32, 38, 41, 45, 48, 52, 55, 61, 68, 74];
+    const list = s.hiOn ? base.concat([s.hi]) : base.slice();
+    const sorted = list.slice().sort((x, y) => x - y);
+    const n = sorted.length;
+    const median = n % 2 ? sorted[(n - 1) / 2] : (sorted[n / 2 - 1] + sorted[n / 2]) / 2;
+    const mean = list.reduce((x, y) => x + y, 0) / n;
+    const cap = 80, rentYr = 18, pxk = 2.6, maxPx = 470;
+    const baseMean = base.reduce((x, y) => x + y, 0) / base.length;
+    const hiPx = s.hi * pxk, capped = s.hiOn && hiPx > maxPx;
+    const people = base.map((v) => ({ label: kfmt(v), h: (v * pxk).toFixed(0), color: '#4A7176', op: 1, cls: 'bar', capped: false, weight: 400, labelColor: '#B3C2BB', topBorder: '0' }))
+      .concat([{ label: s.hiOn ? kfmt(s.hi) : '?', h: s.hiOn ? Math.min(maxPx, hiPx).toFixed(0) : 8, color: accent, op: s.hiOn ? 1 : 0.25, cls: 'shootbar', capped: capped, weight: 600, labelColor: s.hiOn ? accent : '#B3C2BB', topBorder: capped ? '4px dashed #FFC2A0' : '0' }]);
+    const meanPx = mean * pxk, ghostPx = baseMean * pxk;
+    const avm = {
+      in: s.hiOn, out: !s.hiOn, hi: s.hi, hiLabel: kfmt(s.hi), people: people,
+      toggle: () => flipS({ hiOn: !s.hiOn, done: mark('l3') }),
+      onHi: (e) => flipS({ hi: Number(e.target.value), hiOn: true, done: mark('l3') }),
+      medPos: (median * pxk).toFixed(0), meanPos: Math.min(maxPx + 60, meanPx).toFixed(0),
+      medLabel: kfmt(median), meanLabel: kfmt(mean), offChart: meanPx > maxPx + 60 ? ' ↑ off the chart' : '',
+      times: (hiPx / maxPx).toFixed(1),
+      ghostPos: ghostPx.toFixed(0), ghostLabel: kfmt(baseMean),
+      pullH: Math.max(0, Math.min(maxPx + 60, meanPx) - ghostPx - 12).toFixed(0),
+      pullMid: Math.min(maxPx + 52, Math.min(maxPx + 60, meanPx) + 14).toFixed(0),
+      pullLabel: kfmt(mean - baseMean),
+      caption: s.hiOn ? (capped ? 'Drawn to scale up to the top of the chart. At ' + kfmt(s.hi) + ', the high earner’s bar would really be ' + (hiPx / maxPx).toFixed(1) + '× taller than this whole chart.' : 'Everyone drawn to the same scale.') + ' Illustrative incomes.' : 'Ten renters, drawn to scale. Illustrative incomes.',
+      pr1: 'Renters here earn ' + kfmt(mean) + ' on average. Rent takes ' + (rentYr / mean < 0.3 ? 'just ' : '') + (rentYr / mean * 100).toFixed(0) + '% of income.',
+      pr2: 'Half of these renters earn under ' + kfmt(median) + '. Rent eats ' + (rentYr / median * 100).toFixed(0) + '% of their pay.',
+      honest: s.hiOn ? 'The typical (median) renter earns ' + kfmt(median) + '. The average is ' + kfmt(mean) + ' only because one person earns ' + kfmt(s.hi) + '. Ten of eleven people earn less than the average.' : 'With no outliers, the average (' + kfmt(mean) + ') and median (' + kfmt(median) + ') are close, so either is fair. Now invite the high earner.',
+      chartLabel: 'Incomes of ' + n + ' renters; median ' + kfmt(median) + ', average ' + kfmt(mean)
+    };
+    const rngF = (seed) => { let q = seed >>> 0; return () => { q = (q + 0x6D2B79F5) >>> 0; let t = q; t = Math.imul(t ^ (t >>> 15), t | 1); t ^= t + Math.imul(t ^ (t >>> 7), t | 61); return ((t ^ (t >>> 14)) >>> 0) / 4294967296 - 0.5; }; };
+    const pearson = (x, y) => { const k = x.length, mx = x.reduce((a, b) => a + b, 0) / k, my = y.reduce((a, b) => a + b, 0) / k; let sxy = 0, sxx = 0, syy = 0; for (let i = 0; i < k; i++) { sxy += (x[i] - mx) * (y[i] - my); sxx += (x[i] - mx) ** 2; syy += (y[i] - my) ** 2; } return sxy / Math.sqrt(sxx * syy); };
+    const diff = (a) => a.slice(1).map((v, i) => v - a[i]);
+    const pairDefs = [
+      { name: 'Ice cream vs hail claims', nameA: 'Ice cream sales', nameB: 'Hail damage claims', pattern: 'season', hidden: 'Summer', stamp: 'MISSING: SUMMER', xStart: 'Jan 2023', xEnd: 'Dec 2024',
+        viral: 'Ice cream sales and hail damage claims rise and fall together. Coincidence? We don’t think so.',
+        lesson: 'Both peak in summer. Remove the season and the link vanishes: neither causes the other.',
+        make: () => { const r = rngF(7), A = [], B = []; for (let m = 0; m < 24; m++) { const sv = Math.max(0, Math.sin(2 * Math.PI * ((m % 12) - 3) / 12)); A.push(20 + 80 * sv + r() * 16); B.push(5 + 60 * Math.pow(sv, 1.3) + r() * 12); } return { A: A, B: B }; },
+        clean: (a) => a.map((v, i) => v - (a[i % 12] + a[(i % 12) + 12]) / 2) },
+      { name: 'Population vs streaming subs', nameA: 'Calgary population', nameB: 'Streaming subscriptions', pattern: 'trend', hidden: 'Time: both just grow', stamp: 'MISSING: TIME TREND', xStart: '2012', xEnd: '2025',
+        viral: 'Every time streaming subscriptions go up, Calgary’s population grows. Netflix is building our city!',
+        lesson: 'Anything that grows over time correlates with anything else that grows. Compare year-over-year changes instead.',
+        make: () => { const r = rngF(11), A = [], B = []; for (let t = 0; t < 14; t++) { A.push(1200 + 35 * t + r() * 30); B.push(10 + 4 * t + r() * 4); } return { A: A, B: B }; },
+        clean: diff },
+      { name: 'Oil price vs rent', nameA: 'Oil price', nameB: 'Calgary rent', pattern: 'trend', hidden: 'Jobs and migration?', stamp: 'PLAUSIBLE, NOT PROVEN', xStart: '2010', xEnd: '2025',
+        viral: 'Oil goes up, rent goes up. Oil companies are setting your rent!',
+        lesson: 'A real link is plausible here: oil drives jobs, jobs drive migration, migration drives rent. But correlation alone can’t show it. You’d need the mechanism, the timing and other causes ruled out.',
+        make: () => { const r = rngF(5), A = [80], B = [1000]; for (let t = 1; t < 16; t++) { const d = r() * 30; A.push(Math.max(30, A[t - 1] + d)); B.push(B[t - 1] + 20 + 1.6 * d + r() * 50); } return { A: A, B: B }; },
+        clean: diff }
+    ];
+    const pd = pairDefs[s.pair];
+    const raw = pd.make();
+    const sa = s.detrend ? pd.clean(raw.A) : raw.A, sb = s.detrend ? pd.clean(raw.B) : raw.B;
+    const norm = (a) => { const lo = Math.min.apply(null, a), hi = Math.max.apply(null, a); return a.map((v) => (v - lo) / ((hi - lo) || 1)); };
+    const zs = (a) => { const m = a.reduce((x, y) => x + y, 0) / a.length; const sd = Math.sqrt(a.reduce((x, y) => x + (y - m) ** 2, 0) / a.length) || 1; return a.map((v) => Math.max(0, Math.min(1, 0.5 + (v - m) / sd / 5))); };
+    const na = s.detrend ? zs(sa) : norm(sa), nb = s.detrend ? zs(sb) : norm(sb);
+    const toPts = (a) => a.map((v, i) => (40 + i / (a.length - 1) * 560).toFixed(1) + ',' + (220 - v * 200).toFixed(1)).join(' ');
+    const rv2 = pearson(sa, sb);
+    const cor = {
+      pairs: pairDefs.map((p, i) => ({ name: p.name, on: i === s.pair, off: i !== s.pair, pick: () => flipS({ pair: i, detrend: false }) })),
+      raw: !s.detrend, clean: s.detrend, toggle: () => flipS({ detrend: !s.detrend, done: mark('l4') }), pattern: pd.pattern,
+      title: s.detrend ? 'After removing the shared ' + pd.pattern : 'Raw data, two axes: they look linked',
+      r: (rv2 >= 0 ? '' : '−') + Math.abs(rv2).toFixed(2), rColor: Math.abs(rv2) > 0.6 ? accent : '#9FE0B8',
+      ptsA: toPts(na), ptsB: toPts(nb), xStart: pd.xStart, xEnd: pd.xEnd, axisA: s.detrend ? 'high' : 'A', axisB: s.detrend ? '' : 'B',
+      nameA: pd.nameA, nameB: pd.nameB, modeNote: s.detrend ? 'Deviations from the shared ' + pd.pattern + ', same scale' : 'Each line on its own axis',
+      viral: pd.viral, stamp: pd.stamp, hidden: pd.hidden, lesson: pd.lesson,
+      chartLabel: pd.nameA + ' and ' + pd.nameB + ', correlation ' + rv2.toFixed(2),
+      diagramLabel: pd.hidden + ' drives both ' + pd.nameA + ' and ' + pd.nameB
+    };
+    const rentS = [1150, 1170, 1180, 1190, 1200, 1210, 1230, 1330, 1500, 1620, 1700];
+    const wageS = [5000, 4950, 5000, 5100, 5200, 5250, 5350, 5450, 5550, 5680, 5800];
+    const crisis = s.goal === 'crisis';
+    const T = s.tricks;
+    const w = T.cherry ? (crisis ? [6, 10] : [0, 5]) : [0, 10];
+    const v0 = rentS[w[0]], v1 = rentS[w[1]], dRent = v1 - v0, pRent = Math.round(dRent / v0 * 100), pWage = Math.round((wageS[w[1]] / wageS[w[0]] - 1) * 100), yrs = w[1] - w[0];
+    const inWin = rentS.slice(w[0], w[1] + 1);
+    const lo = T.crop ? (crisis ? Math.min.apply(null, inWin) * 0.97 : 0) : 0;
+    const hi = T.crop ? (crisis ? Math.max.apply(null, inWin) * 1.01 : 4000) : 1800;
+    const money = (v) => '$' + Math.round(v).toLocaleString('en-CA');
+    const barCol = crisis ? '#D85A30' : '#378ADD';
+    let head;
+    if (crisis) {
+      head = (T.words ? 'Rents EXPLODE' : 'Rent rises') + (T.frame ? ' +' + pRent + '%' : ' ' + money(dRent) + '/month (+' + pRent + '%)') + (T.cherry ? ' in just ' + yrs + ' years' : ' since ' + (2015 + w[0])) + (T.context ? '' : ', while wages rose ' + pWage + '%') + (T.words ? '!' : '');
+    } else {
+      head = (T.words ? 'Rents barely budge:' : 'Rent rises') + (T.frame ? ' just ' + money(dRent / 30) + ' more a day' : ' ' + money(dRent) + '/month (+' + pRent + '%)') + (T.cherry ? ' over ' + yrs + ' years' : ' since ' + (2015 + w[0])) + (T.context ? '' : ', while wages rose ' + pWage + '%') + (T.words ? '. Nothing to see here' : '');
+    }
+    const keys = ['crop', 'cherry', 'frame', 'context', 'words'];
+    const score = keys.filter((k) => T[k]).length * 20;
+    const desc = crisis
+      ? { crop: 'Start the axis just under the data', cherry: 'Show only 2021–2025', frame: 'Lead with the scary percentage', context: 'Hide wages and the source', words: 'Use alarming words' }
+      : { crop: 'Stretch the axis far above the data', cherry: 'Show only 2015–2020', frame: 'Shrink it to dollars per day', context: 'Hide wages and the source', words: 'Use soothing words' };
+    const names = { crop: 'Crop the axis', cherry: 'Cherry-pick the years', frame: 'Reframe the number', context: 'Drop the context', words: 'Loaded words' };
+    const verdicts = ['Honest', 'A gentle nudge', 'Spin', 'Heavy spin', 'Propaganda-grade', 'Maximum spin'];
+    const mk = {
+      goals: [['crisis', 'Sell a crisis', '#D85A30'], ['calm', 'Sell calm', '#9CD3F0']].map((g) => ({ label: g[1], color: g[2], on: s.goal === g[0], off: s.goal !== g[0], pick: () => flipS({ goal: g[0] }) })),
+      tricks: keys.map((k) => ({ name: names[k], desc: desc[k], on: !!T[k], off: !T[k], pick: () => { const nt = Object.assign({}, T); nt[k] = !T[k]; flipS({ tricks: nt, done: mark('l5') }); } })),
+      reset: () => flipS({ tricks: { crop: false, cherry: false, frame: false, context: false, words: false } }),
+      score: score, offset: (251.3 * (1 - score / 100)).toFixed(1),
+      meterColor: score <= 20 ? '#9FE0B8' : score <= 60 ? '#FFB08A' : '#E24B4A',
+      verdict: verdicts[score / 20], verdictNote: score ? 'Same rent data as the honest chart, and every number on yours is still technically true.' : 'Nothing spun yet. Pick a story, then stack some tricks.',
+      headline: head, headColor: T.words ? (crisis ? '#A32D2D' : '#185FA5') : '#1A1A1A',
+      top: money(hi), bottom: money(lo),
+      bars: rentS.map((v, i) => { const inside = i >= w[0] && i <= w[1]; return { h: inside ? Math.max(2, Math.min(100, (v - lo) / (hi - lo) * 100)).toFixed(1) : 2, op: inside ? 1 : 0.12, color: barCol }; }),
+      honestBars: rentS.map((v) => ({ h: (v / 1800 * 100).toFixed(1) })),
+      foot: (T.context ? 'No source. No wages. ' : 'Source: [CMHC, StatCan]. ') + 'Axis ' + money(lo) + '–' + money(hi) + ' · ' + (2015 + w[0]) + '–' + (2015 + w[1])
+    };
+    const sv = (() => {
+      const D = this.dots;
+      const sample = s.poll ? this.samples[s.poll] : null;
+      const inS = sample ? new Set(sample) : null;
+      const yes = sample ? sample.filter((i) => D[i].yes).length : 0;
+      const pct = sample ? Math.round(yes / sample.length * 100) : 0;
+      const truth = Math.round(D.filter((d) => d.yes).length / D.length * 100);
+      const spotsDef = [
+        ['station', 'Outside a C-Train station', '#FF7A3D'],
+        ['mall', 'In a mall parking lot', '#ED93B1'],
+        ['random', 'Random sample of the city', '#9FE0B8']
+      ];
+      const info = {
+        station: { head: '3 in 4 Calgarians take transit to work, new survey finds', fine: '25 people interviewed outside one C-Train station at 8 a.m.', lesson: 'Everyone at a train station already rides the train. You surveyed the answer before asking the question.' },
+        mall: { head: 'Almost nobody in Calgary takes transit, survey shows', fine: '25 people interviewed in a suburban mall parking lot.', lesson: 'People in a parking lot drove there. The place you stand picks your answer for you.' },
+        random: { head: 'About 1 in 6 Calgarians commute by transit', fine: '25 people chosen at random from across the whole city.', lesson: 'A random sample gives everyone the same chance of being asked. Small samples still wobble, but they don’t lean one way.' }
+      };
+      const cur = s.poll ? info[s.poll] : { head: 'Pick a place to run your survey', fine: 'Not run yet.', lesson: 'Each dot is one person. Orange dots take transit; you won’t know who until you ask.' };
+      const gap = Math.abs(pct - truth);
+      const resColor = !s.poll ? '#4A7176' : gap <= 6 ? '#9FE0B8' : gap <= 20 ? '#FFB08A' : '#E24B4A';
+      return {
+        spots: spotsDef.map((p) => ({ label: p[1], color: p[2], on: s.poll === p[0], off: s.poll !== p[0], pick: () => flipS({ poll: p[0], fine: false, done: p[0] === 'random' ? mark('l6') : s.done }) })),
+        dots: D.map((d, i) => {
+          const asked = inS && inS.has(i);
+          const show = s.reveal || asked;
+          return { x: d.x, y: d.y, r: asked ? 6.5 : 4.5, fill: show ? (d.yes ? '#FF7A3D' : '#9CD3F0') : '#4A7176', op: s.poll && !asked && !s.reveal ? 0.28 : 1, dur: d.dur, delay: d.delay };
+        }),
+        reveal: s.reveal, toggleReveal: () => flipS({ reveal: !s.reveal }),
+        revealLabel: s.reveal ? 'Hide the truth' : 'Reveal the whole city', revealBg: s.reveal ? '#E8D44D' : 'transparent', revealFg: s.reveal ? '#10282B' : '#E8D44D',
+        zoneStationFill: s.poll === 'station' ? '#FF7A3D26' : '#FF7A3D0D', zoneStationW: s.poll === 'station' ? 2.5 : 1,
+        zoneMallFill: s.poll === 'mall' ? '#ED93B126' : '#ED93B10D', zoneMallW: s.poll === 'mall' ? 2.5 : 1,
+        headline: cur.head, fine: cur.fine, lesson: cur.lesson,
+        toggleFine: () => flipS({ fine: !s.fine }), fineBtn: s.fine ? 'Shrink it back' : 'Read the fine print',
+        fineSize: s.fine ? 19 : 11, fineBg: s.fine ? '#FFE27A' : 'transparent',
+        cardShadow: s.poll ? spotsDef.find((p) => p[0] === s.poll)[2] : '#4A7176',
+        resPct: s.poll ? Math.max(2, pct) : 0, resLabel: s.poll ? pct + '% take transit' : 'not run yet', resColor: resColor,
+        truthPct: truth, truthLabel: truth + '%',
+        gapLine: !s.poll ? 'Run a survey to compare.' : gap <= 6 ? 'Within ' + gap + (gap === 1 ? ' point' : ' points') + ' of the truth. Fair sample.' : 'Off by ' + gap + ' points, from the same city.',
+        gapColor: resColor,
+        fieldLabel: 'Crowd of 200 people' + (s.poll ? '; 25 surveyed, ' + pct + '% take transit' : '') + '; true share ' + truth + '%'
+      };
+    })();
+    const badgeDef = [['tricks', 'Four tricks', 'l1', '#FF7A3D'], ['l2', 'Two newsrooms', 'l2', '#E24B4A'], ['l3', 'Average vs median', 'l3', '#FFB08A'], ['l4', 'Correlation', 'l4', '#9CD3F0'], ['l5', 'Make it misleading', 'l5', '#ED93B1'], ['l6', 'Biased surveys', 'l6', '#9FE0B8'], ['l7', 'Spot the trick', 'l7', '#E8D44D']];
+    const doneCount = badgeDef.filter((b) => s.done[b[2]]).length;
+    const prog = {
+      badges: badgeDef.map((b, i) => ({ id: b[0], name: b[1], num: i + 1, color: b[3], done: !!s.done[b[2]], todo: !s.done[b[2]] })),
+      count: doneCount, pct: (doneCount / 7 * 100).toFixed(1),
+      celebrate: doneCount === 7 && !s.dismissed,
+      confetti: this.confetti,
+      dismiss: () => this.setState({ dismissed: true }),
+      open: s.progOpen || s.hover, toggle: () => this.setState({ progOpen: !s.progOpen, nudge: false }),
+      enter: () => this.setState({ hover: true, nudge: false }), leave: () => this.setState({ hover: false }),
+      tabOp: s.progOpen || s.hover || s.nudge ? 1 : 0.75, tabCls: s.nudge ? 'nudge' : '',
+      showHint: s.nudge && !(s.progOpen || s.hover)
+    };
+    const opts = ['The y-axis is cropped', 'The time window is cherry-picked', 'The base is tiny, so the percentage is huge', 'It should be per person'];
+    const correct = 2;
+    const quiz = opts.map((o, i) => ({ text: o, pick: () => this.setState({ quiz: i, done: mark('l7') }), neutral: s.quiz === null || (s.quiz !== i && i !== correct), right: s.quiz !== null && i === correct, wrong: s.quiz === i && i !== correct }));
+    return {
+      accent: accent, trick: t, cur: cur, trickTabs: trickTabs, modeTabs: modeTabs, steps: steps,
+      step: { num: s.step + 1, title: st.title, body: st.body, example: st.example, guards: st.guards },
+      avm: avm, cor: cor, mk: mk, sv: sv, prog: prog,
+      rv: rv, repA: repA, repB: repB, honest: honestV, popClass: s.flip ? 'popA' : 'popB',
+      quiz: quiz, answered: s.quiz !== null,
+      feedbackTitle: s.quiz === correct ? 'Exactly right.' : 'Close, but not this one.',
+      feedbackColor: s.quiz === correct ? '#9FE0B8' : '#FFB08A'
+    };
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,342 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Sandbox prototype</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+body{margin:0}
+a{color:#FF9A66}a:hover{color:#FFC2A0}
+input[type=range]{accent-color:#FF7A3D}
+</style>
+</helmet>
+<div style="font-family: 'IBM Plex Sans', system-ui, sans-serif; color: #ECE6D6; background: #10282B; font-size: 15px; line-height: 1.5">
+
+<header style="border-bottom: 1px solid #24474A">
+<nav aria-label="Main" style="padding: 14px 24px; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px">
+<div style="display: flex; flex-wrap: wrap; align-items: center; gap: 20px">
+<a href="LayoutHomeA.dc.html" style="font-family: 'IBM Plex Mono', monospace; font-weight: 600; font-size: 17px; color: #ECE6D6; text-decoration: none">Pramana</a>
+<span style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: #8FA6A0">/ sandbox / untitled-model</span>
+</div>
+<div style="display: flex; flex-wrap: wrap; align-items: center; gap: 10px; font-size: 14px">
+<span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #FFB08A; border: 1px solid #FFB08A66; padding: 3px 8px; border-radius: 4px">PROTOTYPE · SAMPLE DATA</span>
+<a href="#glossary" style="min-height: 22px; padding: 8px 14px; border-radius: 8px; border: 1px solid #4A7176; color: #ECE6D6; text-decoration: none; font-size: 14px">Glossary</a>
+<button type="button" style="min-height: 38px; padding: 8px 14px; border-radius: 8px; border: 1px solid #4A7176; background: transparent; color: #ECE6D6; font-family: inherit; font-size: 14px">View code</button>
+<button type="button" style="min-height: 38px; padding: 8px 14px; border-radius: 8px; border: 0; background: {{accent}}; color: #10282B; font-family: inherit; font-size: 14px; font-weight: 600">Share model</button>
+</div>
+</nav>
+</header>
+
+<div style="display: flex; flex-wrap: wrap; align-items: stretch">
+
+<aside aria-label="Data library" style="flex: 1 1 250px; max-width: 100%; min-width: 0; border-right: 1px solid #24474A; background: #0C2124; padding: 20px; display: flex; flex-direction: column; gap: 18px">
+<div style="display: flex; flex-direction: column; gap: 4px">
+<h2 style="margin: 0; font-family: 'IBM Plex Mono', monospace; font-size: 14px; font-weight: 600">DATA LIBRARY</h2>
+<label for="libsearch" style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0)">Search datasets</label>
+<input id="libsearch" type="search" placeholder="Search datasets" style="margin-top: 6px; padding: 9px 12px; border-radius: 8px; border: 1px solid #2F5659; background: #10282B; color: #ECE6D6; font-size: 14px; font-family: inherit">
+</div>
+<sc-for list="{{groups}}" as="g" hint-placeholder-count="5">
+<div style="display: flex; flex-direction: column; gap: 6px">
+<h3 style="margin: 0; font-family: 'IBM Plex Mono', monospace; font-size: 12px; font-weight: 500; color: #8FA6A0">{{g.name}}</h3>
+<sc-for list="{{g.items}}" as="d" hint-placeholder-count="2">
+<div style="display: flex; align-items: center; justify-content: space-between; gap: 8px; border: 1px solid #24474A; border-radius: 8px; padding: 8px 10px; background: #10282B">
+<div style="display: flex; flex-direction: column; min-width: 0"><span style="font-size: 14px">{{d.name}}</span><span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: #8FA6A0">{{d.meta}}</span></div>
+<sc-if value="{{d.used}}" hint-placeholder-val="{{false}}"><span style="flex: none; font-family: 'IBM Plex Mono', monospace; font-size: 11px; font-weight: 600; background: #1E3F35; color: #9FE0B8; padding: 2px 6px; border-radius: 4px">IN MODEL</span></sc-if>
+<sc-if value="{{d.unused}}" hint-placeholder-val="{{true}}"><span style="flex: none; font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: #8FA6A0; border: 1px solid #4A7176; padding: 1px 6px; border-radius: 4px">+ add</span></sc-if>
+</div>
+</sc-for>
+</div>
+</sc-for>
+</aside>
+
+<main style="flex: 3 1 560px; min-width: 0; padding: 20px; display: flex; flex-direction: column; gap: 16px">
+<div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 12px">
+<div style="display: flex; flex-direction: column; gap: 2px">
+<p style="margin: 0; font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #8FA6A0">QUESTION</p>
+<h1 style="margin: 0; font-family: 'IBM Plex Mono', monospace; font-size: 22px; font-weight: 600">Where is Calgary's rent-to-income ratio heading by 2035?</h1>
+</div>
+<div role="tablist" aria-label="Model type" style="display: flex; flex-wrap: wrap; border: 1px solid #4A7176; border-radius: 8px; overflow: hidden; font-size: 13px">
+<button type="button" role="tab" aria-selected="true" style="padding: 8px 12px; border: 0; background: {{accent}}; color: #10282B; font-weight: 600; font-family: inherit">System dynamics</button>
+<button type="button" role="tab" aria-selected="false" disabled style="padding: 8px 12px; border: 0; background: transparent; color: #8FA6A0; font-family: inherit">Regression · v2</button>
+<button type="button" role="tab" aria-selected="false" disabled style="padding: 8px 12px; border: 0; background: transparent; color: #8FA6A0; font-family: inherit">Forecast · v2</button>
+</div>
+</div>
+
+<section aria-label="Model canvas" style="border: 1px solid #24474A; border-radius: 12px; background: #0C2124; background-image: radial-gradient(#ECE6D61A 1px, transparent 1.4px); background-size: 18px 18px; padding: 12px">
+<svg role="img" aria-label="Model diagram: population and housing completions set market tightness, which drives rent; rent and wages give rent-to-income, which feeds back into migration and population" viewBox="0 0 860 300" style="width: 100%; height: 300px">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path></marker></defs>
+<g font-family="IBM Plex Sans, sans-serif" font-size="14">
+<rect x="20" y="40" width="160" height="58" rx="8" fill="#10282B" stroke="#4A7176"></rect><text x="100" y="64" text-anchor="middle" fill="#ECE6D6" font-weight="600">Population</text><text x="100" y="84" text-anchor="middle" fill="#8FA6A0" font-size="12">stock · {{popNow}}k</text>
+<rect x="20" y="200" width="160" height="58" rx="8" fill="#10282B" stroke="#4A7176"></rect><text x="100" y="224" text-anchor="middle" fill="#ECE6D6" font-weight="600">Housing stock</text><text x="100" y="244" text-anchor="middle" fill="#8FA6A0" font-size="12">+{{compNow}}k units / yr</text>
+<rect x="250" y="120" width="160" height="58" rx="8" fill="#10282B" stroke="#4A7176"></rect><text x="330" y="144" text-anchor="middle" fill="#ECE6D6" font-weight="600">Tightness</text><text x="330" y="164" text-anchor="middle" fill="#8FA6A0" font-size="12">people ÷ capacity</text>
+<rect x="480" y="120" width="140" height="58" rx="8" fill="#10282B" stroke="#4A7176"></rect><text x="550" y="144" text-anchor="middle" fill="#ECE6D6" font-weight="600">Median rent</text><text x="550" y="164" text-anchor="middle" fill="#8FA6A0" font-size="12">${{rentEnd}} in 2035</text>
+<rect x="480" y="230" width="140" height="58" rx="8" fill="#10282B" stroke="#4A7176"></rect><text x="550" y="254" text-anchor="middle" fill="#ECE6D6" font-weight="600">Wages</text><text x="550" y="274" text-anchor="middle" fill="#8FA6A0" font-size="12">+{{wageNow}}% / yr</text>
+<rect x="680" y="160" width="160" height="58" rx="8" fill="#33261B" stroke="{{accent}}" stroke-width="1.5"></rect><text x="760" y="184" text-anchor="middle" fill="#ECE6D6" font-weight="600">Rent-to-income</text><text x="760" y="204" text-anchor="middle" fill="{{accent}}" font-size="12" font-family="IBM Plex Mono, monospace">{{answer}} in 2035</text>
+<rect x="320" y="10" width="150" height="50" rx="8" fill="#10282B" stroke="{{loopColor}}" stroke-dasharray="{{loopDash}}"></rect><text x="395" y="31" text-anchor="middle" fill="#ECE6D6" font-weight="600">Migration</text><text x="395" y="49" text-anchor="middle" fill="#8FA6A0" font-size="12">feedback {{loopState}}</text>
+</g>
+<path d="M180 69 L215 69 L215 140 L248 140" fill="none" stroke="#9CD3F0" stroke-width="1.5" marker-end="url(#ah)"></path>
+<path d="M180 229 L215 229 L215 160 L248 160" fill="none" stroke="#9CD3F0" stroke-width="1.5" marker-end="url(#ah)"></path>
+<line x1="410" y1="149" x2="478" y2="149" stroke="#FFB08A" stroke-width="1.5" stroke-dasharray="6 4" marker-end="url(#ah)"></line>
+<path d="M620 149 L650 149 L650 180 L678 180" fill="none" stroke="#9FE0B8" stroke-width="2" marker-end="url(#ah)"></path>
+<path d="M620 259 L650 259 L650 200 L678 200" fill="none" stroke="#9FE0B8" stroke-width="2" marker-end="url(#ah)"></path>
+<path d="M760 160 L760 35 L472 35" fill="none" stroke="{{loopColor}}" stroke-width="1.5" stroke-dasharray="{{loopDash}}" marker-end="url(#ah)"></path>
+<path d="M320 35 L100 35 L100 38" fill="none" stroke="{{loopColor}}" stroke-width="1.5" stroke-dasharray="{{loopDash}}" marker-end="url(#ah)"></path>
+<g font-family="IBM Plex Mono, monospace" font-size="11" fill="#8FA6A0"><text x="20" y="292">━ exact formula</text><text x="150" y="292" fill="#FFB08A">╌ estimated effect</text><text x="300" y="292">↻ feedback loop</text></g>
+</svg>
+</section>
+
+<section aria-labelledby="params-title" style="border: 1px solid #24474A; border-radius: 12px; padding: 18px; display: flex; flex-direction: column; gap: 14px">
+<div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 10px">
+<h2 id="params-title" style="margin: 0; font-family: 'IBM Plex Mono', monospace; font-size: 14px; font-weight: 600">PARAMETERS</h2>
+<div style="display: flex; flex-wrap: wrap; gap: 8px">
+<sc-if value="{{mcOn}}" hint-placeholder-val="{{false}}"><button type="button" aria-pressed="true" onClick="{{toggleMc}}" style="min-height: 36px; padding: 6px 12px; border-radius: 8px; border: 1px solid {{accent}}; background: {{accent}}; color: #10282B; font-family: inherit; font-size: 13px; font-weight: 600">Monte Carlo · 200 runs ✓</button></sc-if>
+<sc-if value="{{mcOff}}" hint-placeholder-val="{{true}}"><button type="button" aria-pressed="false" onClick="{{toggleMc}}" style="min-height: 36px; padding: 6px 12px; border-radius: 8px; border: 1px solid #4A7176; background: transparent; color: #ECE6D6; font-family: inherit; font-size: 13px">Monte Carlo · off</button></sc-if>
+<button type="button" onClick="{{reset}}" style="min-height: 36px; padding: 6px 12px; border-radius: 8px; border: 1px solid #4A7176; background: transparent; color: #ECE6D6; font-family: inherit; font-size: 13px">Reset to trend</button>
+</div>
+</div>
+<div style="display: flex; flex-wrap: wrap; gap: 14px 28px">
+<sc-for list="{{sliders}}" as="s" hint-placeholder-count="5">
+<div style="flex: 1 1 260px; min-width: 0; display: flex; flex-direction: column; gap: 4px">
+<div style="display: flex; justify-content: space-between; gap: 8px"><span style="display: flex; align-items: center; gap: 6px"><label for="{{s.id}}" style="font-size: 14px">{{s.label}}</label><a href="#glossary" onClick="{{s.explain}}" aria-label="Explain {{s.label}}" style="display: inline-flex; align-items: center; justify-content: center; width: 18px; height: 18px; border-radius: 50%; border: 1px solid #4A7176; color: #B3C2BB; font-size: 11px; text-decoration: none">?</a></span><span style="font-family: 'IBM Plex Mono', monospace; font-size: 14px; font-weight: 600; color: {{accent}}">{{s.display}}</span></div>
+<input id="{{s.id}}" type="range" min="{{s.min}}" max="{{s.max}}" step="{{s.step}}" value="{{s.value}}" onChange="{{s.onChange}}" style="width: 100%; height: 24px">
+<div aria-hidden="true" style="position: relative; height: 4px; border-radius: 2px; background: #173538"><span style="position: absolute; top: 0; height: 4px; border-radius: 2px; background: #4A7176; left: {{s.bandLeft}}%; width: {{s.bandWidth}}%"></span></div>
+<div style="display: flex; justify-content: space-between; gap: 8px; font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: #8FA6A0"><span>{{s.hist}}</span><sc-if value="{{s.outside}}" hint-placeholder-val="{{false}}"><span style="color: #FFB08A">outside history</span></sc-if></div>
+</div>
+</sc-for>
+</div>
+</section>
+</main>
+
+<aside aria-label="Results" style="flex: 2 1 380px; min-width: 0; border-left: 1px solid #24474A; background: #0C2124; padding: 20px; display: flex; flex-direction: column; gap: 16px">
+<div style="display: flex; flex-direction: column; gap: 2px">
+<p style="margin: 0; font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #8FA6A0">ANSWER · <a href="#glossary" onClick="{{ex.ri}}" style="color: #8FA6A0">RENT-TO-INCOME</a>, 2035 · <a href="#glossary" onClick="{{ex.mc}}" style="color: #8FA6A0">MONTE CARLO?</a></p>
+<div style="display: flex; align-items: baseline; flex-wrap: wrap; gap: 4px 12px"><span style="font-family: 'IBM Plex Mono', monospace; font-size: 46px; font-weight: 600; line-height: 1.1; color: {{accent}}">{{answer}}</span><span style="font-family: 'IBM Plex Mono', monospace; font-size: 14px; color: #B3C2BB">{{answerDelta}} vs today</span></div>
+<sc-if value="{{mcOn}}" hint-placeholder-val="{{false}}"><span style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: #B3C2BB">80% of runs: {{p10}} – {{p90}}</span></sc-if>
+</div>
+
+<figure style="margin: 0; border: 1px solid #24474A; border-radius: 12px; background: #10282B; padding: 10px; display: flex; flex-direction: column; gap: 6px">
+<svg role="img" aria-label="{{chartLabel}}" viewBox="0 0 400 220" style="width: 100%; height: 220px">
+<line x1="30" y1="{{y30}}" x2="390" y2="{{y30}}" stroke="#FFB08A" stroke-width="1" stroke-dasharray="3 3"></line>
+<text x="388" y="{{y30label}}" text-anchor="end" font-family="IBM Plex Mono, monospace" font-size="10" fill="#FFB08A">30% affordability line</text>
+<line x1="{{xToday}}" y1="15" x2="{{xToday}}" y2="190" stroke="#4A7176" stroke-dasharray="2 3"></line>
+<text x="{{xTodayLabel}}" y="14" font-family="IBM Plex Mono, monospace" font-size="10" fill="#8FA6A0">TODAY</text>
+<polygon points="{{bandPts}}" fill="#FF7A3D" opacity="0.18"></polygon>
+<polyline points="{{histPts}}" fill="none" stroke="#ECE6D6" stroke-width="2.5"></polyline>
+<polyline points="{{projPts}}" fill="none" stroke="{{accent}}" stroke-width="2.5" stroke-dasharray="6 4"></polyline>
+<g font-family="IBM Plex Mono, monospace" font-size="10" fill="#8FA6A0"><text x="30" y="206">2019</text><text x="{{xToday}}" y="206" text-anchor="middle">2025</text><text x="390" y="206" text-anchor="end">2035</text><text x="26" y="24" text-anchor="end">{{yMax}}</text><text x="26" y="190" text-anchor="end">{{yMin}}</text></g>
+<text x="300" y="110" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="22" font-weight="600" fill="#ECE6D6" opacity="0.08" transform="rotate(-12 300 110)">SIMULATED</text>
+</svg>
+<figcaption style="display: flex; flex-wrap: wrap; gap: 4px 14px; font-size: 12px; color: #B3C2BB"><span>━ observed (sample)</span><span style="color: #FF9A66">╌ simulated</span><sc-if value="{{mcOn}}" hint-placeholder-val="{{false}}"><span>▒ 80% band</span></sc-if></figcaption>
+</figure>
+
+<section aria-labelledby="drivers-title" style="display: flex; flex-direction: column; gap: 8px">
+<h2 id="drivers-title" style="margin: 0; font-family: 'IBM Plex Mono', monospace; font-size: 13px; font-weight: 600">WHAT MOVES THE ANSWER · <a href="#glossary" onClick="{{ex.sens}}" style="font-weight: 400; color: #8FA6A0">sensitivity?</a></h2>
+<p style="margin: 0; font-size: 12px; color: #8FA6A0">Change in the 2035 ratio from nudging each input one step either way.</p>
+<sc-for list="{{drivers}}" as="d" hint-placeholder-count="5">
+<div style="display: flex; align-items: center; gap: 10px; font-size: 13px">
+<span style="width: 120px; flex: none; color: #B3C2BB">{{d.label}}</span>
+<span style="flex: 1; height: 10px; border-radius: 3px; background: #173538; position: relative"><span style="position: absolute; left: 0; top: 0; height: 10px; border-radius: 3px; background: {{d.color}}; width: {{d.width}}%"></span></span>
+<span style="width: 64px; flex: none; text-align: right; font-family: 'IBM Plex Mono', monospace">{{d.value}}</span>
+</div>
+</sc-for>
+</section>
+
+<section aria-labelledby="report-title" style="border: 1px solid #24474A; border-radius: 12px; padding: 14px 16px; display: flex; flex-direction: column; gap: 8px; background: #10282B">
+<h2 id="report-title" style="margin: 0; font-family: 'IBM Plex Mono', monospace; font-size: 13px; font-weight: 600">MODEL REPORT CARD</h2>
+<div style="display: flex; justify-content: space-between; gap: 8px; font-size: 13px"><a href="#glossary" onClick="{{ex.backtest}}" style="color: #B3C2BB">Backtest error, 2019–25 rent</a><span style="font-family: 'IBM Plex Mono', monospace">{{mapeModel}}</span></div>
+<div style="display: flex; justify-content: space-between; gap: 8px; font-size: 13px"><a href="#glossary" onClick="{{ex.naive}}" style="color: #B3C2BB">Naive baseline (flat rent)</a><span style="font-family: 'IBM Plex Mono', monospace">{{mapeNaive}}</span></div>
+<div style="display: flex; justify-content: space-between; gap: 8px; font-size: 13px"><span style="color: #B3C2BB">Beats baseline?</span><span style="font-family: 'IBM Plex Mono', monospace; color: {{beatColor}}">{{beats}}</span></div>
+<div style="display: flex; justify-content: space-between; gap: 8px; font-size: 13px"><a href="#glossary" onClick="{{ex.overfit}}" style="color: #B3C2BB">Overfit risk</a><span style="font-family: 'IBM Plex Mono', monospace; color: #FFB08A">High · 5 params, 7 points</span></div>
+<div style="display: flex; justify-content: space-between; gap: 8px; font-size: 13px"><span style="color: #B3C2BB">Weakest source</span><span style="font-family: 'IBM Plex Mono', monospace">Earnings · 3.8</span></div>
+<p style="margin: 4px 0 0; font-size: 12px; color: #8FA6A0">Sandbox model, not a published study. Shares carry this report card.</p>
+</section>
+</aside>
+</div>
+
+<section id="glossary" aria-labelledby="glossary-title" style="border-top: 1px solid #24474A; padding: 28px 24px 36px; display: flex; flex-direction: column; gap: 18px">
+<div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: 8px 24px">
+<div style="display: flex; flex-direction: column; gap: 4px">
+<h2 id="glossary-title" style="margin: 0; font-family: 'IBM Plex Mono', monospace; font-size: 22px; font-weight: 600">Glossary</h2>
+<p style="margin: 0; color: #B3C2BB">Every term in the sandbox, in plain language, and exactly how this model uses it. Tap a <span style="font-family: 'IBM Plex Mono', monospace">?</span> anywhere above to jump here.</p>
+</div>
+<span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #8FA6A0">{{termCount}} terms</span>
+</div>
+<div style="display: flex; flex-wrap: wrap; gap: 20px; align-items: flex-start">
+<article aria-live="polite" style="flex: 3 1 480px; min-width: 0; border: 1px solid {{accent}}; border-radius: 12px; background: #0C2124; padding: 24px; display: flex; flex-direction: column; gap: 14px">
+<div style="display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 8px"><h3 style="margin: 0; font-family: 'IBM Plex Mono', monospace; font-size: 24px; font-weight: 600; color: {{accent}}">{{sel.term}}</h3><span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #8FA6A0">{{sel.group}}</span></div>
+<p style="margin: 0; font-size: 17px">{{sel.plain}}</p>
+<div style="display: flex; flex-direction: column; gap: 6px; border-left: 2px solid #4A7176; border-radius: 0; padding-left: 14px"><span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #8FA6A0">IN THIS MODEL</span><span style="font-size: 15px; color: #B3C2BB">{{sel.model}}</span><sc-if value="{{sel.hasFormula}}" hint-placeholder-val="{{true}}"><code style="font-family: 'IBM Plex Mono', monospace; font-size: 14px; color: #ECE6D6; background: #10282B; border: 1px solid #24474A; border-radius: 6px; padding: 8px 10px; white-space: pre-wrap">{{sel.formula}}</code></sc-if></div>
+<div style="display: flex; flex-direction: column; gap: 4px"><span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #FFB08A">WATCH OUT</span><span style="font-size: 15px; color: #B3C2BB">{{sel.caveat}}</span></div>
+</article>
+<div role="list" aria-label="All terms" style="flex: 2 1 340px; min-width: 0; display: flex; flex-wrap: wrap; gap: 8px">
+<sc-for list="{{terms}}" as="t" hint-placeholder-count="12">
+<div role="listitem" style="display: contents">
+<sc-if value="{{t.on}}" hint-placeholder-val="{{false}}"><button type="button" onClick="{{t.pick}}" aria-current="true" style="min-height: 38px; padding: 7px 12px; border-radius: 8px; border: 1px solid {{accent}}; background: {{accent}}; color: #10282B; font-family: inherit; font-size: 14px; font-weight: 600">{{t.term}}</button></sc-if>
+<sc-if value="{{t.off}}" hint-placeholder-val="{{true}}"><button type="button" onClick="{{t.pick}}" style="min-height: 38px; padding: 7px 12px; border-radius: 8px; border: 1px solid #4A7176; background: transparent; color: #ECE6D6; font-family: inherit; font-size: 14px">{{t.term}}</button></sc-if>
+</div>
+</sc-for>
+</div>
+</div>
+</section>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"accent":{"editor":"color","default":"#FF7A3D","options":["#FF7A3D","#E8D44D","#9FE0B8","#9CD3F0"]},"$preview":{"width":1440,"height":1780}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.defaults = { g: 2.0, c: 10, w: 2.5, e: 1.5, m: 0.5 };
+    this.state = Object.assign({ mc: false, term: 'migration' }, this.defaults);
+    this.glossary = [
+      { k: 'migration', term: 'Migration feedback', group: 'FEEDBACK AND DYNAMICS', plain: 'When rent takes too big a share of income, fewer people move to the city and some leave. That slows population growth, which eases pressure on rent.', model: 'Only switches on when rent-to-income is above 30%. Each point above 30% trims next year’s population growth, scaled by the slider. Because this year’s ratio sets next year’s growth, the effect arrives with a one-year delay.', formula: 'pop growth = base growth − 0.3 × strength × max(0, RTI − 30%)', caveat: 'The 0.3 factor is a placeholder, not yet estimated from data. Real migration also responds to jobs, wages elsewhere and immigration policy.' },
+      { k: 'feedback', term: 'Feedback loop', group: 'FEEDBACK AND DYNAMICS', plain: 'A chain of causes that circles back to where it started. A balancing loop pushes back against change, like a thermostat. A reinforcing loop amplifies it, like compound interest.', model: 'Rent → rent-to-income → migration → population → tightness → rent. It is a balancing loop: high rent eventually slows its own growth.', formula: '', caveat: 'Loops make results sensitive to their strength and delay. Small changes can shift the long-run outcome.' },
+      { k: 'sd', term: 'System dynamics', group: 'FEEDBACK AND DYNAMICS', plain: 'Modelling how a system changes over time by tracking stocks, the flows between them, and the feedback loops that connect them. Common in engineering and policy.', model: 'Steps forward one year at a time from 2025 to 2035, updating every stock from the year before.', formula: 'stock(next year) = stock(this year) + inflows − outflows', caveat: 'It shows the consequences of your assumptions. It does not prove the assumptions are right.' },
+      { k: 'stock', term: 'Stock and flow', group: 'FEEDBACK AND DYNAMICS', plain: 'A stock is an amount measured at a moment, like people, homes or water in a tank. A flow changes it over time, like births, completions or water through a pipe.', model: 'Population and housing stock are stocks. Population growth and completions are the flows into them.', formula: '', caveat: 'Mixing them up is a classic error, such as comparing one year of completions with total population.' },
+      { k: 'ri', term: 'Rent-to-income ratio', group: 'HOUSING', plain: 'The share of a typical income spent on rent. 30% is the common affordability threshold used by CMHC.', model: 'Median monthly rent divided by median monthly earnings. This is the answer the model reports for 2035.', formula: 'RTI = median rent ÷ median monthly income', caveat: 'Medians say nothing about the lowest-income renters. Here the wage data is Alberta-wide while rent is Calgary-only.' },
+      { k: 'tight', term: 'Market tightness', group: 'HOUSING', plain: 'How many people there are for each unit of housing capacity. Higher means more competition for every vacancy.', model: 'Population divided by housing stock × 2.5 people per household. Above 1 means more people than the stock is sized for.', formula: 'tightness = population ÷ (housing stock × 2.5)', caveat: '2.5 people per household is an assumption, and household size changes over time.' },
+      { k: 'completions', term: 'Housing completions', group: 'HOUSING', plain: 'New homes finished and ready to live in during a year. Not the same as housing starts, which is construction begun.', model: 'Added to the housing stock each year, in thousands of units.', formula: 'housing stock(next) = housing stock + completions', caveat: 'Completions lag starts by a year or more, so policy changes show up slowly.' },
+      { k: 'elasticity', term: 'Rent sensitivity (elasticity)', group: 'HOUSING', plain: 'How strongly rent reacts when the market tightens. At 1.5, a market that is 1% tighter adds 1.5% to rent growth.', model: 'Rent grows at 2% baseline inflation plus sensitivity × the percentage change in tightness.', formula: 'rent growth = 2% + sensitivity × Δtightness ÷ tightness', caveat: 'Ideally estimated from history with a regression. Here it is a slider so you can test your own belief.' },
+      { k: 'popgrowth', term: 'Population growth', group: 'PEOPLE AND WORK', plain: 'How fast the number of residents rises each year, from births, deaths and people moving in or out.', model: 'The base rate you set, before migration feedback trims it.', formula: '', caveat: 'Calgary’s growth swings with the energy economy and with immigration targets.' },
+      { k: 'wagegrowth', term: 'Wage growth', group: 'PEOPLE AND WORK', plain: 'How fast typical earnings rise each year.', model: 'Median earnings compound at this rate each year.', formula: 'wage(next) = wage × (1 + wage growth)', caveat: 'Not inflation-adjusted here, and it is a province-wide figure.' },
+      { k: 'cma', term: 'CMA', group: 'PEOPLE AND WORK', plain: 'Census Metropolitan Area: Statistics Canada’s definition of a city region, including surrounding communities, not just city limits.', model: 'Most Calgary datasets in the library are at CMA level.', formula: '', caveat: 'Mixing CMA, city and provincial data needs care, and is flagged when it happens.' },
+      { k: 'mc', term: 'Monte Carlo simulation', group: 'UNCERTAINTY', plain: 'Running the same model many times with small random variations, to see the range of plausible outcomes rather than one line.', model: '200 runs. Each year, population growth, completions and wage growth are nudged randomly. The band shows the middle 80% of results.', formula: '', caveat: 'The band only reflects the randomness put in. It cannot capture surprises the model leaves out.' },
+      { k: 'band', term: '80% band (P10–P90)', group: 'UNCERTAINTY', plain: 'The range holding the middle 80% of simulated outcomes: 10% of runs fell below P10 and 10% above P90.', model: 'The shaded area on the chart, and the range printed under the answer.', formula: '', caveat: 'Not a guarantee. Real outcomes can land outside it.' },
+      { k: 'sens', term: 'Sensitivity analysis', group: 'UNCERTAINTY', plain: 'Nudging one input at a time to see how much the answer moves. It shows which assumptions matter most.', model: 'Each input moves 5 steps up and 5 down. The bar is the change in the 2035 ratio between the two.', formula: '', caveat: 'One-at-a-time tests miss interactions between inputs.' },
+      { k: 'historical', term: 'Historical range', group: 'UNCERTAINTY', plain: 'The span of values an input has actually taken in the past.', model: 'The grey band under each slider. A warning appears when you go outside it.', formula: '', caveat: 'Outside history is not impossible, just untested.' },
+      { k: 'backtest', term: 'Backtest', group: 'MODEL QUALITY', plain: 'Testing a model on past data to see whether it would have predicted what actually happened.', model: 'Starts the model in 2019 and compares its rent path with observed rent for 2019–2025.', formula: 'error (MAPE) = average of |predicted − actual| ÷ actual', caveat: 'A good backtest does not guarantee a good forecast, especially if conditions change.' },
+      { k: 'naive', term: 'Naive baseline', group: 'MODEL QUALITY', plain: 'The simplest possible guess, here “rent stays where it was”. A model is only useful if it beats it.', model: 'Rent held flat at its 2019 value and scored the same way as the model.', formula: '', caveat: 'Beating a weak baseline is a minimum, not proof.' },
+      { k: 'overfit', term: 'Overfitting', group: 'MODEL QUALITY', plain: 'When a model has so many adjustable knobs that it can match the past perfectly while learning nothing that holds in the future.', model: '5 adjustable parameters against 7 years of data is flagged as high risk.', formula: '', caveat: 'The fix is more data or fewer knobs, not more tuning.' },
+      { k: 'observed', term: 'Observed vs simulated', group: 'MODEL QUALITY', plain: 'Observed values were measured. Simulated values come from the model and depend entirely on its assumptions.', model: 'Solid line = observed (sample data here). Dashed line and band = simulated.', formula: '', caveat: 'Never quote a simulated number as a fact.' },
+      { k: 'rating', term: 'Source rating', group: 'MODEL QUALITY', plain: 'A 1–5 score for how much to trust a dataset, across authority, published method, recency, fit to the question and independence.', model: 'Shown in the library. The report card shows the weakest one, because a model is only as strong as its weakest input.', formula: '', caveat: 'It is a structured judgement, not an objective measurement. The rubric is published so you can disagree.' }
+    ];
+  }
+  sim(p, init, steps, rng) {
+    let P = init.P, H = init.H, R = init.R, W = init.W;
+    let T = P / (H * 2.5);
+    const out = [{ R: R, W: W, ri: R / W }];
+    for (let t = 0; t < steps; t++) {
+      const n1 = rng ? (rng() - 0.5) * 0.012 : 0;
+      const n2 = rng ? (rng() - 0.5) * 5 : 0;
+      const n3 = rng ? (rng() - 0.5) * 0.016 : 0;
+      const ri = R / W;
+      const popG = p.g / 100 - 0.3 * p.m * Math.max(0, ri - 0.30) + n1;
+      P = P * (1 + popG);
+      H = H + Math.max(0, p.c + n2);
+      const T2 = P / (H * 2.5);
+      R = R * (1 + 0.02 + p.e * (T2 - T) / T);
+      W = W * (1 + p.w / 100 + n3);
+      T = T2;
+      out.push({ R: R, W: W, ri: R / W });
+    }
+    return out;
+  }
+  rng(seed) {
+    let a = seed >>> 0;
+    return () => { a = (a + 0x6D2B79F5) >>> 0; let t = a; t = Math.imul(t ^ (t >>> 15), t | 1); t ^= t + Math.imul(t ^ (t >>> 7), t | 61); return ((t ^ (t >>> 14)) >>> 0) / 4294967296; };
+  }
+  renderVals() {
+    const s = this.state;
+    const p = { g: s.g, c: s.c, w: s.w, e: s.e, m: s.m };
+    const now = { P: 1600, H: 640, R: 1700, W: 5800 };
+    const run = this.sim(p, now, 10, null);
+    const end = run[run.length - 1];
+    const histR = [1200, 1210, 1230, 1330, 1500, 1620, 1700];
+    const histW = [5200, 5250, 5350, 5450, 5550, 5680, 5800];
+    const histRI = histR.map((r, i) => r / histW[i]);
+    let lo10 = null, hi90 = null, band = [];
+    if (s.mc) {
+      const r = this.rng(42);
+      const runs = [];
+      for (let k = 0; k < 200; k++) runs.push(this.sim(p, now, 10, r));
+      for (let t = 0; t <= 10; t++) {
+        const v = runs.map((x) => x[t].ri).sort((a, b) => a - b);
+        band.push([v[19], v[179]]);
+      }
+      lo10 = band[10][0]; hi90 = band[10][1];
+    }
+    const allV = histRI.concat(run.map((x) => x.ri)).concat(band.length ? band.map((b) => b[0]).concat(band.map((b) => b[1])) : []).concat([0.30]);
+    const vmin = Math.min.apply(null, allV) - 0.01;
+    const vmax = Math.max.apply(null, allV) + 0.01;
+    const X = (yr) => 30 + (yr - 2019) / 16 * 360;
+    const Y = (v) => 190 - (v - vmin) / (vmax - vmin) * 170;
+    const pts = (arr, y0) => arr.map((v, i) => X(y0 + i).toFixed(1) + ',' + Y(v).toFixed(1)).join(' ');
+    const bandPts = band.length ? band.map((b, i) => X(2025 + i).toFixed(1) + ',' + Y(b[1]).toFixed(1)).concat(band.slice().reverse().map((b, i) => X(2035 - i).toFixed(1) + ',' + Y(b[0]).toFixed(1))).join(' ') : '';
+    const pct = (v) => (v * 100).toFixed(1) + '%';
+    const finalRI = (q) => { const r = this.sim(q, now, 10, null); return r[r.length - 1].ri; };
+    const specs = [
+      { k: 'g', gk: 'popgrowth', label: 'Population growth', unit: '%/yr', min: 0, max: 4, step: 0.1, hmin: 0.8, hmax: 3.5 },
+      { k: 'c', gk: 'completions', label: 'Housing completions', unit: 'k units/yr', min: 2, max: 25, step: 1, hmin: 7, hmax: 18 },
+      { k: 'w', gk: 'wagegrowth', label: 'Wage growth', unit: '%/yr', min: 0, max: 6, step: 0.1, hmin: 0.5, hmax: 4.5 },
+      { k: 'e', gk: 'elasticity', label: 'Rent sensitivity to tightness', unit: '×', min: 0, max: 3, step: 0.1, hmin: 0.8, hmax: 2.2 },
+      { k: 'm', gk: 'migration', label: 'Migration feedback strength', unit: '×', min: 0, max: 1.5, step: 0.1, hmin: 0.2, hmax: 1.0 }
+    ];
+    const pick = (key) => () => this.setState({ term: key });
+    const selRaw = this.glossary.find((x) => x.k === s.term) || this.glossary[0];
+    const sel = Object.assign({}, selRaw, { hasFormula: !!selRaw.formula });
+    const terms = this.glossary.map((x) => ({ term: x.term, on: x.k === s.term, off: x.k !== s.term, pick: pick(x.k) }));
+    const ex = { ri: pick('ri'), mc: pick('mc'), backtest: pick('backtest'), naive: pick('naive'), overfit: pick('overfit'), sens: pick('sens') };
+    const sliders = specs.map((sp) => ({
+      id: 'sl-' + sp.k, label: sp.label, min: sp.min, max: sp.max, step: sp.step, value: s[sp.k],
+      display: s[sp.k] + ' ' + sp.unit,
+      hist: 'history ' + sp.hmin + '–' + sp.hmax,
+      bandLeft: ((sp.hmin - sp.min) / (sp.max - sp.min) * 100).toFixed(1),
+      bandWidth: ((sp.hmax - sp.hmin) / (sp.max - sp.min) * 100).toFixed(1),
+      outside: s[sp.k] < sp.hmin || s[sp.k] > sp.hmax,
+      explain: pick(sp.gk),
+      onChange: (ev) => { const o = {}; o[sp.k] = Number(ev.target.value); this.setState(o); }
+    }));
+    const sens = specs.map((sp) => {
+      const up = Object.assign({}, p); up[sp.k] = p[sp.k] + sp.step * 5;
+      const dn = Object.assign({}, p); dn[sp.k] = Math.max(sp.min, p[sp.k] - sp.step * 5);
+      return { label: sp.label.replace('Rent sensitivity to tightness', 'Rent sensitivity').replace('Migration feedback strength', 'Migration loop'), d: finalRI(up) - finalRI(dn) };
+    });
+    const maxD = Math.max.apply(null, sens.map((x) => Math.abs(x.d))) || 1;
+    const drivers = sens.map((x) => ({
+      label: x.label,
+      width: (Math.abs(x.d) / maxD * 100).toFixed(1),
+      color: x.d >= 0 ? '#FF7A3D' : '#9CD3F0',
+      value: (x.d >= 0 ? '+' : '−') + (Math.abs(x.d) * 100).toFixed(1) + 'pt'
+    }));
+    const bt = this.sim(p, { P: 1420, H: 590, R: 1200, W: 5200 }, 6, null);
+    const mape = (pred) => pred.reduce((a, v, i) => a + Math.abs(v - histR[i]) / histR[i], 0) / histR.length * 100;
+    const mModel = mape(bt.map((x) => x.R));
+    const mNaive = mape(histR.map(() => 1200));
+    const delta = end.ri - histRI[histRI.length - 1];
+    const loopOn = s.m > 0;
+    const groups = [
+      { name: 'POPULATION', items: [{ name: 'Population estimates', meta: 'StatCan · CMA · 4.6', used: true }, { name: 'Migration flows', meta: 'StatCan · CMA · 4.2', used: loopOn }] },
+      { name: 'HOUSING', items: [{ name: 'Housing completions', meta: 'CMHC · monthly · 4.4', used: true }, { name: 'Rental market survey', meta: 'CMHC · annual · 4.6', used: true }, { name: 'Building permits', meta: 'City · monthly · 4.3', used: false }] },
+      { name: 'LABOUR', items: [{ name: 'Earnings', meta: 'StatCan · AB · 3.8', used: true }, { name: 'Unemployment rate', meta: 'StatCan · CMA · 4.5', used: false }] },
+      { name: 'ENERGY', items: [{ name: 'Oil price (WCS)', meta: 'AER · monthly · 4.0', used: false }] },
+      { name: 'WEATHER', items: [{ name: 'Hail events', meta: 'ECCC · annual · 3.5', used: false }] }
+    ].map((g) => ({ name: g.name, items: g.items.map((d) => Object.assign({}, d, { unused: !d.used })) }));
+    return {
+      accent: this.props.accent ?? '#FF7A3D',
+      groups: groups, sliders: sliders, drivers: drivers,
+      sel: sel, terms: terms, ex: ex, termCount: this.glossary.length,
+      mcOn: s.mc, mcOff: !s.mc,
+      toggleMc: () => this.setState({ mc: !s.mc }),
+      reset: () => this.setState(Object.assign({}, this.defaults)),
+      answer: pct(end.ri),
+      answerDelta: (delta >= 0 ? '+' : '−') + (Math.abs(delta) * 100).toFixed(1) + ' pts',
+      p10: lo10 === null ? '' : pct(lo10), p90: hi90 === null ? '' : pct(hi90),
+      histPts: pts(histRI, 2019), projPts: pts(run.map((x) => x.ri), 2025), bandPts: bandPts,
+      y30: Y(0.30).toFixed(1), y30label: (Y(0.30) - 4).toFixed(1),
+      xToday: X(2025).toFixed(1), xTodayLabel: (X(2025) + 4).toFixed(1),
+      yMax: pct(vmax), yMin: pct(vmin),
+      chartLabel: 'Rent-to-income ratio, observed 2019 to 2025 and simulated to 2035, ending at ' + pct(end.ri),
+      popNow: 1600, compNow: s.c, wageNow: s.w, rentEnd: Math.round(end.R).toLocaleString('en-CA'),
+      loopColor: loopOn ? '#FF7A3D' : '#4A7176', loopDash: loopOn ? '6 4' : '2 4', loopState: loopOn ? 'on' : 'off',
+      mapeModel: mModel.toFixed(1) + '%', mapeNaive: mNaive.toFixed(1) + '%',
+      beats: mModel < mNaive ? 'Yes' : 'No', beatColor: mModel < mNaive ? '#9FE0B8' : '#FFB08A'
+    };
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Study explorer panel</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+body{margin:0}
+a{color:#FF9A66}a:hover{color:#FFC2A0}
+input[type=range]{accent-color:#FF7A3D}
+</style>
+</helmet>
+<div style="font-family: 'IBM Plex Sans', system-ui, sans-serif; color: #ECE6D6; background: #10282B; font-size: 16px; line-height: 1.6; padding: 40px 24px">
+<section aria-labelledby="explorer-title" style="max-width: 1152px; margin: 0 auto; background: #0C2124; border: 1px solid #24474A; border-radius: 16px; padding: 28px; display: flex; flex-direction: column; gap: 20px">
+
+<div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: 8px 24px">
+<div style="display: flex; flex-direction: column; gap: 4px">
+<p style="margin: 0; font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: {{accent}}">EXPLORE THE DATA</p>
+<h2 id="explorer-title" style="margin: 0; font-family: 'IBM Plex Mono', monospace; font-size: 26px; font-weight: 600">Does the result depend on the start year?</h2>
+<p style="margin: 0; color: #B3C2BB; font-size: 15px">Move the start year. Everything below recalculates in your browser from the same data as the study.</p>
+</div>
+<span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #FFB08A; border: 1px solid #FFB08A66; padding: 3px 8px; border-radius: 4px">SAMPLE DATA · replace with data.json</span>
+</div>
+
+<div style="display: flex; flex-wrap: wrap; align-items: center; gap: 16px 24px; border: 1px solid #24474A; border-radius: 12px; padding: 16px 20px; background: #10282B">
+<label for="startYear" style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: #8FA6A0">START YEAR</label>
+<input id="startYear" type="range" min="2015" max="2023" step="1" value="{{start}}" onChange="{{onSlide}}" style="flex: 1 1 260px; min-width: 0; height: 28px">
+<span style="font-family: 'IBM Plex Mono', monospace; font-size: 22px; font-weight: 600; min-width: 64px; color: {{accent}}">{{start}}</span>
+<div role="group" aria-label="Quick picks" style="display: flex; flex-wrap: wrap; gap: 6px">
+<sc-for list="{{chips}}" as="chip" hint-placeholder-count="4">
+<sc-if value="{{chip.on}}" hint-placeholder-val="{{false}}"><button type="button" onClick="{{chip.pick}}" style="min-height: 36px; padding: 6px 12px; border-radius: 999px; border: 1px solid {{accent}}; background: {{accent}}; color: #10282B; font-family: 'IBM Plex Mono', monospace; font-size: 13px; font-weight: 600">{{chip.label}}</button></sc-if>
+<sc-if value="{{chip.off}}" hint-placeholder-val="{{true}}"><button type="button" onClick="{{chip.pick}}" style="min-height: 36px; padding: 6px 12px; border-radius: 999px; border: 1px solid #4A7176; background: transparent; color: #ECE6D6; font-family: 'IBM Plex Mono', monospace; font-size: 13px">{{chip.label}}</button></sc-if>
+</sc-for>
+</div>
+</div>
+
+<sc-if value="{{offDefault}}" hint-placeholder-val="{{false}}">
+<div role="status" style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; border: 1px solid #FFB08A; background: #33261B; border-radius: 12px; padding: 14px 18px">
+<p style="margin: 0; font-size: 15px"><span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #FFB08A">YOU'VE CHANGED THE WINDOW ›</span> You're viewing <strong>{{start}}–2025</strong>. The written findings use <strong>2020–2025</strong>. Over this range the gap is <strong style="color: {{accent}}">{{gapLabel}}</strong>.</p>
+<button type="button" onClick="{{reset}}" style="min-height: 40px; padding: 8px 16px; border-radius: 8px; border: 1px solid #ECE6D6; background: transparent; color: #ECE6D6; font-family: inherit; font-size: 14px; font-weight: 500">Reset to study settings</button>
+</div>
+</sc-if>
+
+<div style="display: flex; flex-wrap: wrap; gap: 16px">
+<div style="flex: 1 1 200px; min-width: 0; border: 1px solid {{accent}}; border-radius: 12px; padding: 16px 18px; display: flex; flex-direction: column; gap: 2px">
+<span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: {{accent}}">GAP (RENT − WAGE)</span>
+<span style="font-family: 'IBM Plex Mono', monospace; font-size: 36px; font-weight: 600; line-height: 1.2; color: {{accent}}">{{gapLabel}}</span>
+<span style="font-size: 13px; color: #B3C2BB">percentage points since {{start}}</span>
+</div>
+<div style="flex: 1 1 200px; min-width: 0; border: 1px solid #24474A; border-radius: 12px; padding: 16px 18px; display: flex; flex-direction: column; gap: 2px">
+<span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #8FA6A0">RENT GROWTH</span>
+<span style="font-family: 'IBM Plex Mono', monospace; font-size: 30px; font-weight: 600; line-height: 1.3">{{rentLabel}}</span>
+<span style="font-size: 13px; color: #B3C2BB">median rent, {{start}} → 2025</span>
+</div>
+<div style="flex: 1 1 200px; min-width: 0; border: 1px solid #24474A; border-radius: 12px; padding: 16px 18px; display: flex; flex-direction: column; gap: 2px">
+<span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #8FA6A0">WAGE GROWTH</span>
+<span style="font-family: 'IBM Plex Mono', monospace; font-size: 30px; font-weight: 600; line-height: 1.3">{{wageLabel}}</span>
+<span style="font-size: 13px; color: #B3C2BB">median wage, {{start}} → 2025</span>
+</div>
+<div style="flex: 1 1 200px; min-width: 0; border: 1px solid #24474A; border-radius: 12px; padding: 16px 18px; display: flex; flex-direction: column; gap: 2px">
+<span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #8FA6A0">DOES IT HOLD?</span>
+<span style="font-size: 20px; font-weight: 600; line-height: 1.4">{{verdict}}</span>
+<span style="font-size: 13px; color: #B3C2BB">same sign as the study result</span>
+</div>
+</div>
+
+<figure style="margin: 0; display: flex; flex-direction: column; gap: 10px">
+<svg role="img" aria-label="{{chartLabel}}" viewBox="0 0 1100 300" style="width: 100%; height: 300px">
+<g stroke="#24474A" stroke-width="1"><line x1="60" y1="40" x2="1080" y2="40"></line><line x1="60" y1="110" x2="1080" y2="110"></line><line x1="60" y1="180" x2="1080" y2="180"></line><line x1="60" y1="250" x2="1080" y2="250"></line></g>
+<line x1="60" y1="260" x2="1080" y2="260" stroke="#4A7176" stroke-width="1"></line>
+<g font-family="IBM Plex Mono, monospace" font-size="12" fill="#8FA6A0"><text x="50" y="44" text-anchor="end">{{yTop}}</text><text x="50" y="254" text-anchor="end">{{yBottom}}</text><text x="60" y="282">{{start}}</text><text x="1080" y="282" text-anchor="end">2025</text></g>
+<polyline points="{{wagePts}}" fill="none" stroke="#9CD3F0" stroke-width="2.5" stroke-dasharray="7 5"></polyline>
+<polyline points="{{rentPts}}" fill="none" stroke="{{accent}}" stroke-width="3"></polyline>
+</svg>
+<div style="display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px 24px; font-size: 14px; color: #B3C2BB">
+<div style="display: flex; flex-wrap: wrap; gap: 8px 20px"><span><span style="color: {{accent}}">━━</span> Median rent (index, {{start}} = 100)</span><span><span style="color: #9CD3F0">╌╌</span> Median wage (index, {{start}} = 100)</span></div>
+<span style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: #8FA6A0">Share this view: …/study-003?start={{start}}</span>
+</div>
+</figure>
+
+<div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 12px; border-top: 1px solid #24474A; padding-top: 16px; font-size: 14px">
+<span style="color: #B3C2BB">Want to change more than the start year?</span>
+<div style="display: flex; flex-wrap: wrap; gap: 16px"><a href="#notebook">Open the full notebook in your browser ↗</a><a href="#download">Download offline explorer (.html) ↓</a></div>
+</div>
+</section>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"accent":{"editor":"color","default":"#FF7A3D","options":["#FF7A3D","#E8D44D","#9FE0B8","#9CD3F0"]},"$preview":{"width":1440,"height":1000}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { start: 2020 };
+  }
+  renderVals() {
+    const years = [2015,2016,2017,2018,2019,2020,2021,2022,2023,2024,2025];
+    const rent = [1150,1170,1180,1190,1200,1210,1230,1330,1500,1620,1700];
+    const wage = [1100,1080,1090,1110,1130,1150,1190,1240,1290,1330,1360];
+    const start = this.state.start;
+    const i0 = years.indexOf(start);
+    const ys = years.slice(i0);
+    const ri = rent.slice(i0).map((v) => v / rent[i0] * 100);
+    const wi = wage.slice(i0).map((v) => v / wage[i0] * 100);
+    const all = ri.concat(wi);
+    const lo = Math.min.apply(null, all);
+    const hi = Math.max.apply(null, all);
+    const span = Math.max(hi - lo, 1);
+    const n = ys.length - 1;
+    const pts = (arr) => arr.map((v, k) => {
+      const x = 60 + (n === 0 ? 0 : k / n * 1020);
+      const y = 250 - (v - lo) / span * 210;
+      return x.toFixed(1) + ',' + y.toFixed(1);
+    }).join(' ');
+    const rg = ri[ri.length - 1] - 100;
+    const wg = wi[wi.length - 1] - 100;
+    const gap = rg - wg;
+    const sign = (v) => (v >= 0 ? '+' : '−') + Math.abs(v).toFixed(1);
+    const set = (y) => () => this.setState({ start: y });
+    const chips = [2015, 2018, 2020, 2022].map((y) => ({
+      label: y === 2020 ? y + ' · study' : String(y),
+      on: y === start,
+      off: y !== start,
+      pick: set(y)
+    }));
+    return {
+      accent: this.props.accent ?? '#FF7A3D',
+      start: start,
+      onSlide: (e) => this.setState({ start: Number(e.target.value) }),
+      reset: set(2020),
+      offDefault: start !== 2020,
+      chips: chips,
+      rentPts: pts(ri),
+      wagePts: pts(wi),
+      yTop: hi.toFixed(0),
+      yBottom: lo.toFixed(0),
+      gapLabel: sign(gap) + ' pts',
+      rentLabel: sign(rg) + '%',
+      wageLabel: sign(wg) + '%',
+      verdict: gap > 0 ? 'Yes, rent still leads' : 'No, the gap flips',
+      chartLabel: 'Rent and wage indexed to ' + start + '; gap ' + sign(gap) + ' points by 2025'
+    };
+  }
+}
+</script>
+</body>
+</html>

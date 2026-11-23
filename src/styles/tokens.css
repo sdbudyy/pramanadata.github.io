@@ -1,0 +1,40 @@
+/* Pramana design tokens: theme V1 (petrol + orange). */
+:root {
+  /* Surfaces */
+  --bg: #10282b;          /* page */
+  --bg-alt: #0c2124;      /* panels, alternating sections */
+  --bg-raised: #173538;   /* tracks, hover */
+  --line: #24474a;        /* hairlines */
+  --line-strong: #2f5659;
+  --line-control: #4a7176; /* control borders */
+
+  /* Text */
+  --text: #ece6d6;        /* chalk */
+  --text-2: #b3c2bb;      /* secondary */
+  --text-3: #8fa6a0;      /* muted labels */
+
+  /* Accents */
+  --accent: #ff7a3d;
+  --accent-ink: #10282b;  /* text on accent */
+  --link: #ff9a66;
+  --link-hover: #ffc2a0;
+  --warn: #ffb08a;
+  --warn-bg: #33261b;
+  --ok: #9fe0b8;
+  --ok-bg: #1e3f35;
+  --info: #9cd3f0;
+
+  /* Type */
+  --font-mono: 'IBM Plex Mono', ui-monospace, 'SFMono-Regular', Menlo, monospace;
+  --font-sans: 'IBM Plex Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
+
+  /* Layout */
+  --max: 1200px;
+  --gutter: clamp(16px, 4vw, 24px);
+  --radius-sm: 8px;
+  --radius: 12px;
+  --radius-lg: 16px;
+
+  /* Motion */
+  --ease: cubic-bezier(0.2, 0.7, 0.2, 1);
+}

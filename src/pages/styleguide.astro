@@ -1,0 +1,75 @@
+---
+// Internal reference page for reviewing the design foundations. Not linked, not indexed.
+import Base from '../layouts/Base.astro';
+import Logo from '../components/Logo.astro';
+import CommentBox from '../components/CommentBox.astro';
+
+const swatches = [
+  ['--bg', '#10282B', 'Page'], ['--bg-alt', '#0C2124', 'Panels'], ['--bg-raised', '#173538', 'Raised'],
+  ['--line', '#24474A', 'Lines'], ['--text', '#ECE6D6', 'Text'], ['--text-2', '#B3C2BB', 'Secondary'],
+  ['--text-3', '#8FA6A0', 'Muted'], ['--accent', '#FF7A3D', 'Accent'], ['--link', '#FF9A66', 'Links'],
+  ['--ok', '#9FE0B8', 'Confident'], ['--warn', '#FFB08A', 'Caution'], ['--info', '#9CD3F0', 'Second series'],
+];
+---
+<Base title="Style guide" noindex>
+  <div class="wrap page">
+    <header class="top">
+      <p class="eyebrow">Internal · stage 1 review</p>
+      <h1>Design foundations</h1>
+      <p class="muted">Colours, type, logo and shared components every page is built from.</p>
+    </header>
+
+    <section class="panel block">
+      <h2>Logo</h2>
+      <div class="logos">
+        <Logo size={96} label="Logo, large" />
+        <Logo size={48} />
+        <Logo size={32} />
+        <Logo size={16} />
+        <Logo size={32} wordmark />
+      </div>
+      <p class="muted small">Below 32 px the thicker small-size cut is used automatically.</p>
+    </section>
+
+    <section class="panel block">
+      <h2>Colour</h2>
+      <div class="sw">
+        {swatches.map(([v, hex, name]) => (
+          <div class="chip"><span class="dot" style={`background: var(${v})`}></span><span><b>{name}</b><br /><span class="mono">{hex}</span></span></div>
+        ))}
+      </div>
+    </section>
+
+    <section class="panel block">
+      <h2>Type</h2>
+      <p class="mono h1x">Has Calgary rent outpaced wages?</p>
+      <p class="mono h2x">What I found</p>
+      <p class="lead">Body text is IBM Plex Sans at 16 px with a 1.6 line height, so long methods sections stay readable on a phone.</p>
+      <p class="eyebrow">Eyebrow label · IBM Plex Mono</p>
+    </section>
+
+    <section class="panel block">
+      <h2>Buttons</h2>
+      <div class="row"><a class="btn btn-primary" href="#">Primary action</a><a class="btn btn-ghost" href="#">Secondary</a></div>
+    </section>
+
+    <CommentBox topic="Style guide test" />
+  </div>
+</Base>
+<style>
+  .page { display: flex; flex-direction: column; gap: 20px; padding-block: 48px; }
+  .top { display: flex; flex-direction: column; gap: 8px; margin-bottom: 8px; }
+  .top h1 { font-size: clamp(32px, 6vw, 48px); }
+  .block { padding: 24px; display: flex; flex-direction: column; gap: 16px; }
+  .block h2 { font-size: 20px; }
+  .logos { display: flex; flex-wrap: wrap; align-items: center; gap: 28px; color: var(--text); }
+  .small { font-size: 14px; }
+  .sw { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 12px; }
+  .chip { display: flex; gap: 12px; align-items: center; font-size: 14px; }
+  .chip .mono { color: var(--text-3); font-size: 12px; }
+  .dot { width: 40px; height: 40px; border-radius: 10px; border: 1px solid var(--line-strong); flex: none; }
+  .h1x { font-size: clamp(28px, 5vw, 44px); font-weight: 600; letter-spacing: -0.03em; line-height: 1.1; }
+  .h2x { font-size: 24px; font-weight: 600; }
+  .lead { font-size: 18px; color: var(--text-2); max-width: 640px; }
+  .row { display: flex; flex-wrap: wrap; gap: 12px; }
+</style>

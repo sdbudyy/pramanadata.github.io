@@ -1,0 +1,279 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Data study page template</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+body{margin:0}
+a{color:#FF9A66}a:hover{color:#FFC2A0}
+@keyframes srcfill{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+@keyframes srcring{from{stroke-dashoffset:251}}
+@keyframes srcfade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.srcbar{transform-origin:left center;animation:srcfill 1.1s cubic-bezier(.2,.7,.2,1) both}
+.srcring{animation:srcring 1.4s cubic-bezier(.2,.7,.2,1) both}
+.srcnum{animation:srcfade .6s ease-out 1s both}
+@media (prefers-reduced-motion: reduce){.srcbar,.srcring,.srcnum{animation:none}}
+</style>
+</helmet>
+<div style="font-family: 'IBM Plex Sans', system-ui, sans-serif; color: #ECE6D6; background: #10282B; font-size: 16px; line-height: 1.6">
+
+<header style="border-bottom: 1px solid #24474A">
+<nav aria-label="Main" style="max-width: 1200px; margin: 0 auto; padding: 18px 24px; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px">
+<a href="LayoutHomeA.dc.html" style="font-family: 'IBM Plex Mono', monospace; font-weight: 600; font-size: 19px; color: #ECE6D6; text-decoration: none">Pramana</a>
+<div style="display: flex; flex-wrap: wrap; align-items: center; gap: 28px; font-size: 15px">
+<a href="LayoutHomeA.dc.html" style="color: #ECE6D6; text-decoration: none; font-weight: 500">Data</a>
+<a href="LayoutHomeA.dc.html" style="color: #B3C2BB; text-decoration: none">Building</a>
+<a href="LayoutHomeA.dc.html" style="color: #B3C2BB; text-decoration: none">Notebook</a>
+<a href="LayoutHomeA.dc.html" style="color: #B3C2BB; text-decoration: none">About</a>
+<a href="#subscribe" style="background: {{accent}}; color: #10282B; text-decoration: none; padding: 10px 18px; border-radius: 8px; font-weight: 600">Subscribe</a>
+</div>
+</nav>
+</header>
+
+<section style="background-image: linear-gradient(#ECE6D60D 1px, transparent 1px), linear-gradient(90deg, #ECE6D60D 1px, transparent 1px); background-size: 40px 40px; border-bottom: 1px solid #24474A">
+<div style="max-width: 1200px; margin: 0 auto; padding: 40px 24px 48px; display: flex; flex-direction: column; gap: 20px">
+<p style="margin: 0; font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: #8FA6A0"><a href="LayoutHomeA.dc.html" style="color: #8FA6A0">Data</a> / <a href="LayoutHomeA.dc.html" style="color: #8FA6A0">Housing</a> / Study 003</p>
+<div style="display: flex; flex-wrap: wrap; align-items: center; gap: 10px 16px; font-size: 13px">
+<span style="background: #1E3F35; color: #9FE0B8; padding: 2px 10px; border-radius: 999px; font-weight: 500">Housing</span>
+<span style="font-family: 'IBM Plex Mono', monospace; color: #8FA6A0">Published [date] · Updated [date] · [N] min read</span>
+</div>
+<h1 style="margin: 0; font-family: 'IBM Plex Mono', monospace; font-weight: 600; font-size: 50px; line-height: 1.1; letter-spacing: -0.03em; max-width: 980px">Has Calgary rent outpaced wages since 2020?</h1>
+<p style="margin: 0; font-size: 20px; color: #B3C2BB; max-width: 780px">[One-sentence answer in plain language. This is the line people screenshot.]</p>
+<div style="display: flex; flex-wrap: wrap; gap: 12px; font-size: 15px">
+<a href="#method" style="border: 1px solid #4A7176; color: #ECE6D6; text-decoration: none; padding: 9px 16px; border-radius: 8px">Jump to method</a>
+<a href="#files" style="border: 1px solid #4A7176; color: #ECE6D6; text-decoration: none; padding: 9px 16px; border-radius: 8px">Download data</a>
+<a href="#share" style="border: 1px solid #4A7176; color: #ECE6D6; text-decoration: none; padding: 9px 16px; border-radius: 8px">Share on X</a>
+</div>
+</div>
+</section>
+
+<main style="max-width: 1200px; margin: 0 auto; padding: 40px 24px 0; display: flex; flex-direction: column; gap: 16px">
+
+<div style="display: flex; flex-wrap: wrap; gap: 16px">
+<div style="flex: 1 1 240px; min-width: 0; background: #0C2124; border: 1px solid {{accent}}; border-radius: 12px; padding: 20px; display: flex; flex-direction: column; gap: 4px">
+<span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: {{accent}}">HEADLINE RESULT</span>
+<span style="font-family: 'IBM Plex Mono', monospace; font-size: 44px; font-weight: 600; line-height: 1.1; color: {{accent}}">[+X%]</span>
+<span style="font-size: 14px; color: #B3C2BB">[rent growth minus wage growth]</span>
+</div>
+<div style="flex: 1 1 240px; min-width: 0; background: #0C2124; border: 1px solid #24474A; border-radius: 12px; padding: 20px; display: flex; flex-direction: column; gap: 4px">
+<span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #8FA6A0">RENT GROWTH</span>
+<span style="font-family: 'IBM Plex Mono', monospace; font-size: 36px; font-weight: 600; line-height: 1.2">[+X%]</span>
+<span style="font-size: 14px; color: #B3C2BB">[median 2-bed, 2020 → 2025]</span>
+</div>
+<div style="flex: 1 1 240px; min-width: 0; background: #0C2124; border: 1px solid #24474A; border-radius: 12px; padding: 20px; display: flex; flex-direction: column; gap: 4px">
+<span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #8FA6A0">WAGE GROWTH</span>
+<span style="font-family: 'IBM Plex Mono', monospace; font-size: 36px; font-weight: 600; line-height: 1.2">[+X%]</span>
+<span style="font-size: 14px; color: #B3C2BB">[median weekly earnings]</span>
+</div>
+<div style="flex: 1 1 240px; min-width: 0; background: #0C2124; border: 1px solid #24474A; border-radius: 12px; padding: 20px; display: flex; flex-direction: column; gap: 4px">
+<span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #8FA6A0">HARDEST-HIT AREA</span>
+<span style="font-size: 24px; font-weight: 600; line-height: 1.3">[Quadrant]</span>
+<span style="font-size: 14px; color: #B3C2BB">[+X% gap]</span>
+</div>
+</div>
+
+<figure style="margin: 0; background: #0C2124; border: 1px solid #24474A; border-radius: 16px; padding: 24px; display: flex; flex-direction: column; gap: 16px">
+<div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 12px">
+<figcaption style="font-size: 18px; font-weight: 600">Fig. 1 — [Rent and wages, indexed to 2020 = 100]</figcaption>
+<div role="group" aria-label="Chart view" style="display: flex; border: 1px solid #4A7176; border-radius: 8px; overflow: hidden; font-size: 14px">
+<button type="button" style="padding: 8px 14px; border: 0; background: {{accent}}; color: #10282B; font-weight: 600; font-family: inherit">Nominal</button>
+<button type="button" style="padding: 8px 14px; border: 0; background: transparent; color: #ECE6D6; font-family: inherit">Inflation-adjusted</button>
+<button type="button" style="padding: 8px 14px; border: 0; border-left: 1px solid #4A7176; background: transparent; color: #ECE6D6; font-family: inherit">By quadrant</button>
+</div>
+</div>
+<svg role="img" aria-label="Placeholder chart: two indexed lines diverging after 2021" viewBox="0 0 1100 320" style="width: 100%; height: 320px">
+<g stroke="#24474A" stroke-width="1"><line x1="50" y1="30" x2="1090" y2="30"></line><line x1="50" y1="100" x2="1090" y2="100"></line><line x1="50" y1="170" x2="1090" y2="170"></line><line x1="50" y1="240" x2="1090" y2="240"></line></g>
+<line x1="50" y1="290" x2="1090" y2="290" stroke="#4A7176" stroke-width="1"></line>
+<g font-family="IBM Plex Mono, monospace" font-size="12" fill="#8FA6A0"><text x="40" y="34" text-anchor="end">[140]</text><text x="40" y="104" text-anchor="end">[125]</text><text x="40" y="174" text-anchor="end">[110]</text><text x="40" y="244" text-anchor="end">[100]</text><text x="50" y="312">2020</text><text x="258" y="312">2021</text><text x="466" y="312">2022</text><text x="674" y="312">2023</text><text x="882" y="312">2024</text><text x="1090" y="312" text-anchor="end">2025</text></g>
+<polyline points="50,240 258,236 466,200 674,140 882,90 1090,60" fill="none" stroke="{{accent}}" stroke-width="3"></polyline>
+<polyline points="50,240 258,232 466,222 674,210 882,198 1090,188" fill="none" stroke="#9CD3F0" stroke-width="2.5" stroke-dasharray="7 5"></polyline>
+<rect x="640" y="40" width="200" height="56" rx="6" fill="#10282B" stroke="#4A7176"></rect>
+<g font-family="IBM Plex Mono, monospace" font-size="12"><text x="652" y="62" fill="#8FA6A0">[2023 annotation]</text><text x="652" y="82" fill="#ECE6D6">[what changed here]</text></g>
+</svg>
+<div style="display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px 24px; font-size: 14px; color: #B3C2BB">
+<div style="display: flex; flex-wrap: wrap; gap: 8px 20px"><span><span style="color: {{accent}}">━━</span> Median rent</span><span><span style="color: #9CD3F0">╌╌</span> Median wage</span></div>
+<span style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: #8FA6A0">Source: [CMHC Rental Market Survey; StatCan Table XX-XX-XXXX]</span>
+</div>
+</figure>
+
+<section style="display: flex; flex-wrap: wrap; gap: 16px">
+<div style="flex: 999 1 560px; min-width: 0; background: #0C2124; border: 1px solid #24474A; border-radius: 16px; padding: 28px; display: flex; flex-direction: column; gap: 18px">
+<h2 style="margin: 0; font-family: 'IBM Plex Mono', monospace; font-size: 24px; font-weight: 600">What I found</h2>
+<ol style="margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 16px">
+<li style="display: flex; gap: 16px"><span style="font-family: 'IBM Plex Mono', monospace; font-weight: 600; color: {{accent}}">01</span><span>[Key takeaway with its number.]</span></li>
+<li style="display: flex; gap: 16px"><span style="font-family: 'IBM Plex Mono', monospace; font-weight: 600; color: {{accent}}">02</span><span>[Second takeaway: where or when the gap is biggest.]</span></li>
+<li style="display: flex; gap: 16px"><span style="font-family: 'IBM Plex Mono', monospace; font-weight: 600; color: {{accent}}">03</span><span>[Third takeaway: the surprise, or what it means for a renter.]</span></li>
+</ol>
+</div>
+<div style="flex: 1 1 300px; min-width: 0; background: #33261B; border: 1px solid #FF7A3D66; border-radius: 16px; padding: 28px; display: flex; flex-direction: column; gap: 12px">
+<h2 style="margin: 0; font-family: 'IBM Plex Mono', monospace; font-size: 15px; font-weight: 600; color: #FFB08A">WHAT THIS DOESN'T SHOW</h2>
+<p style="margin: 0; font-size: 15px">[The main caveat in one or two sentences, e.g. asking rents vs. what sitting tenants pay.]</p>
+</div>
+</section>
+
+<div style="display: flex; flex-wrap: wrap; gap: 16px">
+<figure style="flex: 1 1 480px; min-width: 0; margin: 0; background: #0C2124; border: 1px solid #24474A; border-radius: 16px; padding: 24px; display: flex; flex-direction: column; gap: 12px">
+<figcaption style="font-weight: 600">Fig. 2 — [Gap by quadrant]</figcaption>
+<svg aria-hidden="true" viewBox="0 0 480 200" style="width: 100%; height: 200px">
+<g font-family="IBM Plex Mono, monospace" font-size="13" fill="#B3C2BB"><text x="0" y="30">NW</text><text x="0" y="80">NE</text><text x="0" y="130">SW</text><text x="0" y="180">SE</text></g>
+<rect x="50" y="14" width="380" height="24" rx="3" fill="{{accent}}"></rect><rect x="50" y="64" width="300" height="24" rx="3" fill="#4A7176"></rect><rect x="50" y="114" width="250" height="24" rx="3" fill="#4A7176"></rect><rect x="50" y="164" width="200" height="24" rx="3" fill="#4A7176"></rect>
+</svg>
+</figure>
+<figure style="flex: 1 1 480px; min-width: 0; margin: 0; background: #0C2124; border: 1px solid #24474A; border-radius: 16px; padding: 24px; display: flex; flex-direction: column; gap: 12px">
+<figcaption style="font-weight: 600">Fig. 3 — [Share of income spent on rent]</figcaption>
+<svg aria-hidden="true" viewBox="0 0 480 200" style="width: 100%; height: 200px">
+<line x1="0" y1="190" x2="480" y2="190" stroke="#4A7176"></line>
+<rect x="20" y="120" width="50" height="70" rx="3" fill="#4A7176"></rect><rect x="95" y="105" width="50" height="85" rx="3" fill="#4A7176"></rect><rect x="170" y="95" width="50" height="95" rx="3" fill="#4A7176"></rect><rect x="245" y="70" width="50" height="120" rx="3" fill="#4A7176"></rect><rect x="320" y="45" width="50" height="145" rx="3" fill="#4A7176"></rect><rect x="395" y="25" width="50" height="165" rx="3" fill="{{accent}}"></rect>
+<line x1="0" y1="80" x2="480" y2="80" stroke="#FFB08A" stroke-dasharray="4 4"></line>
+<text x="476" y="74" text-anchor="end" font-family="IBM Plex Mono, monospace" font-size="12" fill="#FFB08A">30% affordability line</text>
+</svg>
+</figure>
+</div>
+
+<section id="method" style="background: #0C2124; border: 1px solid #24474A; border-radius: 16px; padding: 28px; display: flex; flex-direction: column; gap: 24px">
+<h2 style="margin: 0; font-family: 'IBM Plex Mono', monospace; font-size: 24px; font-weight: 600">Method</h2>
+<div style="overflow-x: auto">
+<table style="width: 100%; min-width: 720px; border-collapse: collapse; font-size: 15px">
+<thead><tr style="text-align: left; font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #8FA6A0"><th scope="col" style="padding: 10px 12px 10px 0; font-weight: 500; border-bottom: 1px solid #24474A">DATASET</th><th scope="col" style="padding: 10px 12px; font-weight: 500; border-bottom: 1px solid #24474A">PUBLISHER</th><th scope="col" style="padding: 10px 12px; font-weight: 500; border-bottom: 1px solid #24474A">YEARS</th><th scope="col" style="padding: 10px 12px; font-weight: 500; border-bottom: 1px solid #24474A">LICENCE</th><th scope="col" style="padding: 10px 0 10px 12px; font-weight: 500; border-bottom: 1px solid #24474A">LINK</th></tr></thead>
+<tbody>
+<tr><td style="padding: 12px 12px 12px 0; border-bottom: 1px solid #24474A">[Rental Market Survey]</td><td style="padding: 12px; border-bottom: 1px solid #24474A">[CMHC]</td><td style="padding: 12px; border-bottom: 1px solid #24474A; font-family: 'IBM Plex Mono', monospace; font-size: 14px">[2020–2025]</td><td style="padding: 12px; border-bottom: 1px solid #24474A">[Licence]</td><td style="padding: 12px 0 12px 12px; border-bottom: 1px solid #24474A"><a href="#method">source ↗</a></td></tr>
+<tr><td style="padding: 12px 12px 12px 0">[Earnings table]</td><td style="padding: 12px">[Statistics Canada]</td><td style="padding: 12px; font-family: 'IBM Plex Mono', monospace; font-size: 14px">[2020–2025]</td><td style="padding: 12px">[Licence]</td><td style="padding: 12px 0 12px 12px"><a href="#method">source ↗</a></td></tr>
+</tbody>
+</table>
+</div>
+<div style="display: flex; flex-wrap: wrap; gap: 32px">
+<div style="flex: 1 1 420px; min-width: 0; display: flex; flex-direction: column; gap: 10px">
+<h3 style="margin: 0; font-size: 16px; font-weight: 600">Steps</h3>
+<ol style="margin: 0; padding-left: 20px; display: flex; flex-direction: column; gap: 6px; color: #B3C2BB"><li>[Pulled and cleaned both datasets]</li><li>[Matched geographies and time periods]</li><li>[Indexed both series to 2020 = 100]</li><li>[Adjusted for inflation with CPI, Alberta]</li></ol>
+</div>
+<div style="flex: 1 1 420px; min-width: 0; display: flex; flex-direction: column; gap: 10px">
+<h3 style="margin: 0; font-size: 16px; font-weight: 600">Assumptions and limits</h3>
+<ul style="margin: 0; padding-left: 20px; display: flex; flex-direction: column; gap: 6px; color: #B3C2BB"><li>[Assumption 1]</li><li>[Known gap in the data]</li><li>[What would change the answer]</li></ul>
+</div>
+</div>
+</section>
+
+<section id="sources" style="background: #0C2124; border: 1px solid #24474A; border-radius: 16px; padding: 28px; display: flex; flex-direction: column; gap: 20px">
+<div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: 8px 24px">
+<div style="display: flex; flex-direction: column; gap: 4px">
+<h2 style="margin: 0; font-family: 'IBM Plex Mono', monospace; font-size: 24px; font-weight: 600">Source check</h2>
+<p style="margin: 0; color: #B3C2BB; font-size: 15px">How much to trust each dataset. Five criteria, scored 1–5.</p>
+</div>
+<a href="#sources" style="font-size: 14px; font-weight: 500">How I rate sources →</a>
+</div>
+
+<div style="display: flex; flex-wrap: wrap; gap: 16px">
+<article style="flex: 1 1 460px; min-width: 0; border: 1px solid #24474A; border-radius: 12px; background: #10282B; padding: 20px; display: flex; flex-direction: column; gap: 16px">
+<div style="display: flex; align-items: center; gap: 18px">
+<svg role="img" aria-label="Overall score 4.6 out of 5" viewBox="0 0 96 96" style="width: 88px; height: 88px; flex: none">
+<circle cx="48" cy="48" r="40" fill="none" stroke="#173538" stroke-width="8"></circle>
+<circle class="srcring" cx="48" cy="48" r="40" fill="none" stroke="{{accent}}" stroke-width="8" stroke-linecap="round" stroke-dasharray="251" stroke-dashoffset="20" transform="rotate(-90 48 48)"></circle>
+<text class="srcnum" x="48" y="54" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="22" font-weight="600" fill="#ECE6D6">4.6</text>
+</svg>
+<div style="display: flex; flex-direction: column; gap: 2px; min-width: 0">
+<span style="font-weight: 600">[Source A, e.g. Rental Market Survey]</span>
+<span style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: #8FA6A0">[Publisher] · [Government agency]</span>
+<span style="align-self: flex-start; margin-top: 4px; font-family: 'IBM Plex Mono', monospace; font-size: 12px; font-weight: 600; background: #1E3F35; color: #9FE0B8; padding: 2px 8px; border-radius: 4px">HIGH CONFIDENCE</span>
+</div>
+</div>
+<dl style="margin: 0; display: flex; flex-direction: column; gap: 10px; font-size: 14px">
+<div style="display: flex; align-items: center; gap: 12px"><dt style="width: 130px; flex: none; color: #B3C2BB">Authority</dt><dd style="margin: 0; flex: 1; height: 8px; border-radius: 4px; background: #173538"><span class="srcbar" style="display: block; height: 100%; width: 100%; border-radius: 4px; background: {{accent}}; animation-delay: 0.1s"></span></dd><span style="width: 28px; text-align: right; font-family: 'IBM Plex Mono', monospace">5</span></div>
+<div style="display: flex; align-items: center; gap: 12px"><dt style="width: 130px; flex: none; color: #B3C2BB">Method published</dt><dd style="margin: 0; flex: 1; height: 8px; border-radius: 4px; background: #173538"><span class="srcbar" style="display: block; height: 100%; width: 100%; border-radius: 4px; background: {{accent}}; animation-delay: 0.2s"></span></dd><span style="width: 28px; text-align: right; font-family: 'IBM Plex Mono', monospace">5</span></div>
+<div style="display: flex; align-items: center; gap: 12px"><dt style="width: 130px; flex: none; color: #B3C2BB">Recency</dt><dd style="margin: 0; flex: 1; height: 8px; border-radius: 4px; background: #173538"><span class="srcbar" style="display: block; height: 100%; width: 80%; border-radius: 4px; background: {{accent}}; animation-delay: 0.3s"></span></dd><span style="width: 28px; text-align: right; font-family: 'IBM Plex Mono', monospace">4</span></div>
+<div style="display: flex; align-items: center; gap: 12px"><dt style="width: 130px; flex: none; color: #B3C2BB">Fit to question</dt><dd style="margin: 0; flex: 1; height: 8px; border-radius: 4px; background: #173538"><span class="srcbar" style="display: block; height: 100%; width: 80%; border-radius: 4px; background: {{accent}}; animation-delay: 0.4s"></span></dd><span style="width: 28px; text-align: right; font-family: 'IBM Plex Mono', monospace">4</span></div>
+<div style="display: flex; align-items: center; gap: 12px"><dt style="width: 130px; flex: none; color: #B3C2BB">Independence</dt><dd style="margin: 0; flex: 1; height: 8px; border-radius: 4px; background: #173538"><span class="srcbar" style="display: block; height: 100%; width: 100%; border-radius: 4px; background: {{accent}}; animation-delay: 0.5s"></span></dd><span style="width: 28px; text-align: right; font-family: 'IBM Plex Mono', monospace">5</span></div>
+</dl>
+<p style="margin: 0; font-size: 14px; color: #B3C2BB"><span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #8FA6A0">NOTE ›</span> [Why it lost points, e.g. survey runs once a year, so it lags the market.]</p>
+</article>
+
+<article style="flex: 1 1 460px; min-width: 0; border: 1px solid #24474A; border-radius: 12px; background: #10282B; padding: 20px; display: flex; flex-direction: column; gap: 16px">
+<div style="display: flex; align-items: center; gap: 18px">
+<svg role="img" aria-label="Overall score 3.8 out of 5" viewBox="0 0 96 96" style="width: 88px; height: 88px; flex: none">
+<circle cx="48" cy="48" r="40" fill="none" stroke="#173538" stroke-width="8"></circle>
+<circle class="srcring" cx="48" cy="48" r="40" fill="none" stroke="#FFB08A" stroke-width="8" stroke-linecap="round" stroke-dasharray="251" stroke-dashoffset="60" transform="rotate(-90 48 48)" style="animation-delay: 0.3s"></circle>
+<text class="srcnum" x="48" y="54" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="22" font-weight="600" fill="#ECE6D6">3.8</text>
+</svg>
+<div style="display: flex; flex-direction: column; gap: 2px; min-width: 0">
+<span style="font-weight: 600">[Source B, e.g. Earnings table]</span>
+<span style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: #8FA6A0">[Publisher] · [Government agency]</span>
+<span style="align-self: flex-start; margin-top: 4px; font-family: 'IBM Plex Mono', monospace; font-size: 12px; font-weight: 600; background: #43291A; color: #FFB08A; padding: 2px 8px; border-radius: 4px">USE WITH CARE</span>
+</div>
+</div>
+<dl style="margin: 0; display: flex; flex-direction: column; gap: 10px; font-size: 14px">
+<div style="display: flex; align-items: center; gap: 12px"><dt style="width: 130px; flex: none; color: #B3C2BB">Authority</dt><dd style="margin: 0; flex: 1; height: 8px; border-radius: 4px; background: #173538"><span class="srcbar" style="display: block; height: 100%; width: 100%; border-radius: 4px; background: {{accent}}; animation-delay: 0.4s"></span></dd><span style="width: 28px; text-align: right; font-family: 'IBM Plex Mono', monospace">5</span></div>
+<div style="display: flex; align-items: center; gap: 12px"><dt style="width: 130px; flex: none; color: #B3C2BB">Method published</dt><dd style="margin: 0; flex: 1; height: 8px; border-radius: 4px; background: #173538"><span class="srcbar" style="display: block; height: 100%; width: 80%; border-radius: 4px; background: {{accent}}; animation-delay: 0.5s"></span></dd><span style="width: 28px; text-align: right; font-family: 'IBM Plex Mono', monospace">4</span></div>
+<div style="display: flex; align-items: center; gap: 12px"><dt style="width: 130px; flex: none; color: #B3C2BB">Recency</dt><dd style="margin: 0; flex: 1; height: 8px; border-radius: 4px; background: #173538"><span class="srcbar" style="display: block; height: 100%; width: 80%; border-radius: 4px; background: {{accent}}; animation-delay: 0.6s"></span></dd><span style="width: 28px; text-align: right; font-family: 'IBM Plex Mono', monospace">4</span></div>
+<div style="display: flex; align-items: center; gap: 12px"><dt style="width: 130px; flex: none; color: #B3C2BB">Fit to question</dt><dd style="margin: 0; flex: 1; height: 8px; border-radius: 4px; background: #173538"><span class="srcbar" style="display: block; height: 100%; width: 40%; border-radius: 4px; background: #FFB08A; animation-delay: 0.7s"></span></dd><span style="width: 28px; text-align: right; font-family: 'IBM Plex Mono', monospace">2</span></div>
+<div style="display: flex; align-items: center; gap: 12px"><dt style="width: 130px; flex: none; color: #B3C2BB">Independence</dt><dd style="margin: 0; flex: 1; height: 8px; border-radius: 4px; background: #173538"><span class="srcbar" style="display: block; height: 100%; width: 80%; border-radius: 4px; background: {{accent}}; animation-delay: 0.8s"></span></dd><span style="width: 28px; text-align: right; font-family: 'IBM Plex Mono', monospace">4</span></div>
+</dl>
+<p style="margin: 0; font-size: 14px; color: #B3C2BB"><span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #8FA6A0">NOTE ›</span> [Why it lost points, e.g. province-level wages, not Calgary-only.]</p>
+</article>
+</div>
+<p style="margin: 0; font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #8FA6A0">Sample scores shown. ≥4.0 high confidence · 3.0–3.9 use with care · &lt;3.0 weak, flagged in the findings.</p>
+</section>
+
+<div style="display: flex; flex-wrap: wrap; gap: 16px">
+<section id="files" style="flex: 1 1 360px; min-width: 0; background: #0C2124; border: 1px solid #24474A; border-radius: 16px; padding: 24px; display: flex; flex-direction: column; gap: 12px">
+<h2 style="margin: 0; font-family: 'IBM Plex Mono', monospace; font-size: 18px; font-weight: 600">Files</h2>
+<a href="#files" style="display: flex; justify-content: space-between; gap: 12px; text-decoration: none; color: #ECE6D6; border: 1px solid #24474A; border-radius: 8px; padding: 12px 14px"><span>Clean dataset</span><span style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: #FF9A66">.csv ↓</span></a>
+<a href="#files" style="display: flex; justify-content: space-between; gap: 12px; text-decoration: none; color: #ECE6D6; border: 1px solid #24474A; border-radius: 8px; padding: 12px 14px"><span>Analysis notebook</span><span style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: #FF9A66">.ipynb ↓</span></a>
+<a href="#files" style="display: flex; justify-content: space-between; gap: 12px; text-decoration: none; color: #ECE6D6; border: 1px solid #24474A; border-radius: 8px; padding: 12px 14px"><span>Code repository</span><span style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: #FF9A66">GitHub ↗</span></a>
+</section>
+<section id="share" style="flex: 1 1 360px; min-width: 0; background: #0C2124; border: 1px solid #24474A; border-radius: 16px; padding: 24px; display: flex; flex-direction: column; gap: 12px">
+<h2 style="margin: 0; font-family: 'IBM Plex Mono', monospace; font-size: 18px; font-weight: 600">Share and discuss</h2>
+<p style="margin: 0; font-size: 15px; color: #B3C2BB">Disagree with the method? Tell me. Corrections are logged below.</p>
+<a href="#share" style="align-self: flex-start; background: {{accent}}; color: #10282B; text-decoration: none; padding: 11px 18px; border-radius: 8px; font-weight: 600">Discuss on X</a>
+<h3 style="margin: 8px 0 0; font-family: 'IBM Plex Mono', monospace; font-size: 12px; font-weight: 500; color: #8FA6A0">REVISIONS</h3>
+<ul style="margin: 0; padding: 0; list-style: none; font-family: 'IBM Plex Mono', monospace; font-size: 13px; display: flex; flex-direction: column; gap: 4px"><li><span style="color: #8FA6A0">v1.1 [date]</span> [What was corrected]</li><li><span style="color: #8FA6A0">v1.0 [date]</span> Published</li></ul>
+</section>
+</div>
+
+<section style="padding: 48px 0 0; display: flex; flex-direction: column; gap: 20px">
+<h2 style="margin: 0; font-family: 'IBM Plex Mono', monospace; font-size: 24px; font-weight: 600">Related studies</h2>
+<div style="display: flex; flex-wrap: wrap; gap: 16px">
+<a href="#top" style="flex: 1 1 300px; min-width: 0; text-decoration: none; color: #ECE6D6; background: #0C2124; border: 1px solid #24474A; border-radius: 12px; padding: 20px; display: flex; flex-direction: column; gap: 8px"><span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #8FA6A0">HOUSING · [DATE]</span><span style="font-weight: 600">[Related study title]</span><span style="font-family: 'IBM Plex Mono', monospace; font-size: 22px; font-weight: 600; color: {{accent}}">[key number]</span></a>
+<a href="#top" style="flex: 1 1 300px; min-width: 0; text-decoration: none; color: #ECE6D6; background: #0C2124; border: 1px solid #24474A; border-radius: 12px; padding: 20px; display: flex; flex-direction: column; gap: 8px"><span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #8FA6A0">POPULATION · [DATE]</span><span style="font-weight: 600">[Related study title]</span><span style="font-family: 'IBM Plex Mono', monospace; font-size: 22px; font-weight: 600; color: {{accent}}">[key number]</span></a>
+<a href="#top" style="flex: 1 1 300px; min-width: 0; text-decoration: none; color: #ECE6D6; background: #0C2124; border: 1px solid #24474A; border-radius: 12px; padding: 20px; display: flex; flex-direction: column; gap: 8px"><span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #8FA6A0">ECONOMY · [DATE]</span><span style="font-weight: 600">[Related study title]</span><span style="font-family: 'IBM Plex Mono', monospace; font-size: 22px; font-weight: 600; color: {{accent}}">[key number]</span></a>
+</div>
+</section>
+</main>
+
+<section id="subscribe" style="border-top: 1px solid #24474A; margin-top: 64px">
+<div style="max-width: 1200px; margin: 0 auto; padding: 56px 24px; display: flex; flex-wrap: wrap; gap: 32px; align-items: center; justify-content: space-between">
+<div style="flex: 1 1 420px; min-width: 0; display: flex; flex-direction: column; gap: 8px">
+<h2 style="margin: 0; font-family: 'IBM Plex Mono', monospace; font-size: 28px; font-weight: 600">Get the next study first</h2>
+<p style="margin: 0; color: #B3C2BB">One email a month with the best finding and its chart.</p>
+</div>
+<form style="flex: 1 1 380px; min-width: 0; display: flex; flex-wrap: wrap; gap: 12px">
+<label for="emailS" style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0)">Email address</label>
+<input id="emailS" type="email" placeholder="you@email.com" style="flex: 1 1 220px; min-width: 0; padding: 14px 16px; border-radius: 8px; border: 1px solid #2F5659; background: #0C2124; color: #ECE6D6; font-size: 16px; font-family: inherit">
+<button type="button" style="padding: 14px 22px; border-radius: 8px; border: 0; background: {{accent}}; color: #10282B; font-size: 16px; font-weight: 600; font-family: inherit">Subscribe</button>
+</form>
+</div>
+</section>
+
+<footer style="border-top: 1px solid #24474A">
+<div style="max-width: 1200px; margin: 0 auto; padding: 28px 24px; display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px; font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: #8FA6A0">
+<span>© [Year] Pramana · Shaurya Dave · Calgary, AB</span>
+<span>Cite: Dave, S. ([Year]). [Study title]. Pramana. [site URL]</span>
+</div>
+</footer>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"accent":{"editor":"color","default":"#FF7A3D","options":["#FF7A3D","#E8D44D","#9FE0B8","#9CD3F0"]},"$preview":{"width":1440,"height":4200}}'>
+class Component extends DCLogic {
+renderVals() {
+return { accent: this.props.accent ?? '#FF7A3D' };
+}
+}
+</script>
+</body>
+</html>
