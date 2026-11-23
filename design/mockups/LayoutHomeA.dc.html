@@ -1,0 +1,212 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Homepage layout A, chart hero</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+body{margin:0}
+a{color:#FF9A66}a:hover{color:#FFC2A0}
+</style>
+</helmet>
+<div style="font-family: 'IBM Plex Sans', system-ui, sans-serif; color: #ECE6D6; background: #10282B; font-size: 16px; line-height: 1.6">
+
+<header style="border-bottom: 1px solid #24474A">
+<nav aria-label="Main" style="max-width: 1200px; margin: 0 auto; padding: 18px 24px; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px">
+<a href="#top" style="font-family: 'IBM Plex Mono', monospace; font-weight: 600; font-size: 19px; color: #ECE6D6; text-decoration: none">Pramana</a>
+<div style="display: flex; flex-wrap: wrap; align-items: center; gap: 28px; font-size: 15px">
+<a href="#data" style="color: #B3C2BB; text-decoration: none">Data</a>
+<a href="#building" style="color: #B3C2BB; text-decoration: none">Building</a>
+<a href="#notebook" style="color: #B3C2BB; text-decoration: none">Notebook</a>
+<a href="#about" style="color: #B3C2BB; text-decoration: none">About</a>
+<a href="#subscribe" style="background: {{accent}}; color: #10282B; text-decoration: none; padding: 10px 18px; border-radius: 8px; font-weight: 600">Subscribe</a>
+</div>
+</nav>
+</header>
+
+<section id="top" style="background-image: linear-gradient(#ECE6D60D 1px, transparent 1px), linear-gradient(90deg, #ECE6D60D 1px, transparent 1px); background-size: 40px 40px; border-bottom: 1px solid #24474A">
+<div style="max-width: 1200px; margin: 0 auto; padding: 72px 24px 56px; display: flex; flex-direction: column; gap: 40px">
+<div style="display: flex; flex-wrap: wrap; gap: 24px 64px; align-items: flex-end; justify-content: space-between">
+<div style="flex: 1 1 560px; min-width: 0; display: flex; flex-direction: column; gap: 20px">
+<p style="margin: 0; font-family: 'IBM Plex Mono', monospace; font-size: 13px; letter-spacing: 0.06em; color: {{accent}}">CALGARY · ENGINEERING · DATA</p>
+<h1 style="margin: 0; font-family: 'IBM Plex Mono', monospace; font-weight: 600; font-size: 60px; line-height: 1.05; letter-spacing: -0.03em">I measure messy real-world systems.</h1>
+</div>
+<div style="flex: 1 1 340px; min-width: 0; display: flex; flex-direction: column; gap: 20px">
+<p style="margin: 0; font-size: 18px; color: #B3C2BB">Engineering and finance student at the University of Calgary. I build hardware, model public data on Calgary, Alberta and Canada, and show my work.</p>
+<div style="display: flex; flex-wrap: wrap; gap: 12px">
+<a href="#data" style="background: {{accent}}; color: #10282B; text-decoration: none; padding: 13px 20px; border-radius: 8px; font-weight: 600">Read the latest study</a>
+<a href="#subscribe" style="border: 1px solid #4A7176; color: #ECE6D6; text-decoration: none; padding: 12px 20px; border-radius: 8px; font-weight: 500">Monthly digest</a>
+</div>
+</div>
+</div>
+
+<figure style="margin: 0; border: 1px solid #24474A; border-radius: 16px; background: #0C2124; padding: 24px 24px 16px; display: flex; flex-direction: column; gap: 12px">
+<div style="display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px 24px; align-items: baseline">
+<p style="margin: 0; font-size: 18px; font-weight: 600">[Latest finding as a headline, e.g. Calgary rent has outpaced wages since 2020]</p>
+<p style="margin: 0; font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: #8FA6A0">STUDY [#] · [DATE]</p>
+</div>
+<svg role="img" aria-label="Placeholder line chart: two series diverging over time, with the latest value called out" viewBox="0 0 1150 280" style="width: 100%; height: 280px">
+<g stroke="#24474A" stroke-width="1"><line x1="50" y1="30" x2="1140" y2="30"></line><line x1="50" y1="95" x2="1140" y2="95"></line><line x1="50" y1="160" x2="1140" y2="160"></line><line x1="50" y1="225" x2="1140" y2="225"></line></g>
+<line x1="50" y1="250" x2="1140" y2="250" stroke="#4A7176" stroke-width="1"></line>
+<g font-family="IBM Plex Mono, monospace" font-size="12" fill="#8FA6A0"><text x="40" y="34" text-anchor="end">[y]</text><text x="40" y="99" text-anchor="end">[y]</text><text x="40" y="164" text-anchor="end">[y]</text><text x="40" y="229" text-anchor="end">[y]</text><text x="50" y="272">[start]</text><text x="1140" y="272" text-anchor="end">[end]</text></g>
+<polyline points="50,228 200,214 350,200 500,170 650,140 800,105 950,72 1080,50" fill="none" stroke="{{accent}}" stroke-width="3"></polyline>
+<polyline points="50,228 200,222 350,216 500,208 650,200 800,192 950,184 1080,178" fill="none" stroke="#9CD3F0" stroke-width="2.5" stroke-dasharray="7 5"></polyline>
+<circle cx="1080" cy="50" r="5" fill="{{accent}}"></circle>
+<line x1="1080" y1="58" x2="1080" y2="172" stroke="#8FA6A0" stroke-width="1" stroke-dasharray="3 3"></line>
+<g font-family="IBM Plex Mono, monospace"><text x="1066" y="40" text-anchor="end" font-size="30" font-weight="600" fill="{{accent}}">[+X%]</text><text x="1066" y="122" text-anchor="end" font-size="12" fill="#B3C2BB">gap since [start]</text></g>
+</svg>
+<div style="display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px 24px; font-size: 14px; color: #B3C2BB">
+<div style="display: flex; flex-wrap: wrap; gap: 8px 20px"><span><span style="color: {{accent}}">━━</span> [Series A]</span><span><span style="color: #9CD3F0">╌╌</span> [Series B]</span></div>
+<span style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: #8FA6A0">Source: [dataset] · <a href="#data">method + code</a></span>
+</div>
+</figure>
+</div>
+</section>
+
+<section id="data" style="max-width: 1200px; margin: 0 auto; padding: 72px 24px; display: flex; flex-direction: column; gap: 28px">
+<div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: 16px">
+<div style="display: flex; flex-direction: column; gap: 6px">
+<h2 style="margin: 0; font-family: 'IBM Plex Mono', monospace; font-size: 36px; font-weight: 600; letter-spacing: -0.02em">Data studies</h2>
+<p style="margin: 0; color: #B3C2BB">Calgary, Alberta and Canada in numbers. A new one most weeks.</p>
+</div>
+<div style="display: flex; flex-wrap: wrap; gap: 8px" role="group" aria-label="Filter by topic">
+<a href="#data" style="font-size: 14px; text-decoration: none; padding: 6px 14px; border-radius: 999px; background: {{accent}}; color: #10282B; font-weight: 600">All</a>
+<a href="#data" style="font-size: 14px; text-decoration: none; padding: 6px 14px; border-radius: 999px; border: 1px solid #4A7176; color: #ECE6D6">Housing</a>
+<a href="#data" style="font-size: 14px; text-decoration: none; padding: 6px 14px; border-radius: 999px; border: 1px solid #4A7176; color: #ECE6D6">Traffic</a>
+<a href="#data" style="font-size: 14px; text-decoration: none; padding: 6px 14px; border-radius: 999px; border: 1px solid #4A7176; color: #ECE6D6">Energy</a>
+<a href="#data" style="font-size: 14px; text-decoration: none; padding: 6px 14px; border-radius: 999px; border: 1px solid #4A7176; color: #ECE6D6">Weather</a>
+</div>
+</div>
+
+<div style="display: flex; flex-wrap: wrap; gap: 24px">
+<a href="#data" style="flex: 2 1 560px; min-width: 0; text-decoration: none; color: #ECE6D6; background: #0C2124; border: 1px solid #24474A; border-radius: 16px; padding: 28px; display: flex; flex-direction: column; gap: 16px">
+<div style="display: flex; justify-content: space-between; gap: 12px; font-size: 13px"><span style="background: #43291A; color: #FFB08A; padding: 2px 10px; border-radius: 999px; font-weight: 500">Traffic</span><span style="font-family: 'IBM Plex Mono', monospace; color: #8FA6A0">[DATE]</span></div>
+<h3 style="margin: 0; font-family: 'IBM Plex Mono', monospace; font-size: 26px; font-weight: 600; line-height: 1.25">Which Calgary intersections see the most collisions per vehicle?</h3>
+<svg aria-hidden="true" viewBox="0 0 600 180" style="width: 100%; height: 180px">
+<g font-family="IBM Plex Sans, sans-serif" font-size="13" fill="#B3C2BB"><text x="0" y="22">[Intersection 1]</text><text x="0" y="62">[Intersection 2]</text><text x="0" y="102">[Intersection 3]</text><text x="0" y="142">[Intersection 4]</text></g>
+<rect x="150" y="8" width="420" height="20" rx="3" fill="{{accent}}"></rect><rect x="150" y="48" width="330" height="20" rx="3" fill="#4A7176"></rect><rect x="150" y="88" width="260" height="20" rx="3" fill="#4A7176"></rect><rect x="150" y="128" width="190" height="20" rx="3" fill="#4A7176"></rect>
+</svg>
+<p style="margin: 0; color: #B3C2BB">[One-sentence finding with the key number.]</p>
+<span style="font-weight: 500; color: #FF9A66">Read the study →</span>
+</a>
+<div style="flex: 1 1 300px; min-width: 0; display: flex; flex-direction: column; gap: 24px">
+<a href="#data" style="flex: 1 1 auto; text-decoration: none; color: #ECE6D6; background: #0C2124; border: 1px solid #24474A; border-radius: 16px; padding: 22px; display: flex; flex-direction: column; gap: 10px">
+<div style="display: flex; justify-content: space-between; gap: 12px; font-size: 13px"><span style="background: #1E3F35; color: #9FE0B8; padding: 2px 10px; border-radius: 999px; font-weight: 500">Housing</span><span style="font-family: 'IBM Plex Mono', monospace; color: #8FA6A0">[DATE]</span></div>
+<h3 style="margin: 0; font-size: 18px; font-weight: 600; line-height: 1.35">Rent vs wages since 2020, by quadrant</h3>
+<p style="margin: 0; font-family: 'IBM Plex Mono', monospace; font-size: 28px; font-weight: 600; color: {{accent}}">[X%]</p>
+</a>
+<a href="#data" style="flex: 1 1 auto; text-decoration: none; color: #ECE6D6; background: #0C2124; border: 1px solid #24474A; border-radius: 16px; padding: 22px; display: flex; flex-direction: column; gap: 10px">
+<div style="display: flex; justify-content: space-between; gap: 12px; font-size: 13px"><span style="background: #1C3A47; color: #9CD3F0; padding: 2px 10px; border-radius: 999px; font-weight: 500">Weather</span><span style="font-family: 'IBM Plex Mono', monospace; color: #8FA6A0">[DATE]</span></div>
+<h3 style="margin: 0; font-size: 18px; font-weight: 600; line-height: 1.35">What hail season costs Calgary each year</h3>
+<p style="margin: 0; font-family: 'IBM Plex Mono', monospace; font-size: 28px; font-weight: 600; color: {{accent}}">[$X M]</p>
+</a>
+</div>
+</div>
+<a href="#data" style="align-self: flex-start; font-weight: 500">All studies →</a>
+</section>
+
+<section id="building" style="background: #0C2124; border-top: 1px solid #24474A; border-bottom: 1px solid #24474A">
+<div style="max-width: 1200px; margin: 0 auto; padding: 72px 24px; display: flex; flex-direction: column; gap: 28px">
+<div style="display: flex; flex-direction: column; gap: 6px">
+<h2 style="margin: 0; font-family: 'IBM Plex Mono', monospace; font-size: 36px; font-weight: 600; letter-spacing: -0.02em">Now building</h2>
+<p style="margin: 0; color: #B3C2BB">Longer projects, and how far along each one is.</p>
+</div>
+
+<a href="#building" style="text-decoration: none; color: #ECE6D6; border: 1px solid #24474A; border-radius: 16px; background: #10282B; display: flex; flex-wrap: wrap; overflow: hidden">
+<div style="flex: 1 1 280px; min-width: 0; min-height: 200px; background: #173538; display: flex; align-items: center; justify-content: center; color: #8FA6A0; font-size: 14px">[Project photo]</div>
+<div style="flex: 2 1 480px; min-width: 0; padding: 28px; display: flex; flex-direction: column; gap: 16px">
+<div style="display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px"><h3 style="margin: 0; font-family: 'IBM Plex Mono', monospace; font-size: 22px; font-weight: 600">[Arduino project name]</h3><span style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: #8FA6A0">Updated [date]</span></div>
+<p style="margin: 0; color: #B3C2BB">[What it measures and why, in one line.]</p>
+<ol aria-label="Project stage" style="list-style: none; margin: 0; padding: 0; display: flex; gap: 6px; font-family: 'IBM Plex Mono', monospace; font-size: 12px">
+<li style="flex: 1 1 0; display: flex; flex-direction: column; gap: 6px"><span style="height: 6px; border-radius: 3px; background: {{accent}}"></span><span style="color: #ECE6D6">Idea</span></li>
+<li style="flex: 1 1 0; display: flex; flex-direction: column; gap: 6px"><span style="height: 6px; border-radius: 3px; background: {{accent}}"></span><span style="color: #ECE6D6">Build</span></li>
+<li style="flex: 1 1 0; display: flex; flex-direction: column; gap: 6px"><span style="height: 6px; border-radius: 3px; background: #2F5659"></span><span style="color: #8FA6A0">Test</span></li>
+<li style="flex: 1 1 0; display: flex; flex-direction: column; gap: 6px"><span style="height: 6px; border-radius: 3px; background: #2F5659"></span><span style="color: #8FA6A0">Result</span></li>
+</ol>
+<p style="margin: 0; font-size: 15px"><span style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: {{accent}}">LATEST ›</span> [Most recent log entry, one line]</p>
+</div>
+</a>
+
+<a href="#building" style="text-decoration: none; color: #ECE6D6; border: 1px solid #24474A; border-radius: 16px; background: #10282B; display: flex; flex-wrap: wrap; overflow: hidden">
+<div style="flex: 1 1 280px; min-width: 0; min-height: 200px; background: #173538; display: flex; align-items: center; justify-content: center; color: #8FA6A0; font-size: 14px">[Project photo or diagram]</div>
+<div style="flex: 2 1 480px; min-width: 0; padding: 28px; display: flex; flex-direction: column; gap: 16px">
+<div style="display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px"><h3 style="margin: 0; font-family: 'IBM Plex Mono', monospace; font-size: 22px; font-weight: 600">[Data modelling project name]</h3><span style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: #8FA6A0">Finished [date]</span></div>
+<p style="margin: 0; color: #B3C2BB">[What it models, in one line.]</p>
+<ol aria-label="Project stage" style="list-style: none; margin: 0; padding: 0; display: flex; gap: 6px; font-family: 'IBM Plex Mono', monospace; font-size: 12px">
+<li style="flex: 1 1 0; display: flex; flex-direction: column; gap: 6px"><span style="height: 6px; border-radius: 3px; background: {{accent}}"></span><span style="color: #ECE6D6">Idea</span></li>
+<li style="flex: 1 1 0; display: flex; flex-direction: column; gap: 6px"><span style="height: 6px; border-radius: 3px; background: {{accent}}"></span><span style="color: #ECE6D6">Build</span></li>
+<li style="flex: 1 1 0; display: flex; flex-direction: column; gap: 6px"><span style="height: 6px; border-radius: 3px; background: {{accent}}"></span><span style="color: #ECE6D6">Test</span></li>
+<li style="flex: 1 1 0; display: flex; flex-direction: column; gap: 6px"><span style="height: 6px; border-radius: 3px; background: {{accent}}"></span><span style="color: #ECE6D6">Result</span></li>
+</ol>
+<p style="margin: 0; font-size: 15px"><span style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: {{accent}}">RESULT ›</span> [The final finding, one line]</p>
+</div>
+</a>
+</div>
+</section>
+
+<section id="notebook" style="max-width: 1200px; margin: 0 auto; padding: 72px 24px; display: flex; flex-wrap: wrap; gap: 48px">
+<div style="flex: 1 1 280px; min-width: 0; display: flex; flex-direction: column; gap: 8px">
+<h2 style="margin: 0; font-family: 'IBM Plex Mono', monospace; font-size: 36px; font-weight: 600; letter-spacing: -0.02em">Notebook</h2>
+<p style="margin: 0; color: #B3C2BB">Short dated notes from every project, failures included.</p>
+<a href="#notebook" style="font-weight: 500; margin-top: 8px">Full notebook →</a>
+</div>
+<ol style="flex: 999 1 600px; min-width: 0; list-style: none; margin: 0; padding: 0 0 0 24px; border-left: 1px solid #4A7176; display: flex; flex-direction: column; gap: 28px">
+<li style="display: flex; flex-direction: column; gap: 4px"><span style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: #8FA6A0">[DATE] · <span style="color: {{accent}}">[Project]</span></span><span style="font-size: 17px">[What happened, one line]</span></li>
+<li style="display: flex; flex-direction: column; gap: 4px"><span style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: #8FA6A0">[DATE] · <span style="color: {{accent}}">[Study]</span></span><span style="font-size: 17px">[What happened, one line]</span></li>
+<li style="display: flex; flex-direction: column; gap: 4px"><span style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: #8FA6A0">[DATE] · <span style="color: {{accent}}">[Project]</span></span><span style="font-size: 17px">[What happened, one line]</span></li>
+</ol>
+</section>
+
+<section id="about" style="background: #0C2124; border-top: 1px solid #24474A">
+<div style="max-width: 1200px; margin: 0 auto; padding: 72px 24px; display: flex; flex-wrap: wrap; gap: 48px; align-items: flex-start">
+<div style="flex: 1 1 480px; min-width: 0; display: flex; flex-direction: column; gap: 16px">
+<h2 style="margin: 0; font-family: 'IBM Plex Mono', monospace; font-size: 36px; font-weight: 600; letter-spacing: -0.02em">About</h2>
+<p style="margin: 0; font-size: 18px">[Two or three sentences: who you are, what you work on, why you do this in public.]</p>
+</div>
+<dl style="flex: 1 1 360px; min-width: 0; margin: 0; display: flex; flex-direction: column; gap: 0; border-top: 1px solid #24474A">
+<div style="display: flex; gap: 16px; padding: 14px 0; border-bottom: 1px solid #24474A"><dt style="width: 120px; font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: #8FA6A0">Studying</dt><dd style="margin: 0">Mech. Eng. + BComm (Finance), UCalgary</dd></div>
+<div style="display: flex; gap: 16px; padding: 14px 0; border-bottom: 1px solid #24474A"><dt style="width: 120px; font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: #8FA6A0">Based in</dt><dd style="margin: 0">Calgary, Alberta</dd></div>
+<div style="display: flex; gap: 16px; padding: 14px 0; border-bottom: 1px solid #24474A"><dt style="width: 120px; font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: #8FA6A0">Open to</dt><dd style="margin: 0">[Internships, collaborations, data requests]</dd></div>
+<div style="display: flex; gap: 16px; padding: 14px 0; border-bottom: 1px solid #24474A"><dt style="width: 120px; font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: #8FA6A0">Elsewhere</dt><dd style="margin: 0; display: flex; flex-wrap: wrap; gap: 16px"><a href="#about">X</a><a href="#about">LinkedIn</a><a href="#about">GitHub</a><a href="#about">Email</a></dd></div>
+</dl>
+</div>
+</section>
+
+<section id="subscribe" style="border-top: 1px solid #24474A">
+<div style="max-width: 1200px; margin: 0 auto; padding: 64px 24px; display: flex; flex-wrap: wrap; gap: 32px; align-items: center; justify-content: space-between">
+<div style="flex: 1 1 420px; min-width: 0; display: flex; flex-direction: column; gap: 8px">
+<h2 style="margin: 0; font-family: 'IBM Plex Mono', monospace; font-size: 30px; font-weight: 600">The monthly Calgary data digest</h2>
+<p style="margin: 0; color: #B3C2BB">One email a month: the best finding, the chart, and what I'm building next.</p>
+</div>
+<form style="flex: 1 1 380px; min-width: 0; display: flex; flex-wrap: wrap; gap: 12px">
+<label for="emailA" style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0)">Email address</label>
+<input id="emailA" type="email" placeholder="you@email.com" style="flex: 1 1 220px; min-width: 0; padding: 14px 16px; border-radius: 8px; border: 1px solid #2F5659; background: #0C2124; color: #ECE6D6; font-size: 16px; font-family: inherit">
+<button type="button" style="padding: 14px 22px; border-radius: 8px; border: 0; background: {{accent}}; color: #10282B; font-size: 16px; font-weight: 600; font-family: inherit">Subscribe</button>
+</form>
+</div>
+</section>
+
+<footer style="border-top: 1px solid #24474A">
+<div style="max-width: 1200px; margin: 0 auto; padding: 28px 24px; display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px; font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: #8FA6A0">
+<span>© [Year] Pramana · Shaurya Dave · Calgary, AB</span>
+<span>Data: City of Calgary, Government of Alberta, Statistics Canada, CMHC</span>
+</div>
+</footer>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"accent":{"editor":"color","default":"#FF7A3D","options":["#FF7A3D","#E8D44D","#9FE0B8","#9CD3F0"]},"$preview":{"width":1440,"height":3300}}'>
+class Component extends DCLogic {
+renderVals() {
+return { accent: this.props.accent ?? '#FF7A3D' };
+}
+}
+</script>
+</body>
+</html>
