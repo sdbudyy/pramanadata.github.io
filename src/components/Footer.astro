@@ -1,0 +1,76 @@
+---
+import Logo from './Logo.astro';
+import { NAV, SITE } from '../site.config';
+import { url } from '../lib/url';
+
+const year = new Date().getFullYear();
+---
+
+<footer class="site-footer">
+  <div class="wrap inner">
+    <div class="brand">
+      <Logo size={24} wordmark />
+      <p class="muted">{SITE.tagline}</p>
+    </div>
+    <nav aria-label="Footer">
+      <ul>
+        {NAV.map((item) => <li><a href={url(item.href)}>{item.label}</a></li>)}
+        <li><a href={SITE.xUrl} rel="me noopener" target="_blank">X</a></li>
+      </ul>
+    </nav>
+  </div>
+  <div class="wrap legal mono">
+    <span>© {year} {SITE.legalName} · {SITE.author} · {SITE.city}</span>
+    <span>Sources, methods and corrections are published with every study.</span>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    border-top: 1px solid var(--line);
+    margin-top: 80px;
+    padding-block: 40px 28px;
+  }
+  .inner {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 24px;
+  }
+  .brand {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    color: var(--text);
+  }
+  .brand p {
+    font-size: 15px;
+  }
+  ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px 20px;
+  }
+  ul a {
+    display: inline-flex;
+    min-height: 44px;
+    align-items: center;
+    color: var(--text-2);
+    text-decoration: none;
+  }
+  ul a:hover {
+    color: var(--text);
+  }
+  .legal {
+    margin-top: 20px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 8px 24px;
+    font-size: 13px;
+    color: var(--text-3);
+  }
+</style>

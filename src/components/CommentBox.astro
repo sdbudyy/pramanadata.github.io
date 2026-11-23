@@ -1,0 +1,225 @@
+---
+// Private feedback box. Messages go to a form service (Web3Forms) which
+// forwards them by email. The owner's address lives only in that service's
+// settings: the page holds an access key, which cannot reveal the address.
+// The key is injected at build time from the PUBLIC_WEB3FORMS_KEY secret.
+import { SITE } from '../site.config';
+
+interface Props {
+  topic?: string; // e.g. the study title, so the email says what it's about
+  heading?: string;
+}
+const { topic = 'General', heading = 'Tell me what I got wrong' } = Astro.props;
+const key = import.meta.env.PUBLIC_WEB3FORMS_KEY ?? '';
+const enabled = key.length > 0;
+const id = `cb-${Math.random().toString(36).slice(2, 8)}`;
+---
+
+<section class="comment panel" aria-labelledby={`${id}-h`}>
+  <div class="head">
+    <h2 id={`${id}-h`}>{heading}</h2>
+    <p class="muted">
+      Spotted an error, a better source, or a flaw in the method? Send it privately. Comments are not
+      published. Corrections are logged on the page.
+    </p>
+  </div>
+
+  {
+    enabled ? (
+      <form
+        class="form"
+        action="https://api.web3forms.com/submit"
+        method="POST"
+        data-comment-form
+      >
+        <input type="hidden" name="access_key" value={key} />
+        <input type="hidden" name="subject" value={`Pramana feedback: ${topic}`} />
+        <input type="hidden" name="from_name" value="Pramana site" />
+        <input type="hidden" name="topic" value={topic} />
+        <input
+          type="checkbox"
+          name="botcheck"
+          class="visually-hidden"
+          tabindex="-1"
+          autocomplete="off"
+          aria-hidden="true"
+        />
+
+        <label for={`${id}-msg`}>
+          Your comment <span class="req">required</span>
+        </label>
+        <textarea id={`${id}-msg`} name="message" rows="5" maxlength="3000" required />
+
+        <div class="row">
+          <div class="field">
+            <label for={`${id}-name`}>
+              Name <span class="opt">optional</span>
+            </label>
+            <input id={`${id}-name`} name="name" type="text" maxlength="80" autocomplete="name" />
+          </div>
+          <div class="field">
+            <label for={`${id}-email`}>
+              Email <span class="opt">optional, only if you want a reply</span>
+            </label>
+            <input
+              id={`${id}-email`}
+              name="email"
+              type="email"
+              maxlength="120"
+              autocomplete="email"
+            />
+          </div>
+        </div>
+
+        <div class="actions">
+          <button class="btn btn-primary" type="submit">
+            Send privately
+          </button>
+          <a class="btn btn-ghost" href={SITE.xUrl} rel="noopener" target="_blank">
+            Or discuss on X
+          </a>
+        </div>
+        <p class="status mono" role="status" aria-live="polite" />
+      </form>
+    ) : (
+      <div class="off">
+        <p class="mono">The private comment box opens soon.</p>
+        <a class="btn btn-ghost" href={SITE.xUrl} rel="noopener" target="_blank">
+          Discuss on X
+        </a>
+      </div>
+    )
+  }
+</section>
+
+<script>
+  document.querySelectorAll<HTMLFormElement>('form[data-comment-form]').forEach((form) => {
+    const status = form.querySelector<HTMLElement>('.status');
+    const button = form.querySelector<HTMLButtonElement>('button[type="submit"]');
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      if (!status || !button) return;
+      button.disabled = true;
+      status.dataset.state = 'busy';
+      status.textContent = 'Sending…';
+      try {
+        const res = await fetch(form.action, {
+          method: 'POST',
+          headers: { Accept: 'application/json' },
+          body: new FormData(form),
+        });
+        const json = await res.json().catch(() => ({}));
+        if (res.ok && json.success !== false) {
+          form.reset();
+          status.dataset.state = 'ok';
+          status.textContent = 'Thanks. Your comment was sent privately.';
+        } else {
+          throw new Error(json.message || 'Send failed');
+        }
+      } catch {
+        status.dataset.state = 'err';
+        status.textContent = 'That didn’t send. Please try again, or reply on X.';
+      } finally {
+        button.disabled = false;
+      }
+    });
+  });
+</script>
+
+<style>
+  .comment {
+    padding: clamp(20px, 4vw, 28px);
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+  }
+  .head {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  h2 {
+    font-size: 22px;
+  }
+  .head p {
+    font-size: 15px;
+    max-width: 640px;
+  }
+  .form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  label {
+    font-size: 14px;
+    font-weight: 600;
+  }
+  .req,
+  .opt {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 400;
+    color: var(--text-3);
+    margin-left: 6px;
+  }
+  textarea,
+  input[type='text'],
+  input[type='email'] {
+    width: 100%;
+    background: var(--bg);
+    border: 1px solid var(--line-strong);
+    border-radius: var(--radius-sm);
+    padding: 12px 14px;
+    font-size: 16px; /* 16px stops iOS zooming on focus */
+  }
+  textarea {
+    resize: vertical;
+    min-height: 120px;
+  }
+  textarea:focus,
+  input:focus {
+    border-color: var(--accent);
+    outline: none;
+  }
+  .row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 4px;
+  }
+  .field {
+    flex: 1 1 240px;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 6px;
+  }
+  .status {
+    font-size: 13px;
+    min-height: 1.4em;
+    color: var(--text-2);
+  }
+  .status[data-state='ok'] {
+    color: var(--ok);
+  }
+  .status[data-state='err'] {
+    color: var(--warn);
+  }
+  button[disabled] {
+    opacity: 0.6;
+    cursor: progress;
+  }
+  .off {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px 20px;
+    color: var(--text-2);
+  }
+</style>

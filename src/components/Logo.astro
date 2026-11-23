@@ -1,0 +1,53 @@
+---
+// The confidence ellipse. `small` uses the thicker cut meant for 32 px and below.
+interface Props {
+  size?: number;
+  small?: boolean;
+  wordmark?: boolean;
+  label?: string;
+}
+const { size = 28, small = size < 32, wordmark = false, label } = Astro.props;
+const g = small ? { rx: 48, ry: 27, sw: 11, r: 14 } : { rx: 50, ry: 26, sw: 8, r: 11 };
+---
+
+<span class="logo">
+  <svg
+    width={size}
+    height={size}
+    viewBox="0 0 120 120"
+    aria-hidden={label ? undefined : 'true'}
+    role={label ? 'img' : undefined}
+    aria-label={label}
+  >
+    <ellipse
+      cx="60"
+      cy="60"
+      rx={g.rx}
+      ry={g.ry}
+      transform="rotate(-35 60 60)"
+      fill="none"
+      stroke="currentColor"
+      stroke-width={g.sw}></ellipse>
+    <circle cx="60" cy="60" r={g.r} fill="currentColor"></circle>
+  </svg>
+  {wordmark && <span class="word">Pramana</span>}
+</span>
+
+<style>
+  .logo {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    color: inherit;
+  }
+  svg {
+    flex: none;
+    display: block;
+  }
+  .word {
+    font-family: var(--font-mono);
+    font-weight: 600;
+    font-size: 19px;
+    letter-spacing: -0.02em;
+  }
+</style>
