@@ -1,0 +1,347 @@
+---
+// Fig. 1: the main chart with view tabs. Drawn at build time in two sizes
+// (desktop and phone, toggled by CSS), then redrawn in the browser when the
+// reader switches view, hovers (desktop) or taps/drags (phone).
+import { DESKTOP, MOBILE, lineSvg, hbarsSvg, lineLabel, type View } from '../../lib/chart';
+import type { Study } from '../../lib/studies';
+
+interface Props {
+  chart: Study['data']['chart'];
+}
+const { chart } = Astro.props;
+const views = chart.views as View[];
+const first = views[0];
+const ann = chart.annotation;
+const mSel = ann ? ann.index : chart.years.length - 1;
+
+const draw = (mobile: boolean) => {
+  const L = mobile ? MOBILE : DESKTOP;
+  if (first.type === 'line') return { w: L.w, h: L.h, inner: lineSvg(L, chart, first, mobile ? mSel : null) };
+  const b = hbarsSvg({ w: mobile ? 320 : 1100, mobile }, first.bars, first.unit);
+  return { w: mobile ? 320 : 1100, h: b.h, inner: b.inner };
+};
+const d = draw(false);
+const m = draw(true);
+const label = first.type === 'line' ? lineLabel(chart, first) : first.caption ?? first.label;
+
+const axisNote = (v: View) =>
+  v.type === 'line' && v.yMin !== 0 ? `Axis starts at ${v.yMin}, not zero.` : '';
+const lineNote = (i: number) =>
+  ann && i === ann.index ? `① ${ann.text}` : first.type === 'line' ? (first.notes?.[i] ?? '') : '';
+---
+
+<figure class="fig main-chart" data-chart={JSON.stringify(chart)}>
+  <div class="head">
+    <figcaption>Fig. 1 — {chart.caption}</figcaption>
+    {
+      views.length > 1 && (
+        <div role="group" aria-label="Chart view" class="tabs" style={`--n:${views.length}`}>
+          {views.map((v, i) => (
+            <button type="button" data-view={v.id} aria-pressed={i === 0 ? 'true' : 'false'}>
+              <span class="long">{v.label}</span>
+              <span class="short">{v.short ?? v.label}</span>
+            </button>
+          ))}
+        </div>
+      )
+    }
+  </div>
+
+  <svg
+    class="plot plot-d"
+    role="img"
+    aria-label={label}
+    viewBox={`0 0 ${d.w} ${d.h}`}
+    tabindex="0"
+    set:html={d.inner}
+  />
+  <svg
+    class="plot plot-m"
+    role="img"
+    aria-label={label}
+    viewBox={`0 0 ${m.w} ${m.h}`}
+    tabindex="0"
+    set:html={m.inner}
+  />
+
+  <p class="note" data-kind={first.type} aria-live="polite">
+    <span class="note-text">{first.type === 'line' ? lineNote(mSel) : first.caption}</span>{' '}<span class="hint">Tap or drag on the chart to read values.</span>
+  </p>
+
+  <div class="foot">
+    <div class="legend" hidden={first.type !== 'line'}>
+      <span><span class="key-a">━━</span> <span class="long">{chart.aLabel}</span><span class="short">{chart.aShort}</span></span>
+      <span><span class="key-b">╌╌</span> <span class="long">{chart.bLabel}</span><span class="short">{chart.bShort}</span></span>
+    </div>
+    <span class="src">
+      Source: <span class="long">{chart.source}</span><span class="short">{chart.sourceShort ?? chart.source}</span>{' '}·{' '}{chart.unit}.{' '}<span class="axis-note">{axisNote(first)}</span>
+    </span>
+  </div>
+</figure>
+
+<script>
+  import { DESKTOP, MOBILE, lineSvg, hbarsSvg, indexAt, lineLabel, type View, type ChartData } from '../../lib/chart';
+
+  type Chart = ChartData & {
+    aLabel: string;
+    bLabel: string;
+    views: View[];
+  };
+
+  document.querySelectorAll<HTMLElement>('.main-chart').forEach((fig) => {
+    const chart = JSON.parse(fig.dataset.chart || '{}') as Chart;
+    const n = chart.years.length;
+    const ann = chart.annotation;
+    const svgD = fig.querySelector<SVGSVGElement>('.plot-d')!;
+    const svgM = fig.querySelector<SVGSVGElement>('.plot-m')!;
+    const note = fig.querySelector<HTMLElement>('.note')!;
+    const noteText = fig.querySelector<HTMLElement>('.note-text')!;
+    const legend = fig.querySelector<HTMLElement>('.legend')!;
+    const axisNote = fig.querySelector<HTMLElement>('.axis-note')!;
+    const buttons = [...fig.querySelectorAll<HTMLButtonElement>('.tabs button')];
+
+    let view: View = chart.views[0];
+    let selD: number | null = null;
+    let selM: number = ann ? ann.index : n - 1;
+
+    const render = () => {
+      if (view.type === 'line') {
+        svgD.setAttribute('viewBox', `0 0 ${DESKTOP.w} ${DESKTOP.h}`);
+        svgM.setAttribute('viewBox', `0 0 ${MOBILE.w} ${MOBILE.h}`);
+        svgD.innerHTML = lineSvg(DESKTOP, chart, view, selD);
+        svgM.innerHTML = lineSvg(MOBILE, chart, view, selM);
+        const label = lineLabel(chart, view);
+        svgD.setAttribute('aria-label', label);
+        svgM.setAttribute('aria-label', label);
+        const text = ann && selM === ann.index ? `① ${ann.text}` : (view.notes?.[selM] ?? '');
+        noteText.textContent = text;
+        axisNote.textContent = view.yMin !== 0 ? `Axis starts at ${view.yMin}, not zero.` : '';
+      } else {
+        const bd = hbarsSvg({ w: 1100, mobile: false }, view.bars, view.unit);
+        const bm = hbarsSvg({ w: 320, mobile: true }, view.bars, view.unit);
+        svgD.setAttribute('viewBox', `0 0 1100 ${bd.h}`);
+        svgM.setAttribute('viewBox', `0 0 320 ${bm.h}`);
+        svgD.innerHTML = bd.inner;
+        svgM.innerHTML = bm.inner;
+        const label = view.caption ?? view.label;
+        svgD.setAttribute('aria-label', label);
+        svgM.setAttribute('aria-label', label);
+        noteText.textContent = view.caption ?? '';
+        axisNote.textContent = '';
+      }
+      note.dataset.kind = view.type;
+      legend.hidden = view.type !== 'line';
+    };
+
+    buttons.forEach((btn) =>
+      btn.addEventListener('click', () => {
+        const next = chart.views.find((v) => v.id === btn.dataset.view);
+        if (!next || next === view) return;
+        view = next;
+        buttons.forEach((b) => b.setAttribute('aria-pressed', String(b === btn)));
+        render();
+      }),
+    );
+
+    // Reading values: hover on desktop, tap or drag on phones. Vertical
+    // scrolling still works because the plot allows pan-y.
+    const idx = (svg: SVGSVGElement, e: PointerEvent, w: number, L: typeof DESKTOP) => {
+      const r = svg.getBoundingClientRect();
+      return indexAt(L, ((e.clientX - r.left) / r.width) * w, n);
+    };
+    svgD.addEventListener('pointermove', (e) => {
+      if (view.type !== 'line') return;
+      const i = idx(svgD, e, DESKTOP.w, DESKTOP);
+      if (i !== selD) { selD = i; render(); }
+    });
+    svgD.addEventListener('pointerleave', () => {
+      if (selD !== null) { selD = null; render(); }
+    });
+    const readM = (e: PointerEvent) => {
+      if (view.type !== 'line') return;
+      if (e.type === 'pointermove' && e.pointerType !== 'mouse' && !e.buttons) return;
+      const i = idx(svgM, e, MOBILE.w, MOBILE);
+      if (i !== selM) { selM = i; render(); }
+    };
+    svgM.addEventListener('pointerdown', readM);
+    svgM.addEventListener('pointermove', readM);
+
+    // Keyboard: arrow keys step through the years.
+    const key = (mobile: boolean) => (e: KeyboardEvent) => {
+      if (view.type !== 'line' || (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight')) return;
+      e.preventDefault();
+      const step = e.key === 'ArrowLeft' ? -1 : 1;
+      if (mobile) selM = Math.max(0, Math.min(n - 1, selM + step));
+      else selD = Math.max(0, Math.min(n - 1, (selD ?? (ann ? ann.index : 0)) + (selD === null ? 0 : step)));
+      render();
+    };
+    svgD.addEventListener('keydown', key(false));
+    svgM.addEventListener('keydown', key(true));
+    svgD.addEventListener('blur', () => { selD = null; render(); });
+  });
+</script>
+
+<style>
+  .fig {
+    margin: 0;
+    background: var(--bg-alt);
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  .head {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+  }
+  figcaption {
+    font-size: 18px;
+    font-weight: 600;
+  }
+  .tabs {
+    display: flex;
+    border: 1px solid var(--line-control);
+    border-radius: 8px;
+    overflow: hidden;
+    font-size: 14px;
+  }
+  .tabs button {
+    padding: 8px 14px;
+    border: 0;
+    background: transparent;
+    color: var(--text);
+    font-family: inherit;
+    cursor: pointer;
+    transition: background-color 0.2s, color 0.2s;
+  }
+  .tabs button:last-child:not(:first-child) {
+    border-left: 1px solid var(--line-control);
+  }
+  .tabs button[aria-pressed='true'] {
+    background: var(--accent);
+    color: var(--accent-ink);
+    font-weight: 600;
+  }
+  .tabs button:not([aria-pressed='true']):hover {
+    background: var(--bg-raised);
+  }
+  .plot {
+    width: 100%;
+    height: auto;
+    display: block;
+    touch-action: pan-y;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .plot:focus-visible {
+    outline-offset: 4px;
+    border-radius: 4px;
+  }
+  .plot-m,
+  .short,
+  .hint {
+    display: none;
+  }
+  .note {
+    font-size: 14px;
+    color: var(--text-2);
+  }
+  /* On desktop the annotation lives inside the chart, so the line note is phone-only. */
+  .note[data-kind='line'] {
+    display: none;
+  }
+  .note:empty {
+    display: none;
+  }
+  .foot {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 8px 24px;
+    font-size: 14px;
+    color: var(--text-2);
+  }
+  .legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 20px;
+  }
+  .legend[hidden] {
+    display: none;
+  }
+  .key-a {
+    color: var(--accent);
+  }
+  .key-b {
+    color: var(--info);
+  }
+  .src {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    color: var(--text-3);
+  }
+
+  @media (max-width: 760px) {
+    .fig {
+      border-radius: 14px;
+      padding: 14px;
+      gap: 12px;
+    }
+    .head {
+      flex-direction: column;
+      align-items: stretch;
+    }
+    figcaption {
+      font-size: 15px;
+      line-height: 1.35;
+    }
+    .tabs {
+      display: grid;
+      grid-template-columns: 1fr 1.3fr 1fr;
+      font-size: 12.5px;
+      text-align: center;
+    }
+    .tabs:not([style*='--n:3']) {
+      grid-template-columns: repeat(var(--n), 1fr);
+    }
+    .tabs button {
+      min-height: 44px;
+      padding: 8px 4px;
+      font-weight: 600;
+    }
+    .plot-d,
+    .long {
+      display: none;
+    }
+    .plot-m {
+      display: block;
+    }
+    .short {
+      display: inline;
+    }
+    .note,
+    .note[data-kind='line'] {
+      display: block;
+      font-size: 13px;
+    }
+    .note[data-kind='line'] .hint {
+      display: inline;
+      color: var(--text-3);
+    }
+    .foot {
+      flex-direction: column;
+      gap: 8px;
+      font-size: 13px;
+    }
+    .legend {
+      gap: 14px;
+    }
+    .src {
+      font-size: 11px;
+    }
+  }
+</style>

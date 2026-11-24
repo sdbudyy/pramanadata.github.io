@@ -1,0 +1,84 @@
+---
+// Fig. 2, 3…: small static bar charts. Drawn twice (desktop and phone sizes)
+// so labels stay readable; CSS shows the right one. Bars always start at zero.
+import { hbarsSvg, vbarsSvg } from '../../lib/chart';
+import type { Study } from '../../lib/studies';
+
+interface Props {
+  fig: Study['data']['figures'][number];
+  n: number;
+}
+const { fig, n } = Astro.props;
+
+const draw = (mobile: boolean) => {
+  const w = mobile ? 320 : 480;
+  const r =
+    fig.type === 'hbars'
+      ? hbarsSvg({ w, mobile }, fig.bars, fig.unit)
+      : vbarsSvg({ w, mobile }, fig.bars, fig.unit, fig.refLine);
+  return { w, ...r };
+};
+const d = draw(false);
+const m = draw(true);
+const label = `${fig.caption}: ${fig.bars.map((b) => `${b.label} ${b.value}${fig.unit}`).join(', ')}.`;
+---
+
+<figure class="fig">
+  <figcaption>Fig. {n} — {fig.caption}</figcaption>
+  <svg class="d" role="img" aria-label={label} viewBox={`0 0 ${d.w} ${d.h}`} set:html={d.inner} />
+  <svg class="m" role="img" aria-label={label} viewBox={`0 0 ${m.w} ${m.h}`} set:html={m.inner} />
+  <p class="src">{fig.source}</p>
+</figure>
+
+<style>
+  .fig {
+    flex: 1 1 480px;
+    min-width: 0;
+    margin: 0;
+    background: var(--bg-alt);
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  figcaption {
+    font-weight: 600;
+  }
+  svg {
+    width: 100%;
+    height: auto;
+    display: block;
+    overflow: visible;
+  }
+  .m {
+    display: none;
+  }
+  .src {
+    margin-top: auto;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--text-3);
+  }
+  @media (max-width: 760px) {
+    .fig {
+      flex-basis: auto;
+      border-radius: 14px;
+      padding: 14px;
+      gap: 10px;
+    }
+    figcaption {
+      font-size: 15px;
+    }
+    .d {
+      display: none;
+    }
+    .m {
+      display: block;
+    }
+    .src {
+      font-size: 11px;
+    }
+  }
+</style>

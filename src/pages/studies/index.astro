@@ -1,9 +1,47 @@
 ---
 import Base from '../../layouts/Base.astro';
 import Stub from '../../components/Stub.astro';
+import { allStudies, studyNo } from '../../lib/studies';
+import { url } from '../../lib/url';
+
+const studies = await allStudies();
 ---
 <Base title="Studies">
   <Stub eyebrow="Studies" title="Every study, with its sources" stage="stage 6">
     Data studies on Calgary, Alberta and Canada. Each one shows its method, rates its sources and logs its corrections.
   </Stub>
+  <ul class="wrap list">
+    {
+      studies.map((s) => (
+        <li>
+          <a href={url(`studies/${s.id}/`)}>{s.data.title}</a>
+          <span class="mono meta">
+            {studyNo(s.data.number)} · {s.data.topic}{s.data.placeholder && ' · placeholder, sample data'}
+          </span>
+        </li>
+      ))
+    }
+  </ul>
 </Base>
+<style>
+  .list {
+    list-style: none;
+    margin: 32px auto 0;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  .list li {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  .list a {
+    font-size: 18px;
+    font-weight: 600;
+  }
+  .meta {
+    font-size: 13px;
+    color: var(--text-3);
+  }
+</style>

@@ -14,9 +14,15 @@ interface Props {
   description?: string;
   ogImage?: string; // site-relative path; per-study images come in stage 7
   noindex?: boolean;
+  progress?: boolean; // reading-progress line under the header on phones
 }
-const { title, description = SITE.description, ogImage = 'og-default.png', noindex = false } =
-  Astro.props;
+const {
+  title,
+  description = SITE.description,
+  ogImage = 'og-default.png',
+  noindex = false,
+  progress = false,
+} = Astro.props;
 const fullTitle = title ? `${title} · ${SITE.name}` : `${SITE.name} · ${SITE.tagline}`;
 const canonical = new URL(Astro.url.pathname, Astro.site);
 const og = new URL(url(ogImage), Astro.site);
@@ -26,6 +32,7 @@ const og = new URL(url(ogImage), Astro.site);
 <html lang="en-CA">
   <head>
     <meta charset="utf-8" />
+    <script is:inline>document.documentElement.classList.add('js');</script>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{fullTitle}</title>
     <meta name="description" content={description} />
@@ -47,7 +54,7 @@ const og = new URL(url(ogImage), Astro.site);
   </head>
   <body>
     <a class="skip-link" href="#main">Skip to content</a>
-    <Header />
+    <Header progress={progress} />
     <main id="main">
       <slot />
     </main>

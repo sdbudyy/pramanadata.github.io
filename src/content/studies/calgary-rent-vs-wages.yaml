@@ -1,0 +1,154 @@
+# PLACEHOLDER STUDY. Every number below is invented to test the page layout.
+# Replace with real, sourced data before setting `placeholder: false`.
+number: 1
+title: Has Calgary rent outpaced wages since 2020?
+topic: Housing
+published: 2026-11-23
+readMinutes: 6
+placeholder: true
+answer: >-
+  [Sample answer] Yes. Typical rent rose about 38% while typical wages rose about 17%, so rent now
+  takes a bigger bite of every paycheque.
+shareText: "Has Calgary rent outpaced wages since 2020? Every source, the method and what it can't show:"
+
+tiles:
+  - { kind: headline, label: The gap, value: +21 pts, note: 'rent growth minus wage growth, 2020–2025' }
+  - { label: Rent growth, value: +38%, note: 'median 2-bed, 2020 → 2025' }
+  - { label: Wage growth, value: +17%, note: median weekly earnings }
+  - { kind: text, label: Hardest-hit area, value: NW, note: +26 pt gap }
+
+chart:
+  caption: Rent and wages, indexed to 2020 = 100
+  years: ['2020', '2021', '2022', '2023', '2024', '2025']
+  aLabel: Median rent
+  aShort: Rent
+  bLabel: Median wage
+  bShort: Wage
+  unit: index, 2020 = 100
+  annotation:
+    index: 3
+    title: 2023
+    text: Biggest single-year jump in rent.
+  views:
+    - type: line
+      id: nominal
+      label: Nominal
+      a: [100, 103, 110, 121, 131, 138]
+      b: [100, 102, 105, 109, 113, 117]
+      yMin: 90
+      yMax: 140
+      yTicks: [100, 110, 125, 140]
+      notes:
+        - Index starts at 100 in 2020.
+        - Rent and wages still move together.
+        - Rent pulls away as vacancies fall.
+        - Biggest single-year jump in rent.
+        - Gap keeps widening.
+        - Gap reaches its widest point so far.
+    - type: line
+      id: real
+      label: Inflation-adjusted
+      short: Inflation-adj.
+      a: [100, 100, 100, 106, 112, 115]
+      b: [100, 99, 95, 96, 97, 98]
+      yMin: 90
+      yMax: 140
+      yTicks: [100, 110, 125, 140]
+      notes:
+        - Index starts at 100 in 2020.
+        - After inflation, wages slip while rent holds.
+        - After inflation, wages fell while rent held flat.
+        - Rent starts rising faster than prices.
+        - After inflation, wages fell while rent rose.
+        - After inflation, rent is up 15% and wages are down 2%.
+    - type: bars
+      id: area
+      label: By quadrant
+      short: By area
+      unit: ' pts'
+      caption: Gap between rent and wage growth, 2020–2025, by quadrant.
+      bars:
+        - { label: NW, value: 26 }
+        - { label: NE, value: 22 }
+        - { label: SW, value: 18 }
+        - { label: SE, value: 14 }
+  source: CMHC Rental Market Survey; Statistics Canada, Table 14-10-0223-01
+  sourceShort: CMHC; StatCan 14-10-0223-01
+
+findings:
+  - Rent grew 38%, wages 17%. The gap opened in 2022, not 2020.
+  - After inflation, rent is up 15% and wages are down 2%.
+  - The NW saw the widest gap, at 26 points.
+caveat: >-
+  These are asking rents for vacant units. People who stayed in the same place usually pay less,
+  so the squeeze is sharpest for movers.
+
+figures:
+  - caption: Gap by quadrant
+    type: hbars
+    unit: ' pts'
+    bars:
+      - { label: NW, value: 26 }
+      - { label: NE, value: 22 }
+      - { label: SW, value: 18 }
+      - { label: SE, value: 14 }
+    source: 'Rent growth minus wage growth, 2020–2025, percentage points'
+  - caption: Share of income spent on rent
+    type: vbars
+    unit: '%'
+    bars:
+      - { label: '’20', value: 24 }
+      - { label: '’21', value: 25 }
+      - { label: '’22', value: 27 }
+      - { label: '’23', value: 31 }
+      - { label: '’24', value: 33 }
+      - { label: '’25', value: 35 }
+    refLine: { value: 30, label: 30% affordability line }
+    source: Median 2-bed rent as a share of median monthly earnings
+
+explorer:
+  question: Does the result depend on the start year?
+  years: [2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025]
+  a: [1150, 1165, 1170, 1180, 1190, 1200, 1236, 1320, 1452, 1572, 1656]
+  b: [1100, 1080, 1090, 1110, 1130, 1150, 1173, 1208, 1254, 1300, 1346]
+  studyStart: 2020
+  picks: [2015, 2018, 2020, 2022]
+  gapLabel: Gap (rent − wage)
+
+datasets:
+  - name: Rental Market Survey
+    publisher: CMHC
+    years: 2020–2025
+    licence: To confirm
+    url: https://www.cmhc-schl.gc.ca/professionals/housing-markets-data-and-research/housing-data/data-tables/rental-market
+  - name: Average weekly earnings
+    publisher: Statistics Canada
+    years: 2020–2025
+    licence: Open Government Licence – Canada
+    url: https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=1410022301
+steps:
+  - Pulled and cleaned both datasets
+  - Matched geography and time periods
+  - Indexed both series to 2020 = 100
+  - Adjusted for inflation with Alberta CPI
+assumptions:
+  - Wages are Alberta-wide; rent is Calgary only
+  - Asking rents, not what sitting tenants pay
+  - A bigger wage jump in 2026 would narrow the gap
+
+sources:
+  - name: Rental Market Survey
+    publisher: CMHC
+    kind: federal agency
+    scores: { authority: 5, method: 5, recency: 4, fit: 4, independence: 5 }
+    note: Runs once a year, so it lags fast market moves.
+  - name: Average weekly earnings
+    publisher: Statistics Canada
+    kind: federal agency
+    scores: { authority: 5, method: 4, recency: 4, fit: 2, independence: 4 }
+    note: Province-wide wages, not Calgary only.
+
+files: {}
+
+revisions:
+  - { version: v1.0, date: 2026-11-23, text: Published (placeholder) }
