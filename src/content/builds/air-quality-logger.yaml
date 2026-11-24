@@ -1,0 +1,11 @@
+# PLACEHOLDER PROJECT. Invented to test the layout; replace with a real build.
+name: Balcony air-quality logger
+kind: Arduino
+summary: '[Placeholder] Logs fine particles (PM2.5) every minute to see how wildfire smoke reaches indoors.'
+stage: build
+updated: 2026-11-23
+placeholder: true
+log:
+  - { date: 2026-11-23, text: '[Placeholder] Sensor reads 3 µg/m³ high next to the heater; moved it.' }
+  - { date: 2026-11-16, text: '[Placeholder] First full day of readings saved to the SD card.' }
+  - { date: 2026-11-09, text: '[Placeholder] Parts list and wiring diagram done.' }

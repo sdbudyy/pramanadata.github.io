@@ -1,0 +1,11 @@
+# PLACEHOLDER PROJECT. Invented to test the layout; replace with a real build.
+name: CTrain ridership model
+kind: Data model
+summary: '[Placeholder] A simple model of how weather and events move daily CTrain ridership.'
+stage: result
+updated: 2026-11-20
+placeholder: true
+result: '[Placeholder] Cold snaps cut ridership less than snowfall does.'
+log:
+  - { date: 2026-11-20, text: '[Placeholder] Model finished; write-up posted.' }
+  - { date: 2026-11-12, text: '[Placeholder] First version overfit badly. Dropped half the inputs.' }
