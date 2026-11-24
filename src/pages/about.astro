@@ -6,7 +6,7 @@
 // the site's real content (placeholders excluded) instead of example figures;
 // personal details Shaurya has not written yet are visibly labelled.
 import Base from '../layouts/Base.astro';
-import CommentBox from '../components/CommentBox.astro';
+import MessageDialog from '../components/MessageDialog.astro';
 import { allStudies } from '../lib/studies';
 import { SITE } from '../site.config';
 import { url } from '../lib/url';
@@ -62,7 +62,7 @@ const RULES = [
   { rule: 'My stakes are disclosed', proof: 'A disclosure line appears on any study my own interests could touch.', color: '#E8D44D' },
   { rule: 'Mistakes are fixed in public', proof: 'Every study has a revision log, and total corrections are counted below.', color: '#9FE0B8' },
 ];
-const ROLES = ['mechanical engineering student', 'finance student', 'data modeller', 'hardware tinkerer', 'Calgarian'];
+const ROLES = ['mechanical engineering student', 'data modeller', 'hardware tinkerer', 'Calgarian'];
 ---
 
 <Base title="About" description="How the data and simulations on Pramana are found, checked and built, then who makes them.">
@@ -276,9 +276,8 @@ const ROLES = ['mechanical engineering student', 'finance student', 'data modell
         <div class="me-text">
           <h2>I’m {SITE.author},<br /><span class="acc">a <span class="role" data-role>{ROLES[0]}</span></span>.</h2>
           <p class="bio">
-            I study Mechanical Engineering and Finance at the University of Calgary. I build hardware, model public data on
-            Calgary, Alberta and Canada, and publish everything I find, method included.{' '}
-            <span class="ph">[Placeholder: one line on what you’re looking for, e.g. internships, collaborators, data requests.]</span>
+            I study Mechanical Engineering at the University of Calgary. I build hardware, model public data on
+            Calgary, Alberta and Canada, and publish everything I find, method included.
           </p>
           <p class="disc">
             <span class="k warn">DISCLOSURE ›</span>{' '}
@@ -292,18 +291,16 @@ const ROLES = ['mechanical engineering student', 'finance student', 'data modell
           </div>
           <p class="k">Counted from the site itself. Placeholder studies aren’t counted. Corrections are counted on purpose.</p>
           <div class="me-btns">
-            <a class="btn btn-primary" href="#contact">Send me a message</a>
-            <a class="btn rep" href="#contact">Found a mistake? Report it</a>
+            <button type="button" class="btn btn-primary" data-message="message">Send me a message</button>
+            <button type="button" class="btn rep" data-message="mistake">Found a mistake? Report it</button>
             <a class="btn btn-ghost" href={SITE.xUrl} rel="me noopener" target="_blank">X</a>
             <a class="btn btn-ghost" href="https://github.com/sdbudyy" rel="me noopener" target="_blank">GitHub</a>
           </div>
         </div>
       </div>
-      <div id="contact">
-        <CommentBox topic="About page" heading="Send a private message" />
-      </div>
     </section>
   </div>
+  <MessageDialog />
 </Base>
 
 <script>
@@ -380,7 +377,7 @@ const ROLES = ['mechanical engineering student', 'finance student', 'data modell
   // Rotating role line
   const role = document.querySelector<HTMLElement>('[data-role]');
   if (role && !reduce) {
-    const roles = ['mechanical engineering student', 'finance student', 'data modeller', 'hardware tinkerer', 'Calgarian'];
+    const roles = ['mechanical engineering student', 'data modeller', 'hardware tinkerer', 'Calgarian'];
     let i = 0;
     setInterval(() => {
       if (document.hidden) return;
@@ -1209,9 +1206,6 @@ const ROLES = ['mechanical engineering student', 'finance student', 'data modell
   .rep:hover {
     background: var(--warn-bg);
     color: var(--warn);
-  }
-  #contact {
-    scroll-margin-top: 80px;
   }
 
   /* ---------------- phone */
