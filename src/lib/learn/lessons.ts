@@ -185,6 +185,12 @@ export function avmView(s: AvmS) {
   const hiPx = s.hi * pxk, capped = s.hiOn && hiPx > maxPx;
   const meanPx = mean * pxk, ghostPx = baseMean * pxk;
   const meanPos = Math.min(maxPx + 60, meanPx);
+  const offChart = meanPx > maxPx + 60;
+  const medPos = median * pxk;
+  const labelH = s.compact ? 26 : 17;
+  const chartH = s.compact ? 330 : 580;
+  const meanBelow = meanPos + labelH + 4 > chartH; // no room above the pinned line
+  const medBelow = !meanBelow && meanPos - medPos < labelH + 6 && medPos > labelH + 4;
   const people = BASE.map((v) => ({ label: kfmt(v), h: v * pxk, color: '#4A7176', op: 1, cls: 'bar', capped: false, hi: false }))
     .concat([{ label: s.hiOn ? kfmt(s.hi) : '?', h: s.hiOn ? Math.min(maxPx, hiPx) : 8, color: ACCENT, op: s.hiOn ? 1 : 0.25, cls: 'shootbar', capped, hi: true }]);
   const times = (hiPx / maxPx).toFixed(1);
@@ -195,21 +201,19 @@ export function avmView(s: AvmS) {
           `<div class="pcol" style="opacity:${pp.op}"><span class="plabel${pp.hi && s.hiOn ? ' hi' : ''}">${esc(pp.label)}${pp.capped ? ' ↑' : ''}</span><span class="head" style="background:${pp.color}"></span><span class="${pp.cls}" style="height:${pp.h.toFixed(0)}px;background:${pp.color};${pp.capped ? 'border-top:4px dashed #FFC2A0' : ''}"></span></div>`,
       )
       .join('') +
-    // Lines and the pull arrow carry no text: their labels live in the key above
-    // the chart, so nothing can collide with the bar labels as the lines move.
+    // Line labels sit on their lines at the left, in a margin the bars never
+    // reach. When the two lines are close, the median label drops below its line.
     (s.hiOn
       ? `<div class="line ghost" style="bottom:${ghostPx.toFixed(0)}px"></div>` +
         `<div class="pull" aria-hidden="true" style="bottom:${ghostPx.toFixed(0)}px;height:${Math.max(0, meanPos - ghostPx - 12).toFixed(0)}px"><span></span></div>`
       : '') +
-    `<div class="line med" style="bottom:${(median * pxk).toFixed(0)}px"></div>` +
-    `<div class="line mean" style="bottom:${meanPos.toFixed(0)}px"></div>`;
-  const key =
-    `<span class="kk mean"><i aria-hidden="true"></i>AVERAGE <b>${kfmt(mean)}</b>${meanPx > maxPx + 60 ? ' <em>↑ too high to fit: line pinned to the top edge</em>' : ''}</span>` +
-    `<span class="kk med"><i aria-hidden="true"></i>MEDIAN <b>${kfmt(median)}</b></span>` +
-    (s.hiOn
-      ? `<span class="kk pull"><i aria-hidden="true"></i><b>+${kfmt(mean - baseMean)}</b> One person pulled the average up from ${kfmt(baseMean)} to ${kfmt(mean)}.</span>` +
-        (capped ? `<span class="kk cut"><i aria-hidden="true"></i><span>Their bar is cut off at the top: at full height it would be <b>${times}×</b> taller than this chart.</span></span>` : '')
-      : '');
+    `<div class="line med" style="bottom:${medPos.toFixed(0)}px"><span class="ll ${medBelow ? 'dn' : 'up'}"><span class="w">MEDIAN</span> <b>${kfmt(median)}</b></span></div>` +
+    `<div class="line mean" style="bottom:${meanPos.toFixed(0)}px"><span class="ll ${meanBelow ? 'dn' : 'up'}"><span class="w">AVERAGE${offChart ? ' ↑' : ''}</span> <b>${kfmt(mean)}</b></span></div>`;
+  const key = s.hiOn
+    ? `<span class="kk pull"><i aria-hidden="true"></i><b>+${kfmt(mean - baseMean)}</b> One person pulled the average up from ${kfmt(baseMean)} to ${kfmt(mean)}.</span>` +
+      (offChart ? `<span class="kk cut"><i aria-hidden="true" class="pin"></i><span>The average is too high to fit, so its line is pinned to the top edge.</span></span>` : '') +
+      (capped ? `<span class="kk cut"><i aria-hidden="true"></i><span>Their bar is cut off at the top: at full height it would be <b>${times}×</b> taller than this chart.</span></span>` : '')
+    : '';
   const p = pop();
   return {
     toggle: s.hiOn
