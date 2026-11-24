@@ -8,6 +8,8 @@ export const SITE = {
   description:
     'Neutral, transparent data studies on Calgary, Alberta and Canada, with every source, method and limitation shown.',
   xHandle: 'pramanadata',
+  githubUrl: 'https://github.com/sdbudyy',
+  linkedinUrl: 'https://www.linkedin.com/in/shaurya-dave-564432205/',
   get xUrl() {
     return `https://x.com/${this.xHandle}`;
   },

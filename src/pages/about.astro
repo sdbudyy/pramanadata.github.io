@@ -62,7 +62,16 @@ const RULES = [
   { rule: 'My stakes are disclosed', proof: 'A disclosure line appears on any study my own interests could touch.', color: '#E8D44D' },
   { rule: 'Mistakes are fixed in public', proof: 'Every study has a revision log, and total corrections are counted below.', color: '#9FE0B8' },
 ];
-const ROLES = ['mechanical engineering student', 'data modeller', 'hardware tinkerer', 'Calgarian'];
+// The rotating line after "I'm Shaurya Dave,": things about Shaurya, not about Pramana.
+// Each entry carries its own "a" or "an".
+const ROLES = [
+  'a future mechanical engineer',
+  'a triathlete',
+  'a proud Calgarian',
+  'an animal lover',
+  'an Arduino addict',
+  'a UCalgary Dino',
+];
 ---
 
 <Base title="About" description="How the data and simulations on Pramana are found, checked and built, then who makes them.">
@@ -272,17 +281,27 @@ const ROLES = ['mechanical engineering student', 'data modeller', 'hardware tink
     <section id="me" class="wrap sec me">
       <p class="part">PART 2 · WHO I AM</p>
       <div class="me-row">
-        <div class="photo"><span class="ph-lbl">PLACEHOLDER</span>Photo to come</div>
+        <img
+          class="photo"
+          src={url('about/shaurya-560.jpg')}
+          srcset={`${url('about/shaurya-280.jpg')} 280w, ${url('about/shaurya-560.jpg')} 560w`}
+          sizes="(max-width: 760px) 140px, 260px"
+          width="560"
+          height="560"
+          loading="lazy"
+          decoding="async"
+          alt="Shaurya in an orange University of Calgary T-shirt, doing a dinosaur roar pose next to the university’s red dinosaur mascot."
+        />
         <div class="me-text">
-          <h2>I’m {SITE.author},<br /><span class="acc">a <span class="role" data-role>{ROLES[0]}</span></span>.</h2>
+          <h2>I’m {SITE.author},<br /><span class="acc"><span class="role" data-role data-roles={JSON.stringify(ROLES)}>{ROLES[0]}</span></span>.</h2>
           <p class="bio">
             I study Mechanical Engineering at the University of Calgary. I build hardware, model public data on
             Calgary, Alberta and Canada, and publish everything I find, method included.
           </p>
           <p class="disc">
             <span class="k warn">DISCLOSURE ›</span>{' '}
-            <span class="ph">[Placeholder: any personal stake, e.g. a family business in engineering or real estate. Flagged on every study it could touch.]</span>{' '}
-            No sponsors, no paid posts.
+            I’m independent: not affiliated with any political party, company or advocacy group. No sponsors, no paid
+            posts. If that ever changes, it will be flagged on every study it could touch.
           </p>
           <div class="counters">
             {counters.map((c) => (
@@ -294,7 +313,8 @@ const ROLES = ['mechanical engineering student', 'data modeller', 'hardware tink
             <button type="button" class="btn btn-primary" data-message="message">Send me a message</button>
             <button type="button" class="btn rep" data-message="mistake">Found a mistake? Report it</button>
             <a class="btn btn-ghost" href={SITE.xUrl} rel="me noopener" target="_blank">X</a>
-            <a class="btn btn-ghost" href="https://github.com/sdbudyy" rel="me noopener" target="_blank">GitHub</a>
+            <a class="btn btn-ghost" href={SITE.githubUrl} rel="me noopener" target="_blank">GitHub</a>
+            <a class="btn btn-ghost" href={SITE.linkedinUrl} rel="me noopener" target="_blank">LinkedIn</a>
           </div>
         </div>
       </div>
@@ -377,7 +397,7 @@ const ROLES = ['mechanical engineering student', 'data modeller', 'hardware tink
   // Rotating role line
   const role = document.querySelector<HTMLElement>('[data-role]');
   if (role && !reduce) {
-    const roles = ['mechanical engineering student', 'data modeller', 'hardware tinkerer', 'Calgarian'];
+    const roles: string[] = JSON.parse(role.dataset.roles || '[]');
     let i = 0;
     setInterval(() => {
       if (document.hidden) return;
@@ -1114,24 +1134,13 @@ const ROLES = ['mechanical engineering student', 'data modeller', 'hardware tink
   .photo {
     flex: 0 1 260px;
     min-width: 0;
+    width: 260px;
+    height: auto;
     aspect-ratio: 1 / 1;
+    object-fit: cover;
     border-radius: 24px;
-    border: 1px dashed var(--warn);
+    border: 1px solid var(--line);
     background: var(--bg-raised);
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-    align-items: center;
-    justify-content: center;
-    color: var(--text-3);
-    font-size: 14px;
-    text-align: center;
-    padding: 20px;
-  }
-  .ph-lbl {
-    font-family: var(--font-mono);
-    font-size: 11px;
-    color: var(--warn);
   }
   .me-text {
     flex: 1 1 480px;
@@ -1144,6 +1153,7 @@ const ROLES = ['mechanical engineering student', 'data modeller', 'hardware tink
     font-size: 44px;
     line-height: 1.15;
     letter-spacing: -0.03em;
+    min-height: calc(2 * 1.15em); /* room for the longest rotating title, so nothing below jumps */
   }
   .acc {
     color: var(--accent);
@@ -1348,6 +1358,7 @@ const ROLES = ['mechanical engineering student', 'data modeller', 'hardware tink
     }
     .photo {
       flex: 0 0 140px;
+      width: 140px;
       border-radius: 18px;
     }
     .me-text {
@@ -1355,6 +1366,7 @@ const ROLES = ['mechanical engineering student', 'data modeller', 'hardware tink
     }
     .me-text h2 {
       font-size: 30px;
+      min-height: calc(3 * 1.15em);
     }
     .bio {
       font-size: 16px;
