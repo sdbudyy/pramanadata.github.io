@@ -1254,13 +1254,6 @@ const host = new URL(Astro.site!).host + url('learn/');
     color: var(--accent);
     font-weight: 600;
   }
-  .avm :global(.keeps) {
-    font-family: var(--font-mono);
-    font-size: 11px;
-    color: var(--accent);
-    text-align: center;
-    line-height: 1.2;
-  }
   .avm :global(.head) {
     width: 18px;
     height: 18px;
@@ -1293,7 +1286,8 @@ const host = new URL(Astro.site!).host + url('learn/');
   }
   .avm :global(.pull) {
     position: absolute;
-    left: 30%;
+    /* In the gap between the 3rd and 4th people, so it never crosses a label */
+    left: calc(8px + (100% - 16px - 100px) * 3 / 11 + 25px);
     width: 3px;
     background: var(--accent);
     border-radius: 2px;
@@ -1361,6 +1355,19 @@ const host = new URL(Astro.site!).host + url('learn/');
   }
   .avm-key :global(.ghost-k i) {
     display: none;
+  }
+  .avm-key :global(.cut) {
+    flex-basis: 100%;
+    font-family: var(--font-sans);
+    font-size: 14px;
+    color: var(--text-2);
+  }
+  .avm-key :global(.cut i) {
+    width: 22px;
+    border-top: 4px dashed #ffc2a0;
+  }
+  .avm-key :global(.cut b) {
+    color: var(--accent);
   }
   .avm-key :global(em) {
     font-style: normal;
@@ -2479,8 +2486,7 @@ const host = new URL(Astro.site!).host + url('learn/');
       gap: 3px;
       padding: 0 2px;
     }
-    .avm :global(.plabel),
-    .avm :global(.keeps) {
+    .avm :global(.plabel) {
       font-size: 9px;
     }
     .avm :global(.head) {
@@ -2491,12 +2497,19 @@ const host = new URL(Astro.site!).host + url('learn/');
     .avm :global(.shootbar) {
       width: 80%;
     }
+    .avm :global(.pull) {
+      left: calc(2px + (100% - 4px - 30px) * 3 / 11 + 7.5px);
+    }
+    .avm :global(.plabel) {
+      padding: 0;
+      letter-spacing: -0.02em;
+    }
     .avm-key {
       font-size: 12px;
       gap: 4px 14px;
     }
     .avm-key :global(.pull),
-    .avm-key :global(.ghost-k) {
+    .avm-key :global(.cut) {
       font-size: 13px;
     }
     .pq {

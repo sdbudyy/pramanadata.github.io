@@ -192,9 +192,7 @@ export function avmView(s: AvmS) {
     people
       .map(
         (pp) =>
-          `<div class="pcol" style="opacity:${pp.op}"><span class="plabel${pp.hi && s.hiOn ? ' hi' : ''}">${esc(pp.label)}</span>${
-            pp.capped ? `<span class="keeps" aria-hidden="true">↑ keeps going<br>${times}× this chart</span>` : ''
-          }<span class="head" style="background:${pp.color}"></span><span class="${pp.cls}" style="height:${pp.h.toFixed(0)}px;background:${pp.color};${pp.capped ? 'border-top:4px dashed #FFC2A0' : ''}"></span></div>`,
+          `<div class="pcol" style="opacity:${pp.op}"><span class="plabel${pp.hi && s.hiOn ? ' hi' : ''}">${esc(pp.label)}${pp.capped ? ' ↑' : ''}</span><span class="head" style="background:${pp.color}"></span><span class="${pp.cls}" style="height:${pp.h.toFixed(0)}px;background:${pp.color};${pp.capped ? 'border-top:4px dashed #FFC2A0' : ''}"></span></div>`,
       )
       .join('') +
     // Lines and the pull arrow carry no text: their labels live in the key above
@@ -206,10 +204,11 @@ export function avmView(s: AvmS) {
     `<div class="line med" style="bottom:${(median * pxk).toFixed(0)}px"></div>` +
     `<div class="line mean" style="bottom:${meanPos.toFixed(0)}px"></div>`;
   const key =
-    `<span class="kk mean"><i aria-hidden="true"></i>AVERAGE <b>${kfmt(mean)}</b>${meanPx > maxPx + 60 ? ' <em>↑ line is off the chart</em>' : ''}</span>` +
+    `<span class="kk mean"><i aria-hidden="true"></i>AVERAGE <b>${kfmt(mean)}</b>${meanPx > maxPx + 60 ? ' <em>↑ too high to fit: line pinned to the top edge</em>' : ''}</span>` +
     `<span class="kk med"><i aria-hidden="true"></i>MEDIAN <b>${kfmt(median)}</b></span>` +
     (s.hiOn
-      ? `<span class="kk pull"><i aria-hidden="true"></i><b>+${kfmt(mean - baseMean)}</b> One person pulled the average up from ${kfmt(baseMean)} to ${kfmt(mean)}.</span>`
+      ? `<span class="kk pull"><i aria-hidden="true"></i><b>+${kfmt(mean - baseMean)}</b> One person pulled the average up from ${kfmt(baseMean)} to ${kfmt(mean)}.</span>` +
+        (capped ? `<span class="kk cut"><i aria-hidden="true"></i><span>Their bar is cut off at the top: at full height it would be <b>${times}×</b> taller than this chart.</span></span>` : '')
       : '');
   const p = pop();
   return {
@@ -222,7 +221,7 @@ export function avmView(s: AvmS) {
     chartLabel: esc(`Incomes of ${n} renters; median ${kfmt(median)}, average ${kfmt(mean)}`),
     caption: esc(
       s.hiOn
-        ? (capped ? `Drawn to scale up to the top of the chart. At ${kfmt(s.hi)}, the high earner’s bar would really be ${times}× taller than this whole chart.` : 'Everyone drawn to the same scale.') + ' Illustrative incomes.'
+        ? (capped ? 'Drawn to scale up to the top of the chart.' : 'Everyone drawn to the same scale.') + ' Illustrative incomes.'
         : 'Ten renters, drawn to scale. Illustrative incomes.',
     ),
     pr1: `<span class="${p}">“Renters here earn ${kfmt(mean)} on average. Rent takes ${rentYr / mean < 0.3 ? 'just ' : ''}${((rentYr / mean) * 100).toFixed(0)}% of income.”</span>`,
