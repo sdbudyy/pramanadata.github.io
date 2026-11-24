@@ -13,6 +13,9 @@ states what it can't show, and logs corrections. When in doubt, choose the more 
 - **Claude writes the code; Shaurya reviews.** One pull request per stage. Never commit to `main`.
 - Branch names: `stage-N-short-name`. Small, readable commits.
 - Before opening a PR: `npm run build` must pass; check the page at desktop (1440) and phone (390) widths.
+- After adding or changing dependencies, regenerate the lock file with the npm that CI uses
+  (`npx npm@10 install --package-lock-only`). The deploy runs `npm ci` on Node 22 / npm 10, which fails if the
+  lock file was written by a newer npm that left out optional packages.
 - Never put an email address, API secret or personal data in the repo. The comment-box key comes from
   the `PUBLIC_WEB3FORMS_KEY` build secret (a form key, not an address).
 - Placeholder content must be visibly labelled (e.g. "SAMPLE DATA", "Placeholder study"). Never present
@@ -83,7 +86,7 @@ Menu: **Studies · Builds · Learn · Sandbox · About**, plus a **Follow on X**
 4. Learn (port the seven lessons; fix known mobile bugs) — **done (PRs #4, #5)**
 5. About — **done (PR #6)**. Still needs Shaurya's photo and disclosure line.
 6. Studies index, Builds page and log, Sandbox "coming soon" polish, 404 — **done (PR #7)**
-7. Per-study X link-preview images, speed and accessibility pass — **in review**. Preview cards are built by
+7. Per-study X link-preview images, speed and accessibility pass — **done (PR #8)**. Preview cards are built by
    `src/lib/og.ts` (satori + resvg, build time only) at `/studies/<slug>/og.png`.
 
 ## Design references
