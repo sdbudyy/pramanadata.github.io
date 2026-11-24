@@ -346,9 +346,9 @@ export function mkView(s: MkS) {
   const desc: Record<TrickKey, string> = M.crisis
     ? { crop: 'Start the axis just under the data', cherry: 'Show only 2021–2025', frame: 'Lead with the scary percentage', context: 'Hide wages and the source', words: 'Use alarming words' }
     : { crop: 'Stretch the axis far above the data', cherry: 'Show only 2015–2020', frame: 'Shrink it to dollars per day', context: 'Hide wages and the source', words: 'Use soothing words' };
-  const meterCol = M.score <= 20 ? '#9FE0B8' : M.score <= 60 ? '#FFB08A' : '#E24B4A';
+  const meterCol = M.score <= 20 ? '#9FE0B8' : M.score <= 60 ? '#FFB08A' : '#F06A68';
   return {
-    goals: ([['crisis', 'Sell a crisis', '#D85A30'], ['calm', 'Sell calm', '#9CD3F0']] as const)
+    goals: ([['crisis', 'Sell a crisis', '#EC7A4E'], ['calm', 'Sell calm', '#9CD3F0']] as const)
       .map(([k, l, c]) => `<button type="button" data-act="goal" data-arg="${k}" aria-pressed="${s.goal === k}" class="goal${s.goal === k ? ' on' : ''}" style="--c:${c}">${l}</button>`)
       .join(''),
     tricks: TRICK_KEYS.map((k) => {
@@ -410,7 +410,8 @@ export function svView(s: SvS) {
   const pct = sample ? Math.round((yes / sample.length) * 100) : 0;
   const cur = s.poll ? INFO[s.poll] : { head: 'Pick a place to run your survey', fine: 'Not run yet.', lesson: 'Each dot is one person. Orange dots take transit; you won’t know who until you ask.' };
   const gap = Math.abs(pct - TRUTH);
-  const resCol = !s.poll ? '#4A7176' : gap <= 6 ? '#9FE0B8' : gap <= 20 ? '#FFB08A' : '#E24B4A';
+  const resCol = !s.poll ? '#4A7176' : gap <= 6 ? '#9FE0B8' : gap <= 20 ? '#FFB08A' : '#F06A68';
+  const resText = s.poll ? resCol : '#8FA6A0'; // text needs more contrast than the bar
   const shadow = s.poll ? SPOTS.find((p) => p[0] === s.poll)![2] : '#4A7176';
   const p = pop();
   return {
@@ -439,10 +440,10 @@ export function svView(s: SvS) {
       `<p class="fine${s.fine ? ' big' : ''}">Fine print: ${esc(cur.fine)}</p>` +
       `<button type="button" data-act="fine" class="finebtn">${s.fine ? 'Shrink it back' : 'Read the fine print'}</button>`,
     result:
-      `<div class="row"><span>Your sample</span><span class="mono" style="color:${resCol};font-weight:600">${s.poll ? pct + '% take transit' : 'not run yet'}</span></div>` +
+      `<div class="row"><span>Your sample</span><span class="mono" style="color:${resText};font-weight:600">${s.poll ? pct + '% take transit' : 'not run yet'}</span></div>` +
       `<div class="track"><span class="fill" style="width:${s.poll ? Math.max(2, pct) : 0}%;background:${resCol}"></span><span class="truth" aria-hidden="true" style="left:${TRUTH}%"></span></div>` +
       `<div class="scale"><span>0%</span><span style="color:#E8D44D">▲ truth ${TRUTH}%</span><span>100%</span></div>`,
-    gap: `<span class="${p}" style="color:${resCol}">${!s.poll ? 'Run a survey to compare.' : gap <= 6 ? `Within ${gap} ${gap === 1 ? 'point' : 'points'} of the truth. Fair sample.` : `Off by ${gap} points, from the same city.`}</span>`,
+    gap: `<span class="${p}" style="color:${resText}">${!s.poll ? 'Run a survey to compare.' : gap <= 6 ? `Within ${gap} ${gap === 1 ? 'point' : 'points'} of the truth. Fair sample.` : `Off by ${gap} points, from the same city.`}</span>`,
     lesson: esc(cur.lesson),
     truth: `${TRUTH}%`,
   };
@@ -471,7 +472,7 @@ export function quizView(s: QuizS) {
 // --------------------------------------------------------------- Progress
 export const LESSONS = [
   { key: 'l1', id: 'tricks', name: 'Four tricks', color: '#FF7A3D' },
-  { key: 'l2', id: 'l2', name: 'Two newsrooms', color: '#E24B4A' },
+  { key: 'l2', id: 'l2', name: 'Two newsrooms', color: '#F06A68' },
   { key: 'l3', id: 'l3', name: 'Average vs median', color: '#FFB08A' },
   { key: 'l4', id: 'l4', name: 'Correlation', color: '#9CD3F0' },
   { key: 'l5', id: 'l5', name: 'Make it misleading', color: '#ED93B1' },

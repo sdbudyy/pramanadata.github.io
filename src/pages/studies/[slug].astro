@@ -30,7 +30,15 @@ const rel = related(study, studies);
 const figStart = 2; // Fig. 1 is the main chart
 ---
 
-<Base title={d.title} description={d.answer} noindex={d.placeholder} progress>
+<Base
+  title={d.title}
+  description={d.answer}
+  ogImage={`studies/${study.id}/og.png`}
+  ogAlt={`${d.title} ${d.tiles[0]?.label}: ${d.tiles[0]?.value}.${d.placeholder ? ' Sample data.' : ''} Chart of ${d.chart.aLabel.toLowerCase()} and ${d.chart.bLabel.toLowerCase()}, ${d.chart.years[0]}–${d.chart.years[d.chart.years.length - 1]}.`}
+  ogType="article"
+  noindex={d.placeholder}
+  progress
+>
   <section class="hero grid-bg">
     <div class="wrap hero-in">
       <p class="crumbs">
