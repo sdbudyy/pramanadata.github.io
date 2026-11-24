@@ -1,9 +1,1383 @@
 ---
+// About (mockup: About). Transparency first: how data and simulations are
+// made, then a short "who I am" with a conflict-of-interest line.
+// Changes from the mockup per CLAUDE.md: site header/menu; no email address
+// (the private comment box replaces "Email me"); counters are counted from
+// the site's real content (placeholders excluded) instead of example figures;
+// personal details Shaurya has not written yet are visibly labelled.
 import Base from '../layouts/Base.astro';
-import Stub from '../components/Stub.astro';
+import MessageDialog from '../components/MessageDialog.astro';
+import { allStudies } from '../lib/studies';
+import { SITE } from '../site.config';
+import { url } from '../lib/url';
+
+const studies = await allStudies();
+const real = studies.filter((s) => !s.data.placeholder);
+const counters = [
+  { label: 'studies published', value: real.length, color: 'var(--accent)' },
+  { label: 'datasets rated', value: real.reduce((n, s) => n + s.data.sources.length, 0), color: 'var(--info)' },
+  { label: 'corrections logged', value: real.reduce((n, s) => n + Math.max(0, s.data.revisions.length - 1), 0), color: 'var(--warn)' },
+];
+const example = studies.find((s) => s.id === 'calgary-rent-vs-wages');
+const exampleUrl = example ? url(`studies/${example.id}/`) : url('studies/');
+
+const STOPS = [
+  { short: 'question', title: 'Ask the question', body: 'I write the question, and my prediction, before touching any data, in words that don’t assume the answer.', check: 'The question and prediction are timestamped on the study page.', artefact: 'THE LOGGED QUESTION' },
+  { short: 'source', title: 'Find the sources', body: 'I go to the most direct official source first, note every alternative I considered, and say why I rejected it.', check: 'Every dataset is linked, with its publisher, geography, years and licence.', artefact: 'SOURCE LIST' },
+  { short: 'rate', title: 'Rate each source', body: 'Each dataset is scored 1–5 on authority, published method, recency, fit to the question and independence.', check: 'The rubric is public, and every score has a one-line reason.', artefact: 'SOURCE CHECK' },
+  { short: 'clean', title: 'Clean and align', body: 'Messy downloads get fixed: units, geographies, missing values, inflation. Every change is written down.', check: 'Download both the raw and cleaned files and compare them.', artefact: 'BEFORE / AFTER' },
+  { short: 'model', title: 'Build the model', body: 'The simplest model that answers the question. No black boxes: the full code is a few readable lines.', check: 'The notebook is published next to the study.', artefact: 'THE MODEL' },
+  { short: 'test', title: 'Try to break it', body: 'Backtest against a naive baseline, test every start year, and deliberately try to build the opposite headline.', check: 'The report card shows passes and failures alike.', artefact: 'REPORT CARD' },
+  { short: 'publish', title: 'Publish and correct', body: 'Chart, data, code and caveats go out together. Mistakes are fixed in public, with what changed and when.', check: 'The revision log on every study, and the corrections count below.', artefact: 'FILES + REVISION LOG' },
+];
+const CRIT: [string, number][] = [['Authority', 5], ['Method published', 5], ['Recency', 4], ['Fit to question', 4], ['Independence', 5]];
+const RAW = [
+  ['Calgary (CMA) ', '2020', '"1,210.00"', 'warn', '', 'warn'],
+  ['Calgary', '2021', 'n/a', '', '', 'bad'],
+  ['CALGARY CMA', '2022', '1330', 'warn', '', ''],
+  ['Calgary (CMA)', 'Oct-23', '1500 $', '', 'warn', 'warn'],
+];
+const CLEAN = [
+  ['calgary_cma', '2020', '1210', 'ok', '', 'ok'],
+  ['calgary_cma', '2021', '1230 *', 'ok', '', 'ok'],
+  ['calgary_cma', '2022', '1330', 'ok', '', ''],
+  ['calgary_cma', '2023', '1500', 'ok', 'ok', 'ok'],
+];
+const TRAIL = [
+  { step: 'HEADLINE', value: '+48%', note: 'Calgary median rent, 2015 to 2025', border: 'var(--accent)' },
+  { step: 'CALCULATION', value: '$1,700 ÷ $1,150 − 1 = 0.478', note: 'Rounded to the nearest whole percent', border: 'var(--line-control)' },
+  { step: 'CLEAN TABLE', value: 'rent_vs_wages_clean.csv · rows 2015, 2025', note: 'Column: median_rent_2bed. Unchanged from the source apart from formatting.', border: 'var(--line-control)' },
+  { step: 'ORIGINAL SOURCE', value: 'CMHC Rental Market Survey', note: 'Calgary CMA, 2-bedroom, October survey · source rating 4.6 · sample values', border: 'var(--ok)' },
+];
+const SEGS = [
+  { name: 'Measured data', count: '4 inputs', items: 'Population, housing stock, median rent, median earnings (2019–2025).', w: 50, color: '#9FE0B8' },
+  { name: 'Estimated from data', count: '2 inputs', items: 'Rent sensitivity to tightness; household size (2.5 people per home).', w: 25, color: '#9CD3F0' },
+  { name: 'Assumptions', count: '2 inputs', items: 'Migration feedback factor (0.3) and the 30% affordability threshold. Both clearly labelled, both adjustable.', w: 25, color: '#FFB08A' },
+];
+const RULES = [
+  { rule: 'The question comes before the data', proof: 'Each study shows the question and prediction with a timestamp from before the analysis.', color: '#FF7A3D' },
+  { rule: 'Every chart ships with its data', proof: 'Look for the CSV, notebook and GitHub links on every study page.', color: '#9CD3F0' },
+  { rule: 'Medians before averages', proof: 'Typical values use the median. If an average is shown, the reason is stated.', color: '#FFB08A' },
+  { rule: 'Neutral words only', proof: 'Headlines are questions or plain statements. No “soaring”, no “crisis”.', color: '#ED93B1' },
+  { rule: 'My stakes are disclosed', proof: 'A disclosure line appears on any study my own interests could touch.', color: '#E8D44D' },
+  { rule: 'Mistakes are fixed in public', proof: 'Every study has a revision log, and total corrections are counted below.', color: '#9FE0B8' },
+];
+const ROLES = ['mechanical engineering student', 'data modeller', 'hardware tinkerer', 'Calgarian'];
 ---
-<Base title="About">
-  <Stub eyebrow="About" title="How it's made, then who makes it" stage="stage 5">
-    Where the data comes from, how each source is rated, how models are built and checked, and how corrections work.
-  </Stub>
+
+<Base title="About" description="How the data and simulations on Pramana are found, checked and built, then who makes them.">
+  <div class="ab">
+    <section id="top" class="grid-bg hero-sec">
+      <div class="wrap hero">
+        <p class="eyebrow rise">About · transparency first</p>
+        <h1 class="rise" style="animation-delay:.1s">Show your work.<span class="caret" aria-hidden="true"></span></h1>
+        <p class="lead rise" style="animation-delay:.2s">
+          Every number on this site travels the same line, from a question to a published chart. Here’s each stop, what
+          happens there, and what you can check yourself. Who I am comes after, because the method matters more.
+        </p>
+        <div class="line-wrap rise" aria-hidden="true" style="animation-delay:.3s">
+          <div class="track"></div>
+          <div class="packet-run"><span class="packet"></span></div>
+          <div class="stations">
+            {STOPS.map((_, i) => <span class="station" style={`--d:${(i * 0.8).toFixed(2)}s`}>0{i + 1}</span>)}
+          </div>
+          <div class="shorts">{STOPS.map((s) => <span>{s.short}</span>)}</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Part 1 · Open the hood -->
+    <section class="wrap sec" data-hood>
+      <div class="sh">
+        <p class="part">PART 1 · HOW THE DATA AND SIMULATIONS ARE MADE</p>
+        <h2>Open the hood</h2>
+        <p class="muted">
+          Pick a stop on the line. Each one shows the artefact it produces, using the <a href={exampleUrl}>rent-vs-wages study</a>{' '}as the example. That study is still a placeholder, so its values are samples.
+        </p>
+      </div>
+      <div class="tabs" role="tablist" aria-label="Pipeline stops">
+        {
+          STOPS.map((s, i) => (
+            <button type="button" role="tab" id={`stop-tab-${i}`} aria-controls={`stop-${i}`} aria-selected={i === 0 ? 'true' : 'false'} tabindex={i === 0 ? 0 : -1} data-stop={i}>
+              <span class="n">0{i + 1}</span> {s.title}
+            </button>
+          ))
+        }
+      </div>
+      {
+        STOPS.map((s, i) => (
+          <div class="panel" role="tabpanel" id={`stop-${i}`} aria-labelledby={`stop-tab-${i}`} hidden={i !== 0}>
+            <div class="p-text">
+              <p class="part">STOP {i + 1} OF 7</p>
+              <h3>{s.title}</h3>
+              <p class="body">{s.body}</p>
+              <div class="check"><span class="k warn">WHAT YOU CAN CHECK</span><span>{s.check}</span></div>
+            </div>
+            <div class="artefact">
+              <p class="k">ARTEFACT · {s.artefact}</p>
+              {i === 0 && (
+                <div class="stack">
+                  <p class="struck">“How bad has the rent crisis gotten?”</p>
+                  <p class="q">“Has Calgary rent outpaced wages since 2020?”</p>
+                  <div class="tags"><span>logged before any data</span><span>prediction: rent ahead (sample)</span></div>
+                </div>
+              )}
+              {i === 1 && (
+                <div class="stack">
+                  {example?.data.datasets.map((d) => (
+                    <div class="src"><span class="b">{d.name}</span><span class="m">{d.publisher} · {d.years} · {d.licence}</span></div>
+                  ))}
+                  <p class="small muted">Also considered and rejected: listing-site asking rents (not a random sample).</p>
+                </div>
+              )}
+              {i === 2 && (
+                <div class="stack tight">
+                  <div class="score-row"><span class="b">Rental Market Survey</span><span class="score">4.6</span></div>
+                  {CRIT.map(([n, v]) => (
+                    <div class="crit"><span class="cn">{n}</span><span class="ct"><span style={`width:${v * 20}%`}></span></span><span class="cv">{v}</span></div>
+                  ))}
+                </div>
+              )}
+              {i === 3 && (
+                <div class="stack" data-clean>
+                  <div class="toggle2" role="group" aria-label="Table view">
+                    <button type="button" class="raw" aria-pressed="true" data-view="raw">Raw download</button>
+                    <button type="button" class="cln" aria-pressed="false" data-view="clean">After cleaning</button>
+                  </div>
+                  <div class="tw" data-table="raw">
+                    <table><thead><tr><th>GEO</th><th>REF_DATE</th><th>VALUE</th></tr></thead>
+                      <tbody>{RAW.map((r) => <tr><td class={r[3]}>{r[0]}</td><td class={r[4]}>{r[1]}</td><td class={r[5]}>{r[2]}</td></tr>)}</tbody></table>
+                    <p class="small muted">Four spellings of one city, text in number fields, a missing year and a month-coded date.</p>
+                  </div>
+                  <div class="tw" data-table="clean" hidden>
+                    <table><thead><tr><th>geo</th><th>year</th><th>median_rent</th></tr></thead>
+                      <tbody>{CLEAN.map((r) => <tr><td class={r[3]}>{r[0]}</td><td class={r[4]}>{r[1]}</td><td class={r[5]}>{r[2]}</td></tr>)}</tbody></table>
+                    <p class="small muted">One geography code, numbers as numbers, years as years. * 2021 filled from CMHC’s revised table, noted in the log.</p>
+                  </div>
+                </div>
+              )}
+              {i === 4 && (
+                <div class="stack">
+                  <p class="formula">index<sub>t</sub> = value<sub>t</sub> ÷ value<sub>2020</sub> × 100</p>
+                  <p class="formula">gap = rent growth − wage growth</p>
+                  <pre><span class="cm"># the whole model, no hidden steps</span>{'\n'}idx = df / df.loc[2020] * 100{'\n'}gap = idx["rent"] - idx["wage"]{'\n'}<span class="cm"># robustness: every start year</span>{'\n'}for y in range(2015, 2023):{'\n'}    check[y] = growth(df, y)</pre>
+                </div>
+              )}
+              {i === 5 && (
+                <div class="stack tight card-rows">
+                  <div><span class="muted">Backtest error vs naive baseline</span><span class="mono">7.5% vs 12.6% <span class="okc">✓</span></span></div>
+                  <div><span class="muted">Holds for every start year 2015–22?</span><span class="mono">yes <span class="okc">✓</span></span></div>
+                  <div><span class="muted">Tried to build the opposite headline</span><span class="mono">failed <span class="okc">✓</span></span></div>
+                  <div><span class="muted">Overfit risk</span><span class="mono warnc">stated: high for sandbox</span></div>
+                  <p class="k">Sample values</p>
+                </div>
+              )}
+              {i === 6 && (
+                <div class="stack tight files">
+                  <a href={example ? url(`studies/${example.id}/data.csv`) : '#'} download><span>{example?.id ?? 'study'}-data.csv</span><span class="go">↓</span></a>
+                  <span class="off"><span>analysis.ipynb</span><span>not yet published</span></span>
+                  <a href="https://github.com/sdbudyy/pramanadata.github.io" rel="noopener" target="_blank"><span>github.com/sdbudyy/pramanadata.github.io</span><span class="go">↗</span></a>
+                  <span class="k" style="margin-top:6px">REVISIONS</span>
+                  {example?.data.revisions.map((r) => <span class="mono small"><span class="m">{r.version}</span> {r.text}</span>)}
+                </div>
+              )}
+            </div>
+          </div>
+        ))
+      }
+    </section>
+
+    <!-- Trace a number -->
+    <section class="band">
+      <div class="wrap sec trace">
+        <div class="tr-l">
+          <p class="part">TRACE A NUMBER</p>
+          <h2>Every figure has a paper trail</h2>
+          <p class="muted">Tap the number to follow it all the way back to the source table. Every headline figure on the site works this way.</p>
+          <button type="button" class="trace-btn" aria-expanded="false" aria-controls="trail">+48%</button>
+          <span class="hint mono" data-hint>↑ tap me · sample values</span>
+        </div>
+        <div class="tr-r">
+          <div class="trail" id="trail" hidden>
+            {
+              TRAIL.map((t, i) => (
+                <div class="tstep">
+                  {i > 0 && <span class="drop" style={`animation-delay:${(i * 0.35).toFixed(2)}s`}></span>}
+                  <div class="tcard rise" style={`border-color:${t.border};animation-delay:${(i * 0.35 + 0.15).toFixed(2)}s`}>
+                    <span class="k">{t.step}</span>
+                    <span class="tv">{t.value}</span>
+                    <span class="tn">{t.note}</span>
+                  </div>
+                </div>
+              ))
+            }
+          </div>
+          <div class="empty" data-empty>The paper trail appears here ↓</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Simulations -->
+    <section class="wrap sec" data-mix>
+      <div class="sh">
+        <p class="part">SIMULATIONS · COMING WITH THE SANDBOX</p>
+        <h2>What’s measured, and what’s assumed</h2>
+        <p class="muted">Sandbox models mix real data with estimates and assumptions. This is the planned breakdown for the rent-to-income model, and every model page will carry one.</p>
+      </div>
+      <div class="mixbar" role="img" aria-label={`Rent-to-income model inputs: ${SEGS.map((g) => `${g.name} ${g.w}%`).join(', ')}`}>
+        {SEGS.map((g) => <div class="seg" style={`--w:${g.w}%;background:${g.color}`}><span>{g.name}</span></div>)}
+      </div>
+      <div class="mixcards">
+        {
+          SEGS.map((g, i) => (
+            <button type="button" aria-pressed="false" data-seg={i} style={`--c:${g.color}`}>
+              <span class="mh"><span class="sw"></span>{g.name} · {g.count}</span>
+              <span class="mi">{g.items}</span>
+            </button>
+          ))
+        }
+      </div>
+    </section>
+
+    <!-- Rules -->
+    <section class="band">
+      <div class="wrap sec">
+        <div class="sh">
+          <p class="part">MY RULES</p>
+          <h2>Six promises. Flip each one for the proof.</h2>
+        </div>
+        <div class="rules">
+          {
+            RULES.map((r, i) => (
+              <button type="button" class="flip" aria-pressed="false" style={`--c:${r.color}`}>
+                <span class="flip-inner">
+                  <span class="face front">
+                    <span class="rn">0{i + 1}</span>
+                    <span class="rr">{r.rule}</span>
+                    <span class="rh">tap or hover to flip ↻</span>
+                  </span>
+                  <span class="face back">
+                    <span class="rk">HOW YOU CAN TELL</span>
+                    <span class="rp">{r.proof}</span>
+                  </span>
+                </span>
+              </button>
+            ))
+          }
+        </div>
+      </div>
+    </section>
+
+    <!-- Part 2 · Who I am -->
+    <section id="me" class="wrap sec me">
+      <p class="part">PART 2 · WHO I AM</p>
+      <div class="me-row">
+        <div class="photo"><span class="ph-lbl">PLACEHOLDER</span>Photo to come</div>
+        <div class="me-text">
+          <h2>I’m {SITE.author},<br /><span class="acc">a <span class="role" data-role>{ROLES[0]}</span></span>.</h2>
+          <p class="bio">
+            I study Mechanical Engineering at the University of Calgary. I build hardware, model public data on
+            Calgary, Alberta and Canada, and publish everything I find, method included.
+          </p>
+          <p class="disc">
+            <span class="k warn">DISCLOSURE ›</span>{' '}
+            <span class="ph">[Placeholder: any personal stake, e.g. a family business in engineering or real estate. Flagged on every study it could touch.]</span>{' '}
+            No sponsors, no paid posts.
+          </p>
+          <div class="counters">
+            {counters.map((c) => (
+              <div><span class="cv2" style={`color:${c.color}`} data-count={c.value}>{c.value}</span><span class="cl">{c.label}</span></div>
+            ))}
+          </div>
+          <p class="k">Counted from the site itself. Placeholder studies aren’t counted. Corrections are counted on purpose.</p>
+          <div class="me-btns">
+            <button type="button" class="btn btn-primary" data-message="message">Send me a message</button>
+            <button type="button" class="btn rep" data-message="mistake">Found a mistake? Report it</button>
+            <a class="btn btn-ghost" href={SITE.xUrl} rel="me noopener" target="_blank">X</a>
+            <a class="btn btn-ghost" href="https://github.com/sdbudyy" rel="me noopener" target="_blank">GitHub</a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+  <MessageDialog />
 </Base>
+
+<script>
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  // Pipeline tabs (arrow keys move between them, as tabs should).
+  const hood = document.querySelector<HTMLElement>('[data-hood]');
+  if (hood) {
+    const tabs = [...hood.querySelectorAll<HTMLButtonElement>('[role=tab]')];
+    const panels = [...hood.querySelectorAll<HTMLElement>('[role=tabpanel]')];
+    const pick = (i: number, focus = false) => {
+      tabs.forEach((t, k) => {
+        t.setAttribute('aria-selected', String(k === i));
+        t.tabIndex = k === i ? 0 : -1;
+      });
+      panels.forEach((p, k) => (p.hidden = k !== i));
+      if (focus) tabs[i].focus();
+      tabs[i].scrollIntoView({ block: 'nearest', inline: 'nearest' });
+    };
+    tabs.forEach((t, i) => {
+      t.addEventListener('click', () => pick(i));
+      t.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowRight') pick((i + 1) % tabs.length, true);
+        if (e.key === 'ArrowLeft') pick((i - 1 + tabs.length) % tabs.length, true);
+      });
+    });
+    // Raw vs clean table
+    const box = hood.querySelector<HTMLElement>('[data-clean]');
+    box?.querySelectorAll<HTMLButtonElement>('[data-view]').forEach((b) =>
+      b.addEventListener('click', () => {
+        box.querySelectorAll('[data-view]').forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
+        box.querySelectorAll<HTMLElement>('[data-table]').forEach((t) => (t.hidden = t.dataset.table !== b.dataset.view));
+      }),
+    );
+  }
+
+  // Trace a number
+  const tb = document.querySelector<HTMLButtonElement>('.trace-btn');
+  if (tb) {
+    const trail = document.getElementById('trail')!;
+    const empty = document.querySelector<HTMLElement>('[data-empty]')!;
+    const hint = document.querySelector<HTMLElement>('[data-hint]')!;
+    tb.addEventListener('click', () => {
+      const open = tb.getAttribute('aria-expanded') !== 'true';
+      tb.setAttribute('aria-expanded', String(open));
+      trail.hidden = !open;
+      empty.hidden = open;
+      hint.textContent = open ? 'tap again to hide the trail · sample values' : '↑ tap me · sample values';
+    });
+  }
+
+  // Simulation mix: pick a part to highlight it
+  const mix = document.querySelector<HTMLElement>('[data-mix]');
+  if (mix) {
+    const cards = [...mix.querySelectorAll<HTMLButtonElement>('[data-seg]')];
+    const segs = [...mix.querySelectorAll<HTMLElement>('.seg')];
+    let on = -1;
+    cards.forEach((c, i) =>
+      c.addEventListener('click', () => {
+        on = on === i ? -1 : i;
+        cards.forEach((x, k) => x.setAttribute('aria-pressed', String(k === on)));
+        segs.forEach((s, k) => (s.style.opacity = on === -1 || on === k ? '1' : '0.3'));
+      }),
+    );
+    // Grow the bar once it scrolls into view
+    new IntersectionObserver((es, io) => es.forEach((e) => { if (e.isIntersecting) { mix.classList.add('in'); io.disconnect(); } }), { threshold: 0.3 }).observe(mix);
+  }
+
+  // Rule cards flip on tap (hover also flips on devices that have it)
+  document.querySelectorAll<HTMLButtonElement>('.flip').forEach((f) =>
+    f.addEventListener('click', () => f.setAttribute('aria-pressed', String(f.getAttribute('aria-pressed') !== 'true'))),
+  );
+
+  // Rotating role line
+  const role = document.querySelector<HTMLElement>('[data-role]');
+  if (role && !reduce) {
+    const roles = ['mechanical engineering student', 'data modeller', 'hardware tinkerer', 'Calgarian'];
+    let i = 0;
+    setInterval(() => {
+      if (document.hidden) return;
+      i = (i + 1) % roles.length;
+      role.textContent = roles[i];
+      role.classList.remove('pop');
+      void role.offsetWidth;
+      role.classList.add('pop');
+    }, 2400);
+  }
+</script>
+
+<style>
+  .ab {
+    --x: 0;
+  }
+  :global(body:has(.ab) .site-footer) {
+    margin-top: 0;
+  }
+  .k {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--text-3);
+  }
+  .k.warn {
+    color: var(--warn);
+  }
+  .part {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    color: var(--accent);
+  }
+  .sec {
+    padding-block: 80px;
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+  }
+  .band {
+    background: var(--bg-alt);
+    border-top: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+  }
+  .sh {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .sh h2,
+  .trace h2 {
+    font-size: 40px;
+  }
+  .sh .muted {
+    max-width: 720px;
+  }
+  .small {
+    font-size: 14px;
+  }
+  .ab [hidden] {
+    display: none !important;
+  }
+  .rise {
+    animation: rise 0.6s var(--ease) both;
+  }
+  @keyframes rise {
+    from { opacity: 0; transform: translateY(14px); }
+  }
+
+  /* ---------------- hero */
+  .hero-sec {
+    border-bottom: 1px solid var(--line);
+  }
+  .hero {
+    padding-block: 96px 72px;
+    display: flex;
+    flex-direction: column;
+    gap: 26px;
+  }
+  .hero .eyebrow {
+    letter-spacing: 0.08em;
+  }
+  h1 {
+    font-size: 80px;
+    line-height: 1;
+    letter-spacing: -0.04em;
+  }
+  .caret {
+    display: inline-block;
+    width: 3px;
+    height: 1em;
+    background: var(--accent);
+    vertical-align: -0.12em;
+    margin-left: 4px;
+    animation: blinkc 1s steps(1) infinite;
+  }
+  @keyframes blinkc {
+    50% { opacity: 0; }
+  }
+  .lead {
+    font-size: 20px;
+    color: var(--text-2);
+    max-width: 680px;
+  }
+  .line-wrap {
+    position: relative;
+    margin-top: 18px;
+    padding: 0 12px;
+    overflow-x: clip; /* the sliding packet's box must not widen the page */
+    overflow-y: visible;
+    padding-block: 8px;
+    margin-block: 10px -8px;
+  }
+  .track {
+    position: absolute;
+    left: 12px;
+    right: 12px;
+    top: 31px;
+    height: 2px;
+    background: var(--line-control);
+  }
+  /* The packet slides with transform only (smooth on phones). */
+  .packet-run {
+    position: absolute;
+    left: 35px;
+    right: 35px;
+    top: 32px;
+    height: 0;
+    animation: travel 5.6s linear infinite;
+  }
+  .packet {
+    position: absolute;
+    left: 0;
+    top: -7px;
+    width: 14px;
+    height: 14px;
+    margin-left: -7px;
+    border-radius: 50%;
+    background: var(--accent);
+    box-shadow: 0 0 12px var(--accent);
+  }
+  @keyframes travel {
+    from { transform: translateX(0); }
+    to { transform: translateX(100%); }
+  }
+  .stations {
+    position: relative;
+    display: flex;
+    justify-content: space-between;
+    gap: 6px;
+  }
+  .station {
+    position: relative;
+    width: 46px;
+    height: 46px;
+    border-radius: 50%;
+    border: 2px solid var(--line-control);
+    background: var(--bg-alt);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-mono);
+    font-size: 14px;
+  }
+  .station::after {
+    content: '';
+    position: absolute;
+    inset: -2px;
+    border-radius: 50%;
+    border: 2px solid var(--accent);
+    box-shadow: 0 0 0 6px #ff7a3d44;
+    opacity: 0;
+    animation: glow 5.6s linear infinite;
+    animation-delay: var(--d);
+  }
+  @keyframes glow {
+    0%, 14%, 100% { opacity: 0; }
+    6% { opacity: 1; }
+  }
+  .shorts {
+    display: flex;
+    justify-content: space-between;
+    gap: 6px;
+    margin-top: 10px;
+  }
+  .shorts span {
+    width: 90px;
+    margin: 0 -22px;
+    text-align: center;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--text-3);
+  }
+
+  /* ---------------- open the hood */
+  .tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .tabs button {
+    min-height: 44px;
+    padding: 8px 14px;
+    border-radius: 8px;
+    border: 1px solid var(--line-control);
+    background: transparent;
+    color: var(--text);
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.2s, border-color 0.2s;
+  }
+  .tabs .n {
+    font-family: var(--font-mono);
+    color: var(--text-3);
+  }
+  .tabs button[aria-selected='true'] {
+    border-color: var(--accent);
+    background: var(--accent);
+    color: var(--accent-ink);
+    font-weight: 600;
+  }
+  .tabs button[aria-selected='true'] .n {
+    color: var(--accent-ink);
+  }
+  .panel {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 24px;
+    align-items: stretch;
+    animation: rise 0.45s var(--ease) both;
+  }
+  .p-text {
+    flex: 1 1 340px;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .p-text h3 {
+    font-size: 30px;
+    line-height: 1.15;
+    letter-spacing: 0;
+  }
+  .body {
+    font-size: 17px;
+    color: var(--text-2);
+  }
+  .check {
+    border-left: 2px solid var(--warn);
+    padding-left: 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  .artefact {
+    flex: 1.3 1 460px;
+    min-width: 0;
+    background: var(--bg-alt);
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    padding: 22px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .stack {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .stack.tight {
+    gap: 8px;
+  }
+  .struck {
+    font-size: 15px;
+    color: var(--text-3);
+    text-decoration: line-through;
+    text-decoration-color: #e24b4a;
+  }
+  .q {
+    font-family: var(--font-mono);
+    font-size: 22px;
+    font-weight: 600;
+  }
+  .tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    font-family: var(--font-mono);
+    font-size: 12px;
+  }
+  .tags span {
+    border: 1px solid var(--line-control);
+    border-radius: 4px;
+    padding: 2px 8px;
+  }
+  .src {
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 12px 14px;
+    background: var(--bg);
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 6px 16px;
+  }
+  .b {
+    font-weight: 600;
+  }
+  .src .m {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--text-3);
+  }
+  .score-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+  }
+  .score {
+    font-family: var(--font-mono);
+    font-size: 26px;
+    font-weight: 600;
+    color: var(--accent);
+  }
+  .crit {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 14px;
+  }
+  .cn {
+    width: 130px;
+    flex: none;
+    color: var(--text-2);
+  }
+  .ct {
+    flex: 1;
+    height: 8px;
+    border-radius: 4px;
+    background: var(--bg-raised);
+  }
+  .ct span {
+    display: block;
+    height: 8px;
+    border-radius: 4px;
+    background: var(--accent);
+  }
+  .cv {
+    width: 18px;
+    font-family: var(--font-mono);
+  }
+  .toggle2 {
+    display: flex;
+    gap: 6px;
+  }
+  .toggle2 button {
+    min-height: 44px;
+    padding: 6px 12px;
+    border-radius: 6px;
+    background: transparent;
+    color: var(--text);
+    font-size: 13px;
+    cursor: pointer;
+  }
+  .toggle2 .raw {
+    border: 1px solid #e24b4a;
+  }
+  .toggle2 .cln {
+    border: 1px solid var(--ok);
+  }
+  .toggle2 .raw[aria-pressed='true'] {
+    background: #3a1f1c;
+  }
+  .toggle2 .cln[aria-pressed='true'] {
+    background: var(--ok-bg);
+  }
+  .tw {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    overflow-x: auto;
+  }
+  table {
+    width: 100%;
+    min-width: 320px;
+    border-collapse: collapse;
+    font-family: var(--font-mono);
+    font-size: 13px;
+  }
+  th {
+    text-align: left;
+    padding: 6px 8px;
+    font-weight: 400;
+    color: var(--text-3);
+    border-bottom: 1px solid var(--line);
+  }
+  td {
+    padding: 6px 8px;
+    border-bottom: 1px solid var(--line);
+    white-space: pre;
+  }
+  td.warn {
+    color: var(--warn);
+  }
+  td.bad {
+    color: #e24b4a;
+  }
+  td.ok {
+    color: var(--ok);
+  }
+  .formula {
+    font-family: var(--font-mono);
+    font-size: 17px;
+  }
+  pre {
+    margin: 0;
+    padding: 12px 14px;
+    border-radius: 8px;
+    background: #081719;
+    border: 1px solid var(--line);
+    font-family: var(--font-mono);
+    font-size: 13px;
+    line-height: 1.6;
+    color: var(--text-2);
+    overflow-x: auto;
+  }
+  .cm {
+    color: var(--text-3);
+  }
+  .card-rows > div {
+    display: flex;
+    justify-content: space-between;
+    gap: 8px;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--line);
+    font-size: 14px;
+  }
+  .card-rows > div:nth-of-type(4) {
+    border-bottom: 0;
+  }
+  .okc {
+    color: var(--ok);
+  }
+  .warnc {
+    color: var(--warn);
+  }
+  .files a,
+  .files .off {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 10px 12px;
+    font-family: var(--font-mono);
+    font-size: 13px;
+    color: var(--text);
+    text-decoration: none;
+    min-height: 44px;
+    align-items: center;
+    overflow-wrap: anywhere;
+  }
+  .files a:hover {
+    background: var(--bg-raised);
+    color: var(--text);
+  }
+  .files .go {
+    color: var(--link);
+  }
+  .files .off {
+    color: var(--text-3);
+  }
+  .files .m {
+    color: var(--text-3);
+  }
+
+  /* ---------------- trace */
+  .trace {
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 40px;
+    align-items: flex-start;
+  }
+  .tr-l {
+    flex: 1 1 360px;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .trace h2 {
+    font-size: 36px;
+  }
+  .trace-btn {
+    align-self: flex-start;
+    margin-top: 8px;
+    min-height: 64px;
+    padding: 10px 26px;
+    border-radius: 14px;
+    border: 2px solid var(--accent);
+    background: transparent;
+    color: var(--accent);
+    font-family: var(--font-mono);
+    font-size: 40px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  .trace-btn[aria-expanded='true'] {
+    background: var(--accent);
+    color: var(--accent-ink);
+  }
+  .hint {
+    font-size: 12px;
+    color: var(--text-3);
+  }
+  .tr-r {
+    flex: 1.4 1 480px;
+    min-width: 0;
+  }
+  .tstep {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .drop {
+    width: 2px;
+    height: 34px;
+    background: var(--accent);
+    transform-origin: top center;
+    animation: drawdown 0.5s var(--ease) both;
+  }
+  @keyframes drawdown {
+    from { transform: scaleY(0); }
+  }
+  .tcard {
+    width: 100%;
+    border: 1px solid;
+    border-radius: 12px;
+    background: var(--bg);
+    padding: 14px 18px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 6px 16px;
+  }
+  .tv {
+    font-family: var(--font-mono);
+    font-size: 16px;
+    font-weight: 600;
+    overflow-wrap: anywhere;
+  }
+  .tn {
+    flex: 1 1 100%;
+    font-size: 14px;
+    color: var(--text-2);
+  }
+  .empty {
+    min-height: 320px;
+    border: 1px dashed var(--line-control);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-3);
+    font-family: var(--font-mono);
+    font-size: 14px;
+    text-align: center;
+    padding: 24px;
+  }
+
+  /* ---------------- simulations */
+  .mixbar {
+    display: flex;
+    height: 56px;
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1px solid var(--line);
+  }
+  .seg {
+    flex: 0 0 var(--w);
+    display: flex;
+    align-items: center;
+    padding: 0 14px;
+    color: var(--accent-ink);
+    font-family: var(--font-mono);
+    font-size: 14px;
+    font-weight: 600;
+    white-space: nowrap;
+    overflow: hidden;
+    transform-origin: left center;
+    transform: scaleX(0);
+    transition: transform 1.1s var(--ease), opacity 0.4s;
+  }
+  :global([data-mix].in) .seg {
+    transform: scaleX(1);
+  }
+  .seg span {
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .mixcards {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+  .mixcards button {
+    flex: 1 1 300px;
+    min-width: 0;
+    text-align: left;
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    background: var(--bg-alt);
+    padding: 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    color: var(--text);
+    cursor: pointer;
+  }
+  .mixcards button[aria-pressed='true'] {
+    border-color: var(--c);
+  }
+  .mh {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 600;
+  }
+  .sw {
+    width: 14px;
+    height: 14px;
+    border-radius: 4px;
+    background: var(--c);
+  }
+  .mi {
+    font-size: 14px;
+    color: var(--text-2);
+  }
+
+  /* ---------------- rules */
+  .rules {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+  .flip {
+    flex: 1 1 340px;
+    min-width: 0;
+    height: 190px;
+    padding: 0;
+    border: 0;
+    background: none;
+    color: inherit;
+    text-align: left;
+    perspective: 900px;
+    cursor: pointer;
+    border-radius: 16px;
+  }
+  .flip-inner {
+    position: relative;
+    display: block;
+    width: 100%;
+    height: 100%;
+    transition: transform 0.7s var(--ease);
+    transform-style: preserve-3d;
+  }
+  .flip[aria-pressed='true'] .flip-inner {
+    transform: rotateY(180deg);
+  }
+  @media (hover: hover) {
+    .flip:hover .flip-inner {
+      transform: rotateY(180deg);
+    }
+  }
+  .face {
+    position: absolute;
+    inset: 0;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    border-radius: 16px;
+    padding: 22px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .front {
+    background: var(--bg);
+    border: 1px solid var(--c);
+  }
+  .back {
+    background: var(--c);
+    color: var(--accent-ink);
+    transform: rotateY(180deg);
+  }
+  .rn {
+    font-family: var(--font-mono);
+    font-size: 30px;
+    font-weight: 600;
+    color: var(--c);
+  }
+  .rr {
+    font-family: var(--font-mono);
+    font-size: 20px;
+    font-weight: 600;
+    line-height: 1.25;
+  }
+  .rh {
+    margin-top: auto;
+    font-size: 12px;
+    color: var(--text-3);
+  }
+  .rk {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    font-weight: 600;
+  }
+  .rp {
+    font-size: 17px;
+    font-weight: 500;
+    line-height: 1.4;
+  }
+
+  /* ---------------- who I am */
+  .me {
+    padding-block: 88px;
+    gap: 32px;
+  }
+  .me-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 40px;
+    align-items: center;
+  }
+  .photo {
+    flex: 0 1 260px;
+    min-width: 0;
+    aspect-ratio: 1 / 1;
+    border-radius: 24px;
+    border: 1px dashed var(--warn);
+    background: var(--bg-raised);
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-3);
+    font-size: 14px;
+    text-align: center;
+    padding: 20px;
+  }
+  .ph-lbl {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--warn);
+  }
+  .me-text {
+    flex: 1 1 480px;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  .me-text h2 {
+    font-size: 44px;
+    line-height: 1.15;
+    letter-spacing: -0.03em;
+  }
+  .acc {
+    color: var(--accent);
+  }
+  /* Inline so the line wraps naturally and the full stop stays attached */
+  .role:global(.pop) {
+    animation: fadein 0.45s var(--ease) both;
+  }
+  @keyframes fadein {
+    from { opacity: 0; }
+  }
+  .bio {
+    font-size: 18px;
+    color: var(--text-2);
+    max-width: 620px;
+  }
+  .ph {
+    color: var(--warn);
+  }
+  .disc {
+    font-size: 15px;
+    color: var(--text-2);
+    border-left: 2px solid var(--warn);
+    padding-left: 12px;
+  }
+  .counters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .counters div {
+    flex: 1 1 140px;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    background: var(--bg-alt);
+    padding: 14px 16px;
+    display: flex;
+    flex-direction: column;
+  }
+  .cv2 {
+    font-family: var(--font-mono);
+    font-size: 34px;
+    font-weight: 600;
+  }
+  .cl {
+    font-size: 13px;
+    color: var(--text-2);
+  }
+  .me-btns {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .rep {
+    border: 1px solid var(--warn);
+    color: var(--warn);
+    background: transparent;
+    font-weight: 500;
+  }
+  .rep:hover {
+    background: var(--warn-bg);
+    color: var(--warn);
+  }
+
+  /* ---------------- phone */
+  @media (max-width: 760px) {
+    .sec {
+      padding-block: 48px;
+      gap: 20px;
+    }
+    .hero {
+      padding-block: 48px 40px;
+      gap: 18px;
+    }
+    h1 {
+      font-size: 46px;
+    }
+    .lead {
+      font-size: 17px;
+    }
+    .sh h2,
+    .trace h2 {
+      font-size: 28px;
+      line-height: 1.2;
+    }
+    /* Seven stations still fit: smaller circles and labels */
+    .line-wrap {
+      padding: 0;
+    }
+    .track {
+      left: 0;
+      right: 0;
+      top: 24px;
+    }
+    .packet-run {
+      left: 17px;
+      right: 17px;
+      top: 25px;
+    }
+    .packet {
+      width: 10px;
+      height: 10px;
+      top: -5px;
+      margin-left: -5px;
+    }
+    .station {
+      width: 34px;
+      height: 34px;
+      font-size: 11px;
+    }
+    .stations {
+      gap: 2px;
+    }
+    .shorts {
+      gap: 2px;
+    }
+    .shorts span {
+      width: 34px;
+      margin: 0;
+      font-size: 9px;
+      overflow: visible;
+      white-space: nowrap;
+      display: flex;
+      justify-content: center;
+    }
+    /* Keep the end labels inside the screen */
+    .shorts span:first-child {
+      justify-content: flex-start;
+    }
+    .shorts span:last-child {
+      justify-content: flex-end;
+    }
+    .tabs {
+      flex-wrap: nowrap;
+      overflow-x: auto;
+      margin-inline: calc(-1 * var(--gutter));
+      padding: 0 var(--gutter) 4px;
+      scrollbar-width: none;
+    }
+    .tabs button {
+      flex: none;
+      white-space: nowrap;
+    }
+    .p-text,
+    .artefact,
+    .tr-l,
+    .tr-r {
+      flex-basis: 100%;
+    }
+    .panel {
+      gap: 16px;
+    }
+    .p-text h3 {
+      font-size: 24px;
+    }
+    .body {
+      font-size: 16px;
+    }
+    .artefact {
+      padding: 16px;
+    }
+    .q {
+      font-size: 18px;
+    }
+    .cn {
+      width: 112px;
+      font-size: 13px;
+    }
+    .trace {
+      gap: 24px;
+    }
+    .trace-btn {
+      font-size: 32px;
+      min-height: 56px;
+    }
+    .empty {
+      min-height: 160px;
+    }
+    .seg {
+      padding: 0 8px;
+      font-size: 11px;
+    }
+    .mixbar {
+      height: 44px;
+    }
+    .flip {
+      flex-basis: 100%;
+      height: 170px;
+    }
+    .rr {
+      font-size: 18px;
+    }
+    .rp {
+      font-size: 16px;
+    }
+    .me {
+      padding-block: 48px;
+      gap: 24px;
+    }
+    .me-row {
+      gap: 24px;
+    }
+    .photo {
+      flex: 0 0 140px;
+      border-radius: 18px;
+    }
+    .me-text {
+      flex-basis: 100%;
+    }
+    .me-text h2 {
+      font-size: 30px;
+    }
+    .bio {
+      font-size: 16px;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .packet {
+      display: none;
+    }
+    .station::after,
+    .caret,
+    .rise,
+    .drop,
+    .panel {
+      animation: none;
+    }
+    .seg {
+      transform: none;
+      transition: none;
+    }
+    .flip-inner {
+      transition: none;
+    }
+  }
+</style>

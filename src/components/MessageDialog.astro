@@ -1,0 +1,255 @@
+---
+// Private message popup. Any element with data-message="<kind>" opens it.
+// Messages go to the form service (Web3Forms), which forwards them by email.
+// Shaurya's address lives only in that service's settings: the page holds an
+// access key, which cannot reveal it, so the address is never public.
+// The key comes from the PUBLIC_WEB3FORMS_KEY build secret.
+const key = import.meta.env.PUBLIC_WEB3FORMS_KEY ?? '';
+const enabled = key.length > 0;
+---
+
+<dialog class="msg" aria-labelledby="msg-title" data-msg-dialog>
+  <form class="inner" method="dialog" data-msg-form data-enabled={enabled ? 'true' : 'false'}>
+    <div class="head">
+      <h2 id="msg-title" data-msg-title>Send a private message</h2>
+      <button type="button" class="x" aria-label="Close" data-msg-close>✕</button>
+    </div>
+    <p class="muted intro" data-msg-intro>Goes straight to me, privately. Nothing you send is published.</p>
+
+    <input type="hidden" name="access_key" value={key} />
+    <input type="hidden" name="subject" value="Pramana: message" data-msg-subject />
+    <input type="hidden" name="from_name" value="Pramana site" />
+    <input type="hidden" name="page" value="" data-msg-page />
+    <input type="checkbox" name="botcheck" class="visually-hidden" tabindex="-1" autocomplete="off" aria-hidden="true" />
+
+    <label for="msg-text">Your message <span class="req">required</span></label>
+    <textarea id="msg-text" name="message" rows="6" maxlength="3000" required data-msg-text></textarea>
+
+    <label for="msg-email">Your email <span class="opt">optional, only if you want a reply. It is never shown on the site.</span></label>
+    <input id="msg-email" name="email" type="email" maxlength="120" autocomplete="email" inputmode="email" />
+
+    <div class="actions">
+      <button type="submit" class="btn btn-primary" data-msg-send>Send privately</button>
+      <button type="button" class="btn btn-ghost" data-msg-close>Cancel</button>
+    </div>
+    <p class="status mono" role="status" aria-live="polite" data-msg-status></p>
+  </form>
+</dialog>
+
+<script>
+  const dialog = document.querySelector<HTMLDialogElement>('[data-msg-dialog]');
+  if (dialog) {
+    const form = dialog.querySelector<HTMLFormElement>('[data-msg-form]')!;
+    const title = dialog.querySelector<HTMLElement>('[data-msg-title]')!;
+    const intro = dialog.querySelector<HTMLElement>('[data-msg-intro]')!;
+    const subject = dialog.querySelector<HTMLInputElement>('[data-msg-subject]')!;
+    const page = dialog.querySelector<HTMLInputElement>('[data-msg-page]')!;
+    const text = dialog.querySelector<HTMLTextAreaElement>('[data-msg-text]')!;
+    const status = dialog.querySelector<HTMLElement>('[data-msg-status]')!;
+    const send = dialog.querySelector<HTMLButtonElement>('[data-msg-send]')!;
+    let opener: HTMLElement | null = null;
+
+    const KINDS: Record<string, { title: string; intro: string; subject: string; placeholder: string }> = {
+      message: {
+        title: 'Send a private message',
+        intro: 'Goes straight to me, privately. Nothing you send is published.',
+        subject: 'Pramana: message',
+        placeholder: 'Hi Shaurya, …',
+      },
+      mistake: {
+        title: 'Report a mistake',
+        intro: 'Tell me what’s wrong and where. If it checks out, I fix it and log the correction on the page. Your message itself is never published.',
+        subject: 'Pramana: mistake report',
+        placeholder: 'Which page or number, and what you think is wrong…',
+      },
+    };
+
+    const open = (kind: string, from: HTMLElement) => {
+      const k = KINDS[kind] ?? KINDS.message;
+      title.textContent = k.title;
+      intro.textContent = k.intro;
+      subject.value = k.subject;
+      text.placeholder = k.placeholder;
+      page.value = location.pathname;
+      status.textContent = '';
+      status.removeAttribute('data-state');
+      opener = from;
+      dialog.showModal();
+      text.focus();
+    };
+    const close = () => dialog.close();
+
+    document.querySelectorAll<HTMLElement>('[data-message]').forEach((el) =>
+      el.addEventListener('click', (e) => {
+        e.preventDefault();
+        open(el.dataset.message || 'message', el);
+      }),
+    );
+    dialog.querySelectorAll('[data-msg-close]').forEach((b) => b.addEventListener('click', close));
+    // Click on the dimmed backdrop closes it.
+    dialog.addEventListener('click', (e) => {
+      if (e.target === dialog) close();
+    });
+    dialog.addEventListener('close', () => opener?.focus());
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      if (!text.value.trim()) {
+        text.focus();
+        return;
+      }
+      if (form.dataset.enabled !== 'true') {
+        status.dataset.state = 'err';
+        status.textContent = 'The message box isn’t connected yet. Please try again later, or reply on X.';
+        return;
+      }
+      send.disabled = true;
+      status.dataset.state = 'busy';
+      status.textContent = 'Sending…';
+      try {
+        const res = await fetch('https://api.web3forms.com/submit', {
+          method: 'POST',
+          headers: { Accept: 'application/json' },
+          body: new FormData(form),
+        });
+        const json = await res.json().catch(() => ({}));
+        if (!res.ok || json.success === false) throw new Error();
+        form.reset();
+        status.dataset.state = 'ok';
+        status.textContent = 'Thanks. Your message was sent privately.';
+      } catch {
+        status.dataset.state = 'err';
+        status.textContent = 'That didn’t send. Please try again, or reply on X.';
+      } finally {
+        send.disabled = false;
+      }
+    });
+  }
+</script>
+
+<style>
+  .msg {
+    width: min(560px, calc(100% - 32px));
+    max-height: calc(100dvh - 32px);
+    padding: 0;
+    border: 1px solid var(--line-strong);
+    border-radius: 16px;
+    background: var(--bg-alt);
+    color: var(--text);
+    box-shadow: 0 24px 60px rgb(0 0 0 / 0.5);
+  }
+  .msg[open] {
+    animation: pop 0.25s var(--ease);
+  }
+  @keyframes pop {
+    from {
+      opacity: 0;
+      transform: translateY(10px) scale(0.98);
+    }
+  }
+  .msg::backdrop {
+    background: rgb(5 14 15 / 0.7);
+  }
+  .inner {
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .head {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 12px;
+  }
+  h2 {
+    font-size: 22px;
+    letter-spacing: 0;
+  }
+  .x {
+    flex: none;
+    width: 44px;
+    height: 44px;
+    margin: -10px -10px 0 0;
+    border: 0;
+    border-radius: 8px;
+    background: transparent;
+    color: var(--text-2);
+    font-size: 18px;
+    cursor: pointer;
+  }
+  .x:hover {
+    background: var(--bg-raised);
+    color: var(--text);
+  }
+  .intro {
+    font-size: 15px;
+    margin-bottom: 6px;
+  }
+  label {
+    font-size: 14px;
+    font-weight: 600;
+    margin-top: 4px;
+  }
+  .req,
+  .opt {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 400;
+    color: var(--text-3);
+    margin-left: 6px;
+  }
+  textarea,
+  input[type='email'] {
+    width: 100%;
+    background: var(--bg);
+    border: 1px solid var(--line-strong);
+    border-radius: var(--radius-sm);
+    padding: 12px 14px;
+    font-size: 16px; /* 16px stops iOS zooming on focus */
+    color: var(--text);
+  }
+  textarea {
+    resize: vertical;
+    min-height: 130px;
+  }
+  textarea:focus,
+  input:focus {
+    border-color: var(--accent);
+    outline: none;
+  }
+  .actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 8px;
+  }
+  .status {
+    font-size: 13px;
+    min-height: 1.4em;
+    color: var(--text-2);
+  }
+  .status[data-state='ok'] {
+    color: var(--ok);
+  }
+  .status[data-state='err'] {
+    color: var(--warn);
+  }
+  button[disabled] {
+    opacity: 0.6;
+    cursor: progress;
+  }
+  @media (max-width: 760px) {
+    .inner {
+      padding: 18px;
+    }
+    .actions .btn {
+      flex: 1 1 auto;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .msg[open] {
+      animation: none;
+    }
+  }
+</style>
