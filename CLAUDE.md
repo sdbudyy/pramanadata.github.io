@@ -78,11 +78,11 @@ Menu: **Studies · Builds · Learn · Sandbox · About**, plus a **Follow on X**
 ## Build stages
 
 1. Setup and design foundations — **done (PR #1)**
-2. Study page template + 2 placeholder studies (content as files, e.g. Markdown/MDX + data)
-3. Homepage
-4. Learn (port the seven lessons; fix known mobile bugs)
-5. About
-6. Studies index, Builds page and log, Sandbox "coming soon" polish, 404
+2. Study page template + 2 placeholder studies — **done (PR #2)**. Studies are YAML in `src/content/studies/`.
+3. Homepage — **done (PR #3)**. Builds are YAML in `src/content/builds/`.
+4. Learn (port the seven lessons; fix known mobile bugs) — **done (PRs #4, #5)**
+5. About — **done (PR #6)**. Still needs Shaurya's photo and disclosure line.
+6. Studies index, Builds page and log, Sandbox "coming soon" polish, 404 — **in review**
 7. Per-study X link-preview images, speed and accessibility pass
 
 ## Design references

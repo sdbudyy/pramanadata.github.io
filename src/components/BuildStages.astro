@@ -1,0 +1,51 @@
+---
+// Idea → Build → Test → Result progress bar (style from the LayoutHomeA mockup).
+import { STAGES, STAGE_LABEL } from '../lib/builds';
+
+interface Props {
+  stage: (typeof STAGES)[number];
+}
+const { stage } = Astro.props;
+const reached = STAGES.indexOf(stage);
+---
+
+<ol class="stages" aria-label={`Project stage: ${STAGE_LABEL[stage]}`}>
+  {
+    STAGES.map((st, i) => (
+      <li class={i <= reached ? 'on' : ''} aria-current={i === reached ? 'step' : undefined}>
+        <span class="bar" />
+        <span>{STAGE_LABEL[st]}</span>
+      </li>
+    ))
+  }
+</ol>
+
+<style>
+  .stages {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    gap: 6px;
+    font-family: var(--font-mono);
+    font-size: 12px;
+  }
+  li {
+    flex: 1 1 0;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    color: var(--text-3);
+  }
+  .bar {
+    height: 6px;
+    border-radius: 3px;
+    background: var(--line-strong);
+  }
+  li.on {
+    color: var(--text);
+  }
+  li.on .bar {
+    background: var(--accent);
+  }
+</style>

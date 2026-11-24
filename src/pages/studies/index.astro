@@ -1,47 +1,327 @@
 ---
+// Studies index (no mockup; designed to match the homepage study cards).
+// Every study, newest first, with its one-line answer, key number, how far
+// its sources can be trusted, and its topic. Topic chips filter the list.
 import Base from '../../layouts/Base.astro';
-import Stub from '../../components/Stub.astro';
-import { allStudies, studyNo } from '../../lib/studies';
+import { allStudies, studyNo, fmtDate, keyNumber, topicTone, overall, confidence } from '../../lib/studies';
 import { url } from '../../lib/url';
 
 const studies = await allStudies();
+const topics = [...new Set(studies.map((s) => s.data.topic))].sort();
+const anyPlaceholder = studies.some((s) => s.data.placeholder);
+
+const sourceScore = (s: (typeof studies)[number]) => {
+  const scores = s.data.sources.map((x) => overall(x.scores));
+  if (!scores.length) return null;
+  // The weakest source caps how far the study can be trusted.
+  const low = Math.min(...scores);
+  return { low, conf: confidence(low) };
+};
 ---
-<Base title="Studies">
-  <Stub eyebrow="Studies" title="Every study, with its sources" stage="stage 6">
-    Data studies on Calgary, Alberta and Canada. Each one shows its method, rates its sources and logs its corrections.
-  </Stub>
-  <ul class="wrap list">
-    {
-      studies.map((s) => (
-        <li>
-          <a href={url(`studies/${s.id}/`)}>{s.data.title}</a>
-          <span class="mono meta">
-            {studyNo(s.data.number)} · {s.data.topic}{s.data.placeholder && ' · placeholder, sample data'}
-          </span>
-        </li>
-      ))
-    }
-  </ul>
+
+<Base title="Studies" description="Every Pramana study on Calgary, Alberta and Canada, with its sources, method and corrections.">
+  <section class="grid-bg hero-sec">
+    <div class="wrap hero">
+      <p class="eyebrow">Studies</p>
+      <h1>Every study, with its sources</h1>
+      <p class="lead muted">
+        Data studies on Calgary, Alberta and Canada. Each one answers a single question, shows every dataset it used,
+        rates how far to trust them, and logs its corrections.
+      </p>
+      <p class="count mono"><span data-count>{studies.length}</span> {studies.length === 1 ? 'study' : 'studies'}</p>
+    </div>
+  </section>
+
+  <section class="wrap list-sec">
+    <div class="bar">
+      {
+        topics.length > 1 && (
+          <div class="chips" role="group" aria-label="Filter by topic">
+            <button type="button" data-topic="" aria-pressed="true">All</button>
+            {topics.map((t) => (
+              <button type="button" data-topic={t} aria-pressed="false">{t}</button>
+            ))}
+          </div>
+        )
+      }
+    </div>
+    {anyPlaceholder && <p class="ph-note"><span class="lbl">PLACEHOLDER STUDIES ›</span> These use invented sample numbers to test the layout. None of it is a finding.</p>}
+
+    <ol class="grid">
+      {
+        studies.map((s) => {
+          const tone = topicTone(s.data.topic);
+          const src = sourceScore(s);
+          return (
+            <li data-card={s.data.topic}>
+              <a class="card" href={url(`studies/${s.id}/`)}>
+                <div class="top">
+                  <span class="pill" style={`background:${tone.bg};color:${tone.fg}`}>{s.data.topic}</span>
+                  <span class="meta">{studyNo(s.data.number).toUpperCase()} · {fmtDate(s.data.published).toUpperCase()}</span>
+                </div>
+                <h2>{s.data.title}</h2>
+                <p class="answer">{s.data.answer}</p>
+                <div class="foot">
+                  <span class="key">
+                    <span class="kv">{keyNumber(s)}</span>
+                    <span class="kl">{s.data.tiles[0]?.label.toLowerCase()}</span>
+                  </span>
+                  <span class="tags">
+                    {src && <span class={`conf ${src.conf.tone}`} title="Based on the lowest-rated source">{src.conf.label}</span>}
+                    {s.data.placeholder && <span class="sample">SAMPLE DATA</span>}
+                  </span>
+                </div>
+              </a>
+            </li>
+          );
+        })
+      }
+    </ol>
+    <p class="empty muted" hidden>No studies on this topic yet.</p>
+    <p class="note mono">Confidence is set by each study’s weakest source: ≥4.0 high confidence · 3.0–3.9 use with care · &lt;3.0 weak.</p>
+  </section>
 </Base>
+
+<script>
+  const chips = [...document.querySelectorAll<HTMLButtonElement>('.chips button')];
+  const cards = [...document.querySelectorAll<HTMLElement>('[data-card]')];
+  const empty = document.querySelector<HTMLElement>('.empty');
+  const count = document.querySelector<HTMLElement>('[data-count]');
+  chips.forEach((chip) =>
+    chip.addEventListener('click', () => {
+      const t = chip.dataset.topic;
+      chips.forEach((c) => c.setAttribute('aria-pressed', String(c === chip)));
+      let shown = 0;
+      cards.forEach((card) => {
+        const on = !t || card.dataset.card === t;
+        card.hidden = !on;
+        if (on) shown++;
+      });
+      if (empty) empty.hidden = shown > 0;
+      if (count) count.textContent = String(shown);
+      const u = new URL(location.href);
+      if (t) u.searchParams.set('topic', t);
+      else u.searchParams.delete('topic');
+      history.replaceState(null, '', u);
+    }),
+  );
+  // Links like studies/?topic=Housing open with that topic selected.
+  const want = new URL(location.href).searchParams.get('topic');
+  chips.find((c) => c.dataset.topic && c.dataset.topic === want)?.click();
+</script>
+
 <style>
-  .list {
-    list-style: none;
-    margin: 32px auto 0;
+  .hero-sec {
+    border-bottom: 1px solid var(--line);
+  }
+  .hero {
+    padding-block: 72px 48px;
     display: flex;
     flex-direction: column;
     gap: 16px;
   }
-  .list li {
+  h1 {
+    font-size: 56px;
+    letter-spacing: -0.03em;
+  }
+  .lead {
+    font-size: 19px;
+    max-width: 720px;
+  }
+  .count {
+    font-size: 13px;
+    color: var(--text-3);
+  }
+  .list-sec {
+    padding-block: 40px 0;
     display: flex;
     flex-direction: column;
-    gap: 2px;
+    gap: 20px;
   }
-  .list a {
-    font-size: 18px;
+  .chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .chips button {
+    font-size: 14px;
+    min-height: 40px;
+    padding: 6px 14px;
+    border-radius: 999px;
+    border: 1px solid var(--line-control);
+    background: transparent;
+    color: var(--text);
+    cursor: pointer;
+  }
+  .chips button[aria-pressed='true'] {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: var(--accent-ink);
+    font-weight: 600;
+  }
+  .ph-note {
+    font-size: 14px;
+  }
+  .lbl {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--warn);
+  }
+  .grid {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+    gap: 20px;
+  }
+  .grid li[hidden] {
+    display: none;
+  }
+  .card {
+    height: 100%;
+    text-decoration: none;
+    color: var(--text);
+    background: var(--bg-alt);
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    transition: border-color 0.2s;
+  }
+  .card:hover {
+    color: var(--text);
+    border-color: var(--line-control);
+  }
+  .top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    font-size: 13px;
+  }
+  .pill {
+    padding: 2px 10px;
+    border-radius: 999px;
     font-weight: 600;
   }
   .meta {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--text-3);
+  }
+  h2 {
+    font-size: 22px;
+    line-height: 1.25;
+    letter-spacing: 0;
+  }
+  .answer {
+    color: var(--text-2);
+    font-size: 15px;
+  }
+  .foot {
+    margin-top: auto;
+    padding-top: 12px;
+    border-top: 1px solid var(--line);
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 8px 16px;
+  }
+  .key {
+    display: flex;
+    flex-direction: column;
+  }
+  .kv {
+    font-family: var(--font-mono);
+    font-size: 26px;
+    font-weight: 600;
+    line-height: 1.2;
+    color: var(--accent);
+  }
+  .kl {
     font-size: 13px;
     color: var(--text-3);
+  }
+  .tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  .conf,
+  .sample {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 4px;
+    text-transform: uppercase;
+  }
+  .conf.ok {
+    background: var(--ok-bg);
+    color: var(--ok);
+  }
+  .conf.warn,
+  .conf.weak {
+    background: #43291a;
+    color: var(--warn);
+  }
+  .sample {
+    color: var(--warn);
+    border: 1px solid rgb(255 176 138 / 0.4);
+    font-weight: 400;
+  }
+  .empty[hidden] {
+    display: none;
+  }
+  .note {
+    font-size: 12px;
+    color: var(--text-3);
+  }
+
+  @media (max-width: 760px) {
+    .hero {
+      padding-block: 40px 28px;
+      gap: 12px;
+    }
+    h1 {
+      font-size: 34px;
+      line-height: 1.15;
+    }
+    .lead {
+      font-size: 16px;
+    }
+    .list-sec {
+      padding-top: 24px;
+      gap: 16px;
+    }
+    .chips {
+      flex-wrap: nowrap;
+      overflow-x: auto;
+      margin-inline: calc(-1 * var(--gutter));
+      padding-inline: var(--gutter);
+      scrollbar-width: none;
+    }
+    .chips button {
+      flex: none;
+      min-height: 44px;
+    }
+    .grid {
+      grid-template-columns: 1fr;
+      gap: 14px;
+    }
+    .card {
+      padding: 18px;
+      border-radius: 14px;
+    }
+    h2 {
+      font-size: 19px;
+    }
+    .ph-note {
+      font-size: 13px;
+    }
   }
 </style>

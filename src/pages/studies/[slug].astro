@@ -34,7 +34,7 @@ const figStart = 2; // Fig. 1 is the main chart
   <section class="hero grid-bg">
     <div class="wrap hero-in">
       <p class="crumbs">
-        <a href={url('studies/')}>Studies</a> / <a href={url('studies/')}>{d.topic}</a> / {studyNo(d.number)}
+        <a href={url('studies/')}>Studies</a> / <a href={`${url('studies/')}?topic=${encodeURIComponent(d.topic)}`}>{d.topic}</a> / {studyNo(d.number)}
       </p>
       <div class="meta">
         <span class="topic" style={`background:${topicTone(d.topic).bg};color:${topicTone(d.topic).fg}`}>{d.topic}</span>

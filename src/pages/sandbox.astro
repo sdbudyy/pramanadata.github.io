@@ -1,33 +1,320 @@
 ---
+// Sandbox: ships later. At launch the page says "coming soon" (CLAUDE.md) and
+// previews the prototype (mockup: Sandbox) without pretending it works yet.
 import Base from '../layouts/Base.astro';
 import { SITE } from '../site.config';
 import { url } from '../lib/url';
+
+// The prototype's example model: one balancing feedback loop.
+const LOOP = [
+  { name: 'Population', note: 'stock · people', kind: 'measured' },
+  { name: 'Tightness', note: 'people ÷ housing capacity', kind: 'measured' },
+  { name: 'Median rent', note: 'responds to tightness', kind: 'estimated' },
+  { name: 'Rent-to-income', note: 'rent ÷ wages', kind: 'measured' },
+  { name: 'Migration feedback', note: 'slows growth above 30%', kind: 'assumed' },
+];
+const KIND = {
+  measured: { label: 'measured data', color: '#9FE0B8' },
+  estimated: { label: 'estimated from data', color: '#9CD3F0' },
+  assumed: { label: 'assumption', color: '#FFB08A' },
+} as const;
 ---
+
 <Base title="Sandbox (coming soon)" description="Build your own model of Calgary from real datasets. Coming soon.">
   <section class="grid-bg soon">
     <div class="wrap inner">
       <p class="eyebrow">Sandbox · coming soon</p>
       <h1>Build your own model of Calgary.</h1>
-      <p class="muted lead">Combine real datasets, set your own assumptions, and watch how each one moves the answer. It’s being refined before launch, so the numbers you play with are ones I can stand behind.</p>
+      <p class="muted lead">
+        Combine real datasets, set your own assumptions, and watch how each one moves the answer. It’s being refined
+        before launch, so the numbers you play with are ones I can stand behind.
+      </p>
       <ul class="list">
         <li><span class="mono n">01</span>Pick datasets from grouped libraries: housing, people, work, prices.</li>
         <li><span class="mono n">02</span>Link them with feedback loops and set every assumption with a slider.</li>
         <li><span class="mono n">03</span>See the range of outcomes, what matters most, and how the model scores against history.</li>
       </ul>
       <div class="actions">
-        <a class="btn btn-primary" href={SITE.xUrl} rel="noopener" target="_blank">Follow on X for the launch</a>
+        <a class="btn btn-primary" href={SITE.xUrl} rel="me noopener" target="_blank">Follow on X for the launch</a>
         <a class="btn btn-ghost" href={url('learn/')}>Try the Learn lessons</a>
       </div>
     </div>
   </section>
+
+  <section class="wrap preview-sec" aria-labelledby="pv-h">
+    <div class="pv-head">
+      <div>
+        <p class="part">A LOOK AT THE PROTOTYPE</p>
+        <h2 id="pv-h">One question, one loop</h2>
+      </div>
+      <span class="tag">PREVIEW · NOT LIVE YET</span>
+    </div>
+
+    <div class="panel q">
+      <p class="k">QUESTION</p>
+      <p class="qt">Where is Calgary’s rent-to-income ratio heading by 2035?</p>
+    </div>
+
+    <div class="panel">
+      <p class="k">THE MODEL · A BALANCING FEEDBACK LOOP</p>
+      <ol class="loop">
+        {
+          LOOP.map((n, i) => (
+            <li style={`--c:${KIND[n.kind as keyof typeof KIND].color}`}>
+              <span class="node">
+                <span class="nn">{n.name}</span>
+                <span class="nt">{n.note}</span>
+              </span>
+              <span class="arrow" aria-hidden="true">{i === LOOP.length - 1 ? '↻' : '→'}</span>
+            </li>
+          ))
+        }
+      </ol>
+      <p class="muted small">
+        High rent slows how fast people move in, which eases the pressure on rent: the loop pushes back against itself.
+        The arrow at the end leads back to population.
+      </p>
+      <div class="legend">
+        {Object.values(KIND).map((k) => <span><i style={`background:${k.color}`}></i>{k.label}</span>)}
+      </div>
+    </div>
+
+    <div class="promise">
+      <div class="panel">
+        <p class="k">EVERY MODEL SHIPS WITH</p>
+        <ul class="ticks">
+          <li>A report card: backtest error against a naive baseline, and its overfit risk stated plainly</li>
+          <li>A sensitivity chart showing which input moves the answer most</li>
+          <li>An 80% range from 200 runs, not a single number</li>
+          <li>A plain-language glossary for every term, with the exact formula used</li>
+        </ul>
+      </div>
+      <div class="panel warnbox">
+        <p class="k warn">WHY IT ISN’T LIVE</p>
+        <p>
+          Some inputs are still placeholders, like the migration feedback factor. I won’t publish a tool that lets you
+          produce confident-looking numbers from guesses I haven’t checked.
+        </p>
+      </div>
+    </div>
+  </section>
 </Base>
+
 <style>
-  .soon { border-bottom: 1px solid var(--line); }
-  .inner { padding-block: clamp(56px, 10vw, 104px); display: flex; flex-direction: column; gap: 20px; }
-  h1 { font-size: clamp(36px, 7vw, 60px); max-width: 820px; }
-  .lead { font-size: 18px; max-width: 680px; }
-  .list { list-style: none; margin: 8px 0 0; padding: 0; display: flex; flex-direction: column; gap: 12px; max-width: 680px; }
-  .list li { display: flex; gap: 14px; }
-  .n { color: var(--accent); font-weight: 600; }
-  .actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 8px; }
+  .soon {
+    border-bottom: 1px solid var(--line);
+  }
+  .inner {
+    padding-block: clamp(48px, 10vw, 104px);
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+  h1 {
+    font-size: clamp(34px, 7vw, 60px);
+    max-width: 820px;
+  }
+  .lead {
+    font-size: 18px;
+    max-width: 680px;
+  }
+  .list {
+    list-style: none;
+    margin: 8px 0 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    max-width: 680px;
+  }
+  .list li {
+    display: flex;
+    gap: 14px;
+  }
+  .n {
+    color: var(--accent);
+    font-weight: 600;
+  }
+  .actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 8px;
+  }
+
+  .preview-sec {
+    padding-top: 64px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  .pv-head {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 8px 16px;
+    margin-bottom: 8px;
+  }
+  .part {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    color: var(--accent);
+  }
+  h2 {
+    font-size: 36px;
+  }
+  .tag {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--warn);
+    border: 1px solid rgb(255 176 138 / 0.4);
+    padding: 3px 8px;
+    border-radius: 4px;
+  }
+  .panel {
+    background: var(--bg-alt);
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+  .k {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--text-3);
+  }
+  .k.warn {
+    color: var(--warn);
+  }
+  .qt {
+    font-family: var(--font-mono);
+    font-size: 22px;
+    font-weight: 600;
+  }
+  .loop {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: stretch;
+    gap: 10px;
+  }
+  .loop li {
+    flex: 1 1 160px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .node {
+    flex: 1;
+    min-height: 84px;
+    border: 1px solid var(--c);
+    border-left-width: 4px;
+    border-radius: 10px;
+    background: var(--bg);
+    padding: 10px 12px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 2px;
+  }
+  .nn {
+    font-weight: 600;
+  }
+  .nt {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--text-3);
+  }
+  .arrow {
+    flex: none;
+    font-family: var(--font-mono);
+    font-size: 18px;
+    color: var(--text-3);
+  }
+  .small {
+    font-size: 14px;
+  }
+  .legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 18px;
+    font-size: 13px;
+    color: var(--text-2);
+  }
+  .legend span {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .legend i {
+    width: 12px;
+    height: 12px;
+    border-radius: 3px;
+  }
+  .promise {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+  .promise .panel {
+    flex: 1 1 380px;
+    min-width: 0;
+  }
+  .ticks {
+    margin: 0;
+    padding-left: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    color: var(--text-2);
+  }
+  .warnbox {
+    background: var(--warn-bg);
+    border-color: rgb(255 122 61 / 0.4);
+  }
+
+  @media (max-width: 760px) {
+    .preview-sec {
+      padding-top: 40px;
+    }
+    h2 {
+      font-size: 26px;
+    }
+    .panel {
+      padding: 18px;
+      border-radius: 14px;
+    }
+    .qt {
+      font-size: 18px;
+    }
+    /* The loop reads top to bottom on a phone */
+    .loop {
+      flex-direction: column;
+      gap: 6px;
+    }
+    .loop li {
+      flex: none;
+      flex-direction: column;
+      align-items: stretch;
+      gap: 6px;
+    }
+    .node {
+      min-height: 0;
+    }
+    .arrow {
+      align-self: center;
+      transform: rotate(90deg);
+    }
+    .loop li:last-child .arrow {
+      transform: none;
+    }
+    .promise .panel {
+      flex-basis: 100%;
+    }
+  }
 </style>
