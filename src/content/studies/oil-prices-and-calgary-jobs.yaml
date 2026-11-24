@@ -1,0 +1,119 @@
+# PLACEHOLDER STUDY. Every number below is invented to test the page layout.
+# Replace with real, sourced data before setting `placeholder: false`.
+number: 2
+title: Do oil prices still drive Calgary jobs?
+topic: Economy
+published: 2026-11-23
+readMinutes: 5
+placeholder: true
+answer: >-
+  [Sample answer] Less than they used to. Since 2015 Calgary jobs have moved with oil prices only
+  loosely, and the link is weakest outside the energy sector.
+
+tiles:
+  - { kind: headline, label: Correlation, value: r = 0.41, note: 'yearly jobs vs oil price, 2015–2025' }
+  - { label: Jobs, value: +14%, note: 'Calgary employment, 2015 → 2025' }
+  - { label: Oil price, value: +35%, note: 'WTI annual average, 2015 → 2025' }
+  - { kind: text, label: Most tied sector, value: Mining and oil, note: r = 0.78 }
+
+chart:
+  caption: Calgary jobs and the oil price, indexed to 2015 = 100
+  years: ['2015', '2016', '2017', '2018', '2019', '2020', '2021', '2022', '2023', '2024', '2025']
+  aLabel: Calgary employment
+  aShort: Jobs
+  bLabel: Oil price (WTI)
+  bShort: Oil
+  unit: index, 2015 = 100
+  annotation:
+    index: 5
+    title: 2020
+    text: Both fall in the pandemic, then split apart.
+  views:
+    - type: line
+      id: indexed
+      label: Indexed
+      a: [100, 98, 99, 101, 102, 95, 99, 104, 108, 112, 114]
+      b: [100, 88, 104, 133, 116, 80, 139, 194, 159, 155, 135]
+      yMin: 0
+      yMax: 200
+      yTicks: [0, 50, 100, 150, 200]
+    - type: bars
+      id: sector
+      label: By sector
+      unit: ''
+      caption: Correlation between yearly jobs and oil price, 2015–2025, by sector (r).
+      bars:
+        - { label: Mining and oil, value: 0.78 }
+        - { label: Construction, value: 0.52 }
+        - { label: Professional services, value: 0.31 }
+        - { label: Health care, value: 0.05 }
+  source: Statistics Canada, Labour Force Survey; US EIA, WTI spot price
+  sourceShort: StatCan LFS; US EIA
+
+findings:
+  - Jobs and oil moved together until 2020, then split apart.
+  - Mining and oil jobs still track the price closely (r = 0.78).
+  - Health care jobs show almost no link to oil at all.
+caveat: >-
+  A correlation is not a cause. Interest rates, migration and the pandemic all moved Calgary jobs
+  at the same time as oil, and this study does not separate them.
+
+figures:
+  - caption: Correlation with oil price, by sector
+    type: hbars
+    unit: ''
+    bars:
+      - { label: Oil, value: 0.78 }
+      - { label: Build, value: 0.52 }
+      - { label: Prof., value: 0.31 }
+      - { label: Health, value: 0.05 }
+    source: Pearson r, yearly values, 2015–2025
+  - caption: Share of Calgary jobs in mining and oil
+    type: vbars
+    unit: '%'
+    bars:
+      - { label: '’15', value: 7.1 }
+      - { label: '’17', value: 6.2 }
+      - { label: '’19', value: 5.8 }
+      - { label: '’21', value: 5.1 }
+      - { label: '’23', value: 5.0 }
+      - { label: '’25', value: 4.8 }
+    source: Mining, quarrying, and oil and gas extraction as a share of all jobs
+
+datasets:
+  - name: Labour Force Survey
+    publisher: Statistics Canada
+    years: 2015–2025
+    licence: Open Government Licence – Canada
+    url: https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=1410038501
+  - name: WTI crude oil spot price
+    publisher: US Energy Information Administration
+    years: 2015–2025
+    licence: Public domain (US government)
+    url: https://www.eia.gov/dnav/pet/hist/rwtcD.htm
+steps:
+  - Pulled yearly employment for the Calgary metro area
+  - Averaged daily WTI prices to yearly values
+  - Indexed both series to 2015 = 100
+  - Calculated the correlation overall and by sector
+assumptions:
+  - Yearly averages hide month-to-month swings
+  - WTI stands in for the price Alberta producers get
+  - Correlation over 11 years is a small sample
+
+sources:
+  - name: Labour Force Survey
+    publisher: Statistics Canada
+    kind: federal agency
+    scores: { authority: 5, method: 5, recency: 5, fit: 4, independence: 5 }
+    note: City-level estimates are survey-based and carry a margin of error.
+  - name: WTI crude oil spot price
+    publisher: US EIA
+    kind: federal agency (US)
+    scores: { authority: 5, method: 4, recency: 5, fit: 3, independence: 4 }
+    note: A US benchmark price, not what Alberta producers are paid.
+
+files: {}
+
+revisions:
+  - { version: v1.0, date: 2026-11-23, text: Published (placeholder) }
