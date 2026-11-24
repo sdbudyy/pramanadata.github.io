@@ -62,7 +62,20 @@ const RULES = [
   { rule: 'My stakes are disclosed', proof: 'A disclosure line appears on any study my own interests could touch.', color: '#E8D44D' },
   { rule: 'Mistakes are fixed in public', proof: 'Every study has a revision log, and total corrections are counted below.', color: '#9FE0B8' },
 ];
-const ROLES = ['mechanical engineering student', 'data modeller', 'hardware tinkerer', 'Calgarian'];
+// The rotating line after "I'm Shaurya Dave, a/an …". Add or remove freely.
+const ROLES = [
+  'mechanical engineering student',
+  'data modeller',
+  'hardware tinkerer',
+  'Calgarian',
+  'chart maker',
+  'Arduino builder',
+  'source checker',
+  'number cruncher',
+  'spreadsheet wrangler',
+  'question asker',
+];
+const article = (w: string) => (/^[aeiou]/i.test(w) ? 'an' : 'a');
 ---
 
 <Base title="About" description="How the data and simulations on Pramana are found, checked and built, then who makes them.">
@@ -284,7 +297,7 @@ const ROLES = ['mechanical engineering student', 'data modeller', 'hardware tink
           alt="Shaurya in an orange University of Calgary T-shirt, doing a dinosaur roar pose next to the university’s red dinosaur mascot."
         />
         <div class="me-text">
-          <h2>I’m {SITE.author},<br /><span class="acc">a <span class="role" data-role>{ROLES[0]}</span></span>.</h2>
+          <h2>I’m {SITE.author},<br /><span class="acc"><span data-article>{article(ROLES[0])}</span> <span class="role" data-role data-roles={JSON.stringify(ROLES)}>{ROLES[0]}</span></span>.</h2>
           <p class="bio">
             I study Mechanical Engineering at the University of Calgary. I build hardware, model public data on
             Calgary, Alberta and Canada, and publish everything I find, method included.
@@ -304,7 +317,8 @@ const ROLES = ['mechanical engineering student', 'data modeller', 'hardware tink
             <button type="button" class="btn btn-primary" data-message="message">Send me a message</button>
             <button type="button" class="btn rep" data-message="mistake">Found a mistake? Report it</button>
             <a class="btn btn-ghost" href={SITE.xUrl} rel="me noopener" target="_blank">X</a>
-            <a class="btn btn-ghost" href="https://github.com/sdbudyy" rel="me noopener" target="_blank">GitHub</a>
+            <a class="btn btn-ghost" href={SITE.githubUrl} rel="me noopener" target="_blank">GitHub</a>
+            <a class="btn btn-ghost" href={SITE.linkedinUrl} rel="me noopener" target="_blank">LinkedIn</a>
           </div>
         </div>
       </div>
@@ -387,12 +401,14 @@ const ROLES = ['mechanical engineering student', 'data modeller', 'hardware tink
   // Rotating role line
   const role = document.querySelector<HTMLElement>('[data-role]');
   if (role && !reduce) {
-    const roles = ['mechanical engineering student', 'data modeller', 'hardware tinkerer', 'Calgarian'];
+    const roles: string[] = JSON.parse(role.dataset.roles || '[]');
+    const art = document.querySelector<HTMLElement>('[data-article]');
     let i = 0;
     setInterval(() => {
       if (document.hidden) return;
       i = (i + 1) % roles.length;
       role.textContent = roles[i];
+      if (art) art.textContent = /^[aeiou]/i.test(roles[i]) ? 'an' : 'a';
       role.classList.remove('pop');
       void role.offsetWidth;
       role.classList.add('pop');
