@@ -7,7 +7,7 @@ import BarFigure from '../../components/study/BarFigure.astro';
 import SourceCard from '../../components/study/SourceCard.astro';
 import Explorer from '../../components/study/Explorer.astro';
 import CommentBox from '../../components/CommentBox.astro';
-import { allStudies, studyNo, fmtDate, related, citation, keyNumber, type Study } from '../../lib/studies';
+import { allStudies, studyNo, fmtDate, related, citation, keyNumber, topicTone, type Study } from '../../lib/studies';
 import { SITE } from '../../site.config';
 import { url } from '../../lib/url';
 
@@ -37,7 +37,7 @@ const figStart = 2; // Fig. 1 is the main chart
         <a href={url('studies/')}>Studies</a> / <a href={url('studies/')}>{d.topic}</a> / {studyNo(d.number)}
       </p>
       <div class="meta">
-        <span class="topic">{d.topic}</span>
+        <span class="topic" style={`background:${topicTone(d.topic).bg};color:${topicTone(d.topic).fg}`}>{d.topic}</span>
         <span class="dates">
           <span class="d-only">Published </span><time datetime={d.published.toISOString().slice(0, 10)}>{fmtDate(d.published)}</time>
           {d.updated && <span class="d-only"> · Updated {fmtDate(d.updated)}</span>} · {d.readMinutes} min read
