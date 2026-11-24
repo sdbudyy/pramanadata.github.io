@@ -185,6 +185,12 @@ export function avmView(s: AvmS) {
   const hiPx = s.hi * pxk, capped = s.hiOn && hiPx > maxPx;
   const meanPx = mean * pxk, ghostPx = baseMean * pxk;
   const meanPos = Math.min(maxPx + 60, meanPx);
+  const offChart = meanPx > maxPx + 60;
+  const medPos = median * pxk;
+  const labelH = s.compact ? 26 : 17;
+  const chartH = s.compact ? 330 : 580;
+  const meanBelow = meanPos + labelH + 4 > chartH; // no room above the pinned line
+  const medBelow = !meanBelow && meanPos - medPos < labelH + 6 && medPos > labelH + 4;
   const people = BASE.map((v) => ({ label: kfmt(v), h: v * pxk, color: '#4A7176', op: 1, cls: 'bar', capped: false, hi: false }))
     .concat([{ label: s.hiOn ? kfmt(s.hi) : '?', h: s.hiOn ? Math.min(maxPx, hiPx) : 8, color: ACCENT, op: s.hiOn ? 1 : 0.25, cls: 'shootbar', capped, hi: true }]);
   const times = (hiPx / maxPx).toFixed(1);
@@ -192,18 +198,22 @@ export function avmView(s: AvmS) {
     people
       .map(
         (pp) =>
-          `<div class="pcol" style="opacity:${pp.op}"><span class="plabel${pp.hi && s.hiOn ? ' hi' : ''}">${esc(pp.label)}</span>${
-            pp.capped ? `<span class="keeps" aria-hidden="true">↑ keeps going<br>${times}× this chart</span>` : ''
-          }<span class="head" style="background:${pp.color}"></span><span class="${pp.cls}" style="height:${pp.h.toFixed(0)}px;background:${pp.color};${pp.capped ? 'border-top:4px dashed #FFC2A0' : ''}"></span></div>`,
+          `<div class="pcol" style="opacity:${pp.op}"><span class="plabel${pp.hi && s.hiOn ? ' hi' : ''}">${esc(pp.label)}${pp.capped ? ' ↑' : ''}</span><span class="head" style="background:${pp.color}"></span><span class="${pp.cls}" style="height:${pp.h.toFixed(0)}px;background:${pp.color};${pp.capped ? 'border-top:4px dashed #FFC2A0' : ''}"></span></div>`,
       )
       .join('') +
+    // Line labels sit on their lines at the left, in a margin the bars never
+    // reach. When the two lines are close, the median label drops below its line.
     (s.hiOn
       ? `<div class="line ghost" style="bottom:${ghostPx.toFixed(0)}px"></div>` +
-        `<div class="pull" aria-hidden="true" style="bottom:${ghostPx.toFixed(0)}px;height:${Math.max(0, meanPos - ghostPx - 12).toFixed(0)}px"><span></span></div>` +
-        `<div class="line pullnote" style="bottom:${Math.min(maxPx + 52, meanPos + 14).toFixed(0)}px"><strong>+${kfmt(mean - baseMean)}</strong> One person pulled the average up from ${kfmt(baseMean)} to ${kfmt(mean)}.</div>`
+        `<div class="pull" aria-hidden="true" style="bottom:${ghostPx.toFixed(0)}px;height:${Math.max(0, meanPos - ghostPx - 12).toFixed(0)}px"><span></span></div>`
       : '') +
-    `<div class="line med" style="bottom:${(median * pxk).toFixed(0)}px"><span>MEDIAN ${kfmt(median)}</span></div>` +
-    `<div class="line mean" style="bottom:${meanPos.toFixed(0)}px"><span>AVERAGE ${kfmt(mean)}${meanPx > maxPx + 60 ? ' ↑ off the chart' : ''}</span></div>`;
+    `<div class="line med" style="bottom:${medPos.toFixed(0)}px"><span class="ll ${medBelow ? 'dn' : 'up'}"><span class="w">MEDIAN</span> <b>${kfmt(median)}</b></span></div>` +
+    `<div class="line mean" style="bottom:${meanPos.toFixed(0)}px"><span class="ll ${meanBelow ? 'dn' : 'up'}"><span class="w">AVERAGE${offChart ? ' ↑' : ''}</span> <b>${kfmt(mean)}</b></span></div>`;
+  const key = s.hiOn
+    ? `<span class="kk pull"><i aria-hidden="true"></i><b>+${kfmt(mean - baseMean)}</b> One person pulled the average up from ${kfmt(baseMean)} to ${kfmt(mean)}.</span>` +
+      (offChart ? `<span class="kk cut"><i aria-hidden="true" class="pin"></i><span>The average is too high to fit, so its line is pinned to the top edge.</span></span>` : '') +
+      (capped ? `<span class="kk cut"><i aria-hidden="true"></i><span>Their bar is cut off at the top: at full height it would be <b>${times}×</b> taller than this chart.</span></span>` : '')
+    : '';
   const p = pop();
   return {
     toggle: s.hiOn
@@ -211,10 +221,11 @@ export function avmView(s: AvmS) {
       : `<button type="button" data-act="toggle" aria-pressed="false" class="btn-off">+ Invite one high earner</button>`,
     out: kfmt(s.hi),
     chart,
+    key,
     chartLabel: esc(`Incomes of ${n} renters; median ${kfmt(median)}, average ${kfmt(mean)}`),
     caption: esc(
       s.hiOn
-        ? (capped ? `Drawn to scale up to the top of the chart. At ${kfmt(s.hi)}, the high earner’s bar would really be ${times}× taller than this whole chart.` : 'Everyone drawn to the same scale.') + ' Illustrative incomes.'
+        ? (capped ? 'Drawn to scale up to the top of the chart.' : 'Everyone drawn to the same scale.') + ' Illustrative incomes.'
         : 'Ten renters, drawn to scale. Illustrative incomes.',
     ),
     pr1: `<span class="${p}">“Renters here earn ${kfmt(mean)} on average. Rent takes ${rentYr / mean < 0.3 ? 'just ' : ''}${((rentYr / mean) * 100).toFixed(0)}% of income.”</span>`,
