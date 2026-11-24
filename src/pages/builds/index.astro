@@ -1,9 +1,284 @@
 ---
+// Builds index (no mockup; uses the "Now building" cards and "Notebook"
+// timeline from LayoutHomeA). Each build links to its own progress log.
 import Base from '../../layouts/Base.astro';
-import Stub from '../../components/Stub.astro';
+import BuildStages from '../../components/BuildStages.astro';
+import { allBuilds, notebook } from '../../lib/builds';
+import { fmtDate } from '../../lib/studies';
+import { url } from '../../lib/url';
+
+const builds = await allBuilds();
+const notes = await notebook(1000);
+const anyPlaceholder = builds.some((b) => b.data.placeholder);
 ---
-<Base title="Builds">
-  <Stub eyebrow="Builds" title="Things I'm making" stage="stage 6">
-    Engineering projects, from Arduino builds to data models, with a running log of what worked and what didn't.
-  </Stub>
+
+<Base title="Builds" description="Engineering projects, from Arduino builds to data models, each with a running progress log.">
+  <section class="grid-bg hero-sec">
+    <div class="wrap hero">
+      <p class="eyebrow">Builds</p>
+      <h1>Things I’m making</h1>
+      <p class="lead muted">
+        Engineering projects, from Arduino builds to data models. Each one keeps a dated log of what worked and what
+        didn’t, failures included.
+      </p>
+    </div>
+  </section>
+
+  <section class="wrap sec">
+    {anyPlaceholder && <p class="ph-note"><span class="lbl">PLACEHOLDER PROJECTS ›</span> These are invented to test the layout. Real builds replace them as they start.</p>}
+    <div class="builds">
+      {
+        builds.map((b) => {
+          const last = b.data.log[0];
+          return (
+            <a class="build" href={url(`builds/${b.id}/`)}>
+              <div class="photo" role="img" aria-label={b.data.photoAlt ?? `${b.data.name}: photo to come`}>
+                <span>{b.data.kind} · photo to come</span>
+              </div>
+              <div class="body">
+                <div class="head">
+                  <h2>{b.data.name}</h2>
+                  <span class="date">{b.data.stage === 'result' ? 'Finished' : 'Updated'} {fmtDate(b.data.updated)}</span>
+                </div>
+                <p class="muted">{b.data.summary}</p>
+                <BuildStages stage={b.data.stage} />
+                <p class="latest">
+                  {b.data.stage === 'result' && b.data.result ? (
+                    <><span class="la">RESULT ›</span> {b.data.result}</>
+                  ) : (
+                    <><span class="la">LATEST ›</span> {last.text}</>
+                  )}
+                </p>
+                <span class="go">Read the log ({b.data.log.length} {b.data.log.length === 1 ? 'entry' : 'entries'}) →</span>
+              </div>
+            </a>
+          );
+        })
+      }
+    </div>
+  </section>
+
+  <section class="band" id="notebook">
+    <div class="wrap sec nb">
+      <div class="nb-l">
+        <h2 class="h2">Notebook</h2>
+        <p class="muted">Every dated note from every project and study, newest first.</p>
+      </div>
+      <ol class="nb-list">
+        {
+          notes.map((n) => (
+            <li>
+              <span class="nb-meta">
+                <time datetime={n.date.toISOString().slice(0, 10)}>{fmtDate(n.date).toUpperCase()}</time> · <span class="nb-src">{n.source}</span>
+              </span>
+              <span class="nb-text">{n.text}</span>
+            </li>
+          ))
+        }
+      </ol>
+    </div>
+  </section>
 </Base>
+
+<style>
+  :global(body:has(.nb) .site-footer) {
+    margin-top: 0;
+  }
+  .hero-sec {
+    border-bottom: 1px solid var(--line);
+  }
+  .hero {
+    padding-block: 72px 48px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  h1 {
+    font-size: 56px;
+    letter-spacing: -0.03em;
+  }
+  .lead {
+    font-size: 19px;
+    max-width: 720px;
+  }
+  .sec {
+    padding-block: 56px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+  .band {
+    background: var(--bg-alt);
+    border-top: 1px solid var(--line);
+  }
+  .ph-note {
+    font-size: 14px;
+  }
+  .lbl {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--warn);
+  }
+  .builds {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+  .build {
+    text-decoration: none;
+    color: var(--text);
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    background: var(--bg-alt);
+    display: flex;
+    flex-wrap: wrap;
+    overflow: hidden;
+    transition: border-color 0.2s;
+  }
+  .build:hover {
+    color: var(--text);
+    border-color: var(--line-control);
+  }
+  .photo {
+    flex: 1 1 280px;
+    min-width: 0;
+    min-height: 200px;
+    background: var(--bg-raised);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-3);
+    font-family: var(--font-mono);
+    font-size: 14px;
+  }
+  .body {
+    flex: 2 1 480px;
+    min-width: 0;
+    padding: 28px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  .head {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 8px;
+  }
+  .head h2 {
+    font-size: 22px;
+    letter-spacing: 0;
+  }
+  .date {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    color: var(--text-3);
+  }
+  .latest {
+    font-size: 15px;
+  }
+  .la {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    color: var(--accent);
+  }
+  .go {
+    font-weight: 600;
+    color: var(--link);
+  }
+  .nb {
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 48px;
+  }
+  .nb-l {
+    flex: 1 1 280px;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .h2 {
+    font-size: 36px;
+  }
+  .nb-list {
+    flex: 999 1 600px;
+    min-width: 0;
+    list-style: none;
+    margin: 0;
+    padding: 0 0 0 24px;
+    border-left: 1px solid var(--line-control);
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+  }
+  .nb-list li {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .nb-meta {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    color: var(--text-3);
+  }
+  .nb-src {
+    color: var(--accent);
+  }
+  .nb-text {
+    font-size: 17px;
+  }
+
+  @media (max-width: 760px) {
+    .hero {
+      padding-block: 40px 28px;
+      gap: 12px;
+    }
+    h1 {
+      font-size: 34px;
+    }
+    .lead {
+      font-size: 16px;
+    }
+    .sec {
+      padding-block: 32px;
+      gap: 16px;
+    }
+    .builds {
+      gap: 14px;
+    }
+    .build {
+      border-radius: 14px;
+    }
+    .photo {
+      flex-basis: 100%;
+      min-height: 140px;
+      font-size: 12px;
+    }
+    .body {
+      flex-basis: 100%;
+      padding: 18px;
+      gap: 12px;
+    }
+    .head h2 {
+      font-size: 18px;
+    }
+    .nb {
+      gap: 20px;
+    }
+    .nb-l,
+    .nb-list {
+      flex-basis: 100%;
+    }
+    .h2 {
+      font-size: 26px;
+    }
+    .nb-list {
+      padding-left: 18px;
+      gap: 20px;
+    }
+    .nb-text {
+      font-size: 15px;
+    }
+  }
+</style>

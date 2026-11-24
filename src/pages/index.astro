@@ -169,7 +169,7 @@ const studyUrl = (id: string) => url(`studies/${id}/`);
           const reached = STAGES.indexOf(b.data.stage);
           const last = b.data.log[0];
           return (
-            <a class="build" href={url('builds/')}>
+            <a class="build" href={url(`builds/${b.id}/`)}>
               <div class="photo" role="img" aria-label={b.data.photoAlt ?? `${b.data.name}: photo to come`}>
                 <span>{b.data.kind} · photo to come</span>
               </div>
@@ -208,7 +208,7 @@ const studyUrl = (id: string) => url(`studies/${id}/`);
     <div class="nb-l">
       <h2>Notebook</h2>
       <p class="muted">Short dated notes from every project, failures included.</p>
-      <a href={url('builds/')}>Full notebook →</a>
+      <a href={`${url('builds/')}#notebook`}>Full notebook →</a>
     </div>
     <ol class="nb-list">
       {

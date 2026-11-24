@@ -1,6 +1,7 @@
 ---
 import Base from '../layouts/Base.astro';
 import Logo from '../components/Logo.astro';
+import MessageDialog from '../components/MessageDialog.astro';
 import { url } from '../lib/url';
 ---
 <Base title="Page not found" noindex>
@@ -9,19 +10,72 @@ import { url } from '../lib/url';
       <span class="mark"><Logo size={72} /></span>
       <p class="eyebrow">404 · outside the confidence interval</p>
       <h1>This page isn’t in the data.</h1>
-      <p class="muted">The link may be old, or the page may have moved. Nothing here was quietly deleted: removed studies stay listed with a note.</p>
+      <p class="muted lead">
+        The link may be old, or the page may have moved. Nothing here was quietly deleted: removed studies stay listed
+        with a note.
+      </p>
       <div class="actions">
         <a class="btn btn-primary" href={url()}>Go to the homepage</a>
         <a class="btn btn-ghost" href={url('studies/')}>Browse studies</a>
+        <a class="btn btn-ghost" href={url('learn/')}>Learn how data gets spun</a>
       </div>
+      <p class="report">
+        Followed a link on this site to get here?
+        <button type="button" class="link" data-message="mistake">Report the broken link</button>
+      </p>
     </div>
   </section>
+  <MessageDialog />
 </Base>
 <style>
-  .nf { border-bottom: 1px solid var(--line); }
-  .inner { padding-block: clamp(64px, 12vw, 120px); display: flex; flex-direction: column; gap: 18px; align-items: flex-start; }
-  .mark { color: var(--text-3); }
-  h1 { font-size: clamp(32px, 6vw, 52px); }
-  .inner > p.muted { font-size: 18px; max-width: 600px; }
-  .actions { display: flex; flex-wrap: wrap; gap: 12px; }
+  .nf {
+    border-bottom: 1px solid var(--line);
+  }
+  .inner {
+    padding-block: clamp(56px, 12vw, 120px);
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    align-items: flex-start;
+  }
+  .mark {
+    color: var(--text-3);
+  }
+  h1 {
+    font-size: clamp(32px, 6vw, 52px);
+  }
+  .lead {
+    font-size: 18px;
+    max-width: 600px;
+  }
+  .actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .report {
+    font-size: 15px;
+    color: var(--text-2);
+  }
+  .link {
+    background: none;
+    border: 0;
+    padding: 0 0 0 4px;
+    min-height: 44px;
+    color: var(--link);
+    font: inherit;
+    text-decoration: underline;
+    cursor: pointer;
+  }
+  .link:hover {
+    color: var(--link-hover);
+  }
+  @media (max-width: 760px) {
+    .lead {
+      font-size: 16px;
+    }
+    .actions .btn {
+      flex: 1 1 auto;
+    }
+  }
 </style>

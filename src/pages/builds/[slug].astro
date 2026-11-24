@@ -1,0 +1,290 @@
+---
+// One build and its running progress log (newest first).
+import Base from '../../layouts/Base.astro';
+import BuildStages from '../../components/BuildStages.astro';
+import { allBuilds, STAGE_LABEL, type Build } from '../../lib/builds';
+import { fmtDate } from '../../lib/studies';
+import { url } from '../../lib/url';
+import { SITE } from '../../site.config';
+
+export async function getStaticPaths() {
+  const builds = await allBuilds();
+  return builds.map((build) => ({ params: { slug: build.id }, props: { build } }));
+}
+interface Props {
+  build: Build;
+}
+const { build } = Astro.props;
+const d = build.data;
+const done = d.stage === 'result';
+---
+
+<Base title={d.name} description={d.summary} noindex={d.placeholder}>
+  <section class="grid-bg hero-sec">
+    <div class="wrap hero">
+      <p class="crumbs"><a href={url('builds/')}>Builds</a> / {d.kind}</p>
+      <div class="meta">
+        <span class="kind">{d.kind}</span>
+        <span class="mono date">{done ? 'Finished' : 'Updated'} {fmtDate(d.updated)} · {STAGE_LABEL[d.stage]} stage</span>
+        {d.placeholder && <span class="sample">PLACEHOLDER</span>}
+      </div>
+      <h1>{d.name}</h1>
+      <p class="lead">{d.summary}</p>
+      {
+        d.placeholder && (
+          <p class="ph-note">
+            <span class="lbl">PLACEHOLDER PROJECT ›</span> Invented to test the layout. A real build replaces it.
+          </p>
+        )
+      }
+      <div class="stage-wrap"><BuildStages stage={d.stage} /></div>
+    </div>
+  </section>
+
+  <div class="wrap body">
+    <div class="photo" role="img" aria-label={d.photoAlt ?? `${d.name}: photo to come`}><span>{d.kind} · photo to come</span></div>
+
+    {
+      done && d.result && (
+        <div class="result">
+          <p class="k ok">RESULT</p>
+          <p class="r">{d.result}</p>
+        </div>
+      )
+    }
+
+    <section class="log" aria-labelledby="log-h">
+      <h2 id="log-h">Progress log</h2>
+      <p class="muted">Dated notes, newest first. Failures stay in.</p>
+      <ol>
+        {
+          d.log.map((l, i) => (
+            <li class={i === 0 ? 'first' : ''}>
+              <time class="mono" datetime={l.date.toISOString().slice(0, 10)}>{fmtDate(l.date).toUpperCase()}</time>
+              <p>{l.text}</p>
+            </li>
+          ))
+        }
+      </ol>
+    </section>
+
+    <div class="end">
+      <a class="btn btn-ghost" href={url('builds/')}>← All builds</a>
+      <a class="btn btn-ghost" href={SITE.xUrl} rel="me noopener" target="_blank">Follow progress on X</a>
+    </div>
+  </div>
+</Base>
+
+<style>
+  .hero-sec {
+    border-bottom: 1px solid var(--line);
+  }
+  .hero {
+    padding-block: 40px 40px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  .crumbs {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    color: var(--text-3);
+  }
+  .crumbs a {
+    color: var(--text-3);
+  }
+  .meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px 14px;
+    font-size: 13px;
+  }
+  .kind {
+    background: var(--bg-raised);
+    color: var(--text);
+    padding: 2px 10px;
+    border-radius: 999px;
+    font-weight: 600;
+  }
+  .date {
+    color: var(--text-3);
+  }
+  .sample {
+    font-family: var(--font-mono);
+    color: var(--warn);
+    border: 1px solid rgb(255 176 138 / 0.4);
+    padding: 1px 6px;
+    border-radius: 4px;
+  }
+  h1 {
+    font-size: 50px;
+    letter-spacing: -0.03em;
+    max-width: 900px;
+  }
+  .lead {
+    font-size: 19px;
+    color: var(--text-2);
+    max-width: 720px;
+  }
+  .ph-note {
+    max-width: 720px;
+    font-size: 14px;
+    border: 1px solid rgb(255 176 138 / 0.5);
+    background: var(--warn-bg);
+    border-radius: 10px;
+    padding: 10px 14px;
+  }
+  .lbl {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--warn);
+  }
+  .stage-wrap {
+    max-width: 520px;
+    margin-top: 4px;
+  }
+  .body {
+    padding-top: 40px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    max-width: 880px;
+  }
+  .photo {
+    aspect-ratio: 16 / 7;
+    border-radius: 16px;
+    background: var(--bg-raised);
+    border: 1px solid var(--line);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-3);
+    font-family: var(--font-mono);
+    font-size: 14px;
+  }
+  .result {
+    border: 1px solid var(--ok);
+    background: var(--ok-bg);
+    border-radius: 14px;
+    padding: 18px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .k {
+    font-family: var(--font-mono);
+    font-size: 12px;
+  }
+  .k.ok {
+    color: var(--ok);
+  }
+  .r {
+    font-size: 18px;
+    font-weight: 600;
+  }
+  .log {
+    background: var(--bg-alt);
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    padding: 28px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .log h2 {
+    font-size: 24px;
+    letter-spacing: 0;
+  }
+  .log ol {
+    list-style: none;
+    margin: 12px 0 0;
+    padding: 0 0 0 24px;
+    border-left: 1px solid var(--line-control);
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+  .log li {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .log li::before {
+    content: '';
+    position: absolute;
+    left: -30px;
+    top: 5px;
+    width: 11px;
+    height: 11px;
+    border-radius: 50%;
+    background: var(--bg-alt);
+    border: 2px solid var(--line-control);
+  }
+  .log li.first::before {
+    background: var(--accent);
+    border-color: var(--accent);
+  }
+  .log time {
+    font-size: 13px;
+    color: var(--text-3);
+  }
+  .log p {
+    font-size: 17px;
+  }
+  .end {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  @media (max-width: 760px) {
+    .hero {
+      padding-block: 24px;
+      gap: 12px;
+    }
+    .crumbs {
+      font-size: 12px;
+    }
+    h1 {
+      font-size: 30px;
+      line-height: 1.15;
+    }
+    .lead {
+      font-size: 16px;
+    }
+    .ph-note {
+      font-size: 13px;
+    }
+    .body {
+      padding-top: 20px;
+      gap: 16px;
+    }
+    .photo {
+      aspect-ratio: 16 / 9;
+      border-radius: 14px;
+      font-size: 12px;
+    }
+    .log {
+      padding: 18px;
+      border-radius: 14px;
+    }
+    .log h2 {
+      font-size: 20px;
+    }
+    .log ol {
+      padding-left: 18px;
+      gap: 18px;
+    }
+    .log li::before {
+      left: -24px;
+    }
+    .log p {
+      font-size: 15px;
+    }
+    .end .btn {
+      flex: 1 1 auto;
+    }
+  }
+</style>
