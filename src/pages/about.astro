@@ -62,20 +62,16 @@ const RULES = [
   { rule: 'My stakes are disclosed', proof: 'A disclosure line appears on any study my own interests could touch.', color: '#E8D44D' },
   { rule: 'Mistakes are fixed in public', proof: 'Every study has a revision log, and total corrections are counted below.', color: '#9FE0B8' },
 ];
-// The rotating line after "I'm Shaurya Dave, a/an …". Add or remove freely.
+// The rotating line after "I'm Shaurya Dave,": things about Shaurya, not about Pramana.
+// Each entry carries its own "a" or "an".
 const ROLES = [
-  'mechanical engineering student',
-  'data modeller',
-  'hardware tinkerer',
-  'Calgarian',
-  'chart maker',
-  'Arduino builder',
-  'source checker',
-  'number cruncher',
-  'spreadsheet wrangler',
-  'question asker',
+  'a future mechanical engineer',
+  'a UCalgary Dino',
+  'a proud Calgarian',
+  'an Arduino addict',
+  'a weekend tinkerer',
+  'a solder-burn collector',
 ];
-const article = (w: string) => (/^[aeiou]/i.test(w) ? 'an' : 'a');
 ---
 
 <Base title="About" description="How the data and simulations on Pramana are found, checked and built, then who makes them.">
@@ -297,7 +293,7 @@ const article = (w: string) => (/^[aeiou]/i.test(w) ? 'an' : 'a');
           alt="Shaurya in an orange University of Calgary T-shirt, doing a dinosaur roar pose next to the university’s red dinosaur mascot."
         />
         <div class="me-text">
-          <h2>I’m {SITE.author},<br /><span class="acc"><span data-article>{article(ROLES[0])}</span> <span class="role" data-role data-roles={JSON.stringify(ROLES)}>{ROLES[0]}</span></span>.</h2>
+          <h2>I’m {SITE.author},<br /><span class="acc"><span class="role" data-role data-roles={JSON.stringify(ROLES)}>{ROLES[0]}</span></span>.</h2>
           <p class="bio">
             I study Mechanical Engineering at the University of Calgary. I build hardware, model public data on
             Calgary, Alberta and Canada, and publish everything I find, method included.
@@ -402,13 +398,11 @@ const article = (w: string) => (/^[aeiou]/i.test(w) ? 'an' : 'a');
   const role = document.querySelector<HTMLElement>('[data-role]');
   if (role && !reduce) {
     const roles: string[] = JSON.parse(role.dataset.roles || '[]');
-    const art = document.querySelector<HTMLElement>('[data-article]');
     let i = 0;
     setInterval(() => {
       if (document.hidden) return;
       i = (i + 1) % roles.length;
       role.textContent = roles[i];
-      if (art) art.textContent = /^[aeiou]/i.test(roles[i]) ? 'an' : 'a';
       role.classList.remove('pop');
       void role.offsetWidth;
       role.classList.add('pop');
@@ -1159,6 +1153,7 @@ const article = (w: string) => (/^[aeiou]/i.test(w) ? 'an' : 'a');
     font-size: 44px;
     line-height: 1.15;
     letter-spacing: -0.03em;
+    min-height: calc(2 * 1.15em); /* room for the longest rotating title, so nothing below jumps */
   }
   .acc {
     color: var(--accent);
@@ -1371,6 +1366,7 @@ const article = (w: string) => (/^[aeiou]/i.test(w) ? 'an' : 'a');
     }
     .me-text h2 {
       font-size: 30px;
+      min-height: calc(3 * 1.15em);
     }
     .bio {
       font-size: 16px;
