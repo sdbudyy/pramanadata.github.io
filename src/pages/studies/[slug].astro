@@ -1,0 +1,1061 @@
+---
+// Study page template (mockups: StudyPage, StudyMobile, StudyFromX, StudyExplorer).
+// Section order is fixed by CLAUDE.md. Content comes from src/content/studies/<slug>.yaml.
+import Base from '../../layouts/Base.astro';
+import MainChart from '../../components/study/MainChart.astro';
+import BarFigure from '../../components/study/BarFigure.astro';
+import SourceCard from '../../components/study/SourceCard.astro';
+import Explorer from '../../components/study/Explorer.astro';
+import CommentBox from '../../components/CommentBox.astro';
+import { allStudies, studyNo, fmtDate, related, citation, keyNumber, type Study } from '../../lib/studies';
+import { SITE } from '../../site.config';
+import { url } from '../../lib/url';
+
+export async function getStaticPaths() {
+  const studies = await allStudies();
+  return studies.map((study) => ({ params: { slug: study.id }, props: { study, studies } }));
+}
+
+interface Props {
+  study: Study;
+  studies: Study[];
+}
+const { study, studies } = Astro.props;
+const d = study.data;
+const pageUrl = new URL(url(`studies/${study.id}/`), Astro.site).href;
+const shareUrl = `https://x.com/intent/post?text=${encodeURIComponent(d.shareText ?? d.title)}&url=${encodeURIComponent(pageUrl)}`;
+const discussUrl = `https://x.com/search?q=${encodeURIComponent(pageUrl)}`;
+const csvUrl = url(`studies/${study.id}/data.csv`);
+const rel = related(study, studies);
+const figStart = 2; // Fig. 1 is the main chart
+---
+
+<Base title={d.title} description={d.answer} noindex={d.placeholder} progress>
+  <section class="hero grid-bg">
+    <div class="wrap hero-in">
+      <p class="crumbs">
+        <a href={url('studies/')}>Studies</a> / <a href={url('studies/')}>{d.topic}</a> / {studyNo(d.number)}
+      </p>
+      <div class="meta">
+        <span class="topic">{d.topic}</span>
+        <span class="dates">
+          <span class="d-only">Published </span><time datetime={d.published.toISOString().slice(0, 10)}>{fmtDate(d.published)}</time>
+          {d.updated && <span class="d-only"> · Updated {fmtDate(d.updated)}</span>} · {d.readMinutes} min read
+        </span>
+        {d.placeholder && <span class="sample">SAMPLE DATA</span>}
+      </div>
+      <h1>{d.title}</h1>
+      <p class="answer">{d.answer}</p>
+      {
+        d.placeholder && (
+          <p class="placeholder-note">
+            <span class="lbl">PLACEHOLDER STUDY ›</span> Every number on this page is invented to test the layout. None of
+            it is a finding.
+          </p>
+        )
+      }
+      <div class="actions">
+        <a href="#method"><span class="d-only">Jump to method</span><span class="m-only">Method</span></a>
+        <a href="#files">Download data</a>
+        <a href={shareUrl} rel="noopener" target="_blank">Share on X</a>
+      </div>
+    </div>
+  </section>
+
+  <div class="wrap body">
+    <div class="tiles">
+      {
+        d.tiles.map((t) => (
+          <div class={`tile ${t.kind}`}>
+            <span class="k">{t.label.toUpperCase()}</span>
+            <span class="v">{t.value}</span>
+            <span class="s">{t.note}</span>
+          </div>
+        ))
+      }
+    </div>
+
+    <MainChart chart={d.chart} />
+
+    <section class="row found">
+      <div class="panel-p findings" data-rise>
+        <h2>What I found</h2>
+        <ol>
+          {d.findings.map((f, i) => <li><span class="num">{String(i + 1).padStart(2, '0')}</span><span>{f}</span></li>)}
+        </ol>
+      </div>
+      <div class="caveat" data-rise>
+        <h2>WHAT THIS DOESN'T SHOW</h2>
+        <p>{d.caveat}</p>
+      </div>
+    </section>
+
+    {
+      d.figures.length > 0 && (
+        <div class="row figs" data-rise>
+          {d.figures.map((fig, i) => <BarFigure fig={fig} n={figStart + i} />)}
+        </div>
+      )
+    }
+
+    {d.explorer && <Explorer study={study} />}
+
+    <section id="method" class="panel-p method" data-rise>
+      <h2>Method</h2>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th scope="col">DATASET</th><th scope="col">PUBLISHER</th><th scope="col">YEARS</th><th scope="col">LICENCE</th><th scope="col">LINK</th></tr>
+          </thead>
+          <tbody>
+            {
+              d.datasets.map((ds) => (
+                <tr>
+                  <td>{ds.name}</td>
+                  <td>{ds.publisher}</td>
+                  <td class="mono">{ds.years}</td>
+                  <td>{ds.licence}</td>
+                  <td><a href={ds.url} rel="noopener" target="_blank">source ↗</a></td>
+                </tr>
+              ))
+            }
+          </tbody>
+        </table>
+      </div>
+      <div class="ds-cards">
+        {
+          d.datasets.map((ds) => (
+            <div class="ds-card">
+              <span class="ds-name">{ds.name}</span>
+              <span class="ds-meta">{ds.publisher} · {ds.years} · {ds.licence}</span>
+              <a href={ds.url} rel="noopener" target="_blank">source ↗</a>
+            </div>
+          ))
+        }
+      </div>
+      <div class="cols">
+        <details class="collapse" open>
+          <summary><h3>Steps</h3><span class="pm" aria-hidden="true"></span></summary>
+          <ol>{d.steps.map((s) => <li>{s}</li>)}</ol>
+        </details>
+        <details class="collapse">
+          <summary><h3>Assumptions and limits</h3><span class="pm" aria-hidden="true"></span></summary>
+          <ul>{d.assumptions.map((s) => <li>{s}</li>)}</ul>
+        </details>
+      </div>
+    </section>
+
+    <section id="sources" class="panel-p sources" data-reveal data-rise>
+      <div class="src-head">
+        <div>
+          <h2>Source check</h2>
+          <p class="muted">How much to trust each dataset.<span class="d-only"> Five criteria, scored 1–5.</span></p>
+        </div>
+        <a href="#rubric" class="d-only">How I rate sources →</a>
+      </div>
+      <div class="src-cards">
+        {d.sources.map((s, i) => <SourceCard source={s} index={i} />)}
+      </div>
+      <p id="rubric" class="rubric">
+        Average of five scores: authority, method published, recency, fit to the question, independence.
+        ≥4.0 high confidence · 3.0–3.9 use with care · &lt;3.0 weak, flagged in the findings.
+      </p>
+    </section>
+
+    <div class="row two">
+      <section id="files" class="panel-s" data-rise>
+        <h2>Files</h2>
+        <a class="file" href={csvUrl} download>
+          <span>Clean dataset{d.placeholder && <span class="tag"> sample</span>}</span><span class="ext">.csv ↓</span>
+        </a>
+        {
+          d.files.notebook ? (
+            <a class="file" href={d.files.notebook} rel="noopener" target="_blank"><span>Analysis notebook</span><span class="ext">.ipynb ↓</span></a>
+          ) : (
+            <span class="file off"><span>Analysis notebook</span><span class="ext">not yet published</span></span>
+          )
+        }
+        {
+          d.files.repo ? (
+            <a class="file" href={d.files.repo} rel="noopener" target="_blank"><span>Code repository</span><span class="ext">GitHub ↗</span></a>
+          ) : (
+            <span class="file off"><span>Code repository</span><span class="ext">not yet published</span></span>
+          )
+        }
+      </section>
+      <section id="share" class="panel-s" data-rise>
+        <h2>Share and discuss</h2>
+        <p class="muted">Disagree with the method? Tell me. Corrections are logged below.</p>
+        <a class="btn btn-primary discuss" href={discussUrl} rel="noopener" target="_blank">Discuss on X</a>
+        <h3 class="rev-h">REVISIONS</h3>
+        <ul class="revs">
+          {d.revisions.map((r) => <li><span class="muted-3">{r.version} {fmtDate(r.date)}</span> {r.text}</li>)}
+        </ul>
+      </section>
+    </div>
+
+    <CommentBox topic={d.title} />
+
+    {
+      rel.length > 0 && (
+        <section class="related">
+          <h2>Related studies</h2>
+          <div class="rel-row">
+            {rel.map((s) => (
+              <a class="rel" href={url(`studies/${s.id}/`)}>
+                <span class="k">{s.data.topic.toUpperCase()} · {fmtDate(s.data.published).toUpperCase()}</span>
+                <span class="t">{s.data.title}</span>
+                <span class="n">{keyNumber(s)}{s.data.placeholder && <span class="tag"> sample</span>}</span>
+              </a>
+            ))}
+          </div>
+          {rel.length > 1 && <p class="swipe">swipe →</p>}
+        </section>
+      )
+    }
+  </div>
+
+  <section class="follow-sec">
+    <div class="wrap follow-in">
+      <div class="f-text">
+        <h2>Get the next study first</h2>
+        <p class="muted">New studies go out on X first, with the chart and a link back here.</p>
+      </div>
+      <a class="btn btn-primary" href={SITE.xUrl} rel="me noopener" target="_blank">Follow @{SITE.xHandle} on X</a>
+    </div>
+  </section>
+
+  <div class="cite-row">
+    <p class="wrap cite"><span class="muted-3">Cite:</span> {citation(study, pageUrl)}</p>
+  </div>
+</Base>
+
+<script is:inline>
+  // Desktop shows every folded section open; phones keep the first one open.
+  (function () {
+    var mq = window.matchMedia('(min-width: 761px)');
+    var sync = function () {
+      if (mq.matches) document.querySelectorAll('details.collapse').forEach(function (d) { d.open = true; });
+    };
+    sync();
+    mq.addEventListener('change', sync);
+  })();
+</script>
+
+<script>
+  // Play the source-score animation when that section scrolls into view.
+  const io = new IntersectionObserver(
+    (entries) =>
+      entries.forEach((e) => {
+        if (e.isIntersecting) {
+          e.target.classList.add('in');
+          io.unobserve(e.target);
+        }
+      }),
+    { threshold: 0.2 },
+  );
+  document.querySelectorAll('[data-reveal]').forEach((el) => io.observe(el));
+</script>
+
+<style>
+  /* ---------- Hero ---------- */
+  .hero {
+    border-bottom: 1px solid var(--line);
+  }
+  .hero-in {
+    padding-block: 40px 48px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+  .crumbs {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    color: var(--text-3);
+  }
+  .crumbs a {
+    color: var(--text-3);
+  }
+  .meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px 16px;
+    font-size: 13px;
+  }
+  .topic {
+    background: var(--ok-bg);
+    color: var(--ok);
+    padding: 2px 10px;
+    border-radius: 999px;
+    font-weight: 600;
+  }
+  .dates {
+    font-family: var(--font-mono);
+    color: var(--text-3);
+  }
+  .sample {
+    font-family: var(--font-mono);
+    color: var(--warn);
+    border: 1px solid rgb(255 176 138 / 0.4);
+    padding: 1px 6px;
+    border-radius: 4px;
+  }
+  h1 {
+    font-size: 50px;
+    line-height: 1.1;
+    letter-spacing: -0.03em;
+    max-width: 980px;
+  }
+  .answer {
+    font-size: 20px;
+    color: var(--text-2);
+    max-width: 780px;
+  }
+  .placeholder-note {
+    max-width: 780px;
+    font-size: 14px;
+    border: 1px solid rgb(255 176 138 / 0.5);
+    background: var(--warn-bg);
+    border-radius: 10px;
+    padding: 10px 14px;
+  }
+  .lbl {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--warn);
+  }
+  .actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    font-size: 15px;
+  }
+  .actions a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    border: 1px solid var(--line-control);
+    color: var(--text);
+    text-decoration: none;
+    padding: 9px 16px;
+    border-radius: 8px;
+    transition: background-color 0.2s;
+  }
+  .actions a:hover {
+    background: var(--bg-raised);
+  }
+  .m-only {
+    display: none;
+  }
+
+  /* ---------- Body ---------- */
+  .body {
+    padding-top: 40px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  .tiles {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+  .tile {
+    flex: 1 1 240px;
+    min-width: 0;
+    background: var(--bg-alt);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .tile .k {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--text-3);
+  }
+  .tile .v {
+    font-family: var(--font-mono);
+    font-size: 36px;
+    font-weight: 600;
+    line-height: 1.2;
+  }
+  .tile .s {
+    font-size: 14px;
+    color: var(--text-2);
+  }
+  .tile.headline {
+    border-color: var(--accent);
+  }
+  .tile.headline .k,
+  .tile.headline .v {
+    color: var(--accent);
+  }
+  .tile.headline .v {
+    font-size: 44px;
+    line-height: 1.1;
+  }
+  .tile.text .v {
+    font-family: var(--font-sans);
+    font-size: 24px;
+    line-height: 1.3;
+  }
+
+  .row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+  .panel-p {
+    background: var(--bg-alt);
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    padding: 28px;
+    display: flex;
+    flex-direction: column;
+  }
+  .panel-p h2,
+  .related h2 {
+    font-size: 24px;
+    letter-spacing: 0;
+  }
+  .findings {
+    flex: 999 1 560px;
+    min-width: 0;
+    gap: 18px;
+  }
+  .findings ol {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  .findings li {
+    display: flex;
+    gap: 16px;
+  }
+  .num {
+    font-family: var(--font-mono);
+    font-weight: 600;
+    color: var(--accent);
+  }
+  .caveat {
+    flex: 1 1 300px;
+    min-width: 0;
+    background: var(--warn-bg);
+    border: 1px solid rgb(255 122 61 / 0.4);
+    border-radius: 16px;
+    padding: 28px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .caveat h2 {
+    font-size: 15px;
+    color: var(--warn);
+    letter-spacing: 0;
+  }
+  .caveat p {
+    font-size: 15px;
+  }
+
+  /* Method */
+  .method {
+    gap: 24px;
+  }
+  .table-wrap {
+    overflow-x: auto;
+  }
+  table {
+    width: 100%;
+    min-width: 720px;
+    border-collapse: collapse;
+    font-size: 15px;
+  }
+  th {
+    text-align: left;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    font-weight: 400;
+    color: var(--text-3);
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--line);
+  }
+  td {
+    padding: 12px;
+    border-bottom: 1px solid var(--line);
+  }
+  tr:last-child td {
+    border-bottom: 0;
+  }
+  th:first-child,
+  td:first-child {
+    padding-left: 0;
+  }
+  th:last-child,
+  td:last-child {
+    padding-right: 0;
+  }
+  td.mono {
+    font-size: 14px;
+  }
+  .ds-cards {
+    display: none;
+  }
+  .cols {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 32px;
+  }
+  .cols details {
+    flex: 1 1 420px;
+    min-width: 0;
+  }
+  .collapse summary {
+    list-style: none;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .collapse summary::-webkit-details-marker {
+    display: none;
+  }
+  .collapse h3 {
+    font-family: var(--font-sans);
+    font-size: 16px;
+    letter-spacing: 0;
+  }
+  .cols ol,
+  .cols ul {
+    margin: 10px 0 0;
+    padding-left: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    color: var(--text-2);
+  }
+  @media (min-width: 761px) {
+    .cols summary {
+      pointer-events: none;
+    }
+  }
+
+  /* Sources */
+  .sources {
+    gap: 20px;
+  }
+  .src-head {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 8px 24px;
+  }
+  .src-head div {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .src-head p {
+    font-size: 15px;
+  }
+  .src-head a {
+    font-size: 14px;
+    font-weight: 600;
+  }
+  .src-cards {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+  .rubric {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--text-3);
+  }
+
+  /* Files + share */
+  .panel-s {
+    flex: 1 1 360px;
+    min-width: 0;
+    background: var(--bg-alt);
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .panel-s h2 {
+    font-size: 18px;
+    letter-spacing: 0;
+  }
+  .file {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    min-height: 48px;
+    text-decoration: none;
+    color: var(--text);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 12px 14px;
+    transition: background-color 0.2s;
+  }
+  a.file:hover {
+    background: var(--bg-raised);
+    color: var(--text);
+  }
+  .file.off {
+    color: var(--text-3);
+  }
+  .ext {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    color: var(--link);
+  }
+  .off .ext {
+    color: var(--text-3);
+  }
+  .tag {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--warn);
+  }
+  .panel-s p {
+    font-size: 15px;
+  }
+  .discuss {
+    align-self: flex-start;
+  }
+  .rev-h {
+    margin-top: 8px;
+    font-size: 12px;
+    font-weight: 400;
+    color: var(--text-3);
+    letter-spacing: 0;
+  }
+  .revs {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    font-family: var(--font-mono);
+    font-size: 13px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .muted-3 {
+    color: var(--text-3);
+  }
+
+  /* Related */
+  .related {
+    padding-top: 48px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+  .rel-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+  .rel {
+    flex: 0 1 calc((100% - 32px) / 3);
+    min-width: 300px;
+    text-decoration: none;
+    color: var(--text);
+    background: var(--bg-alt);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    transition: border-color 0.2s;
+  }
+  .rel:hover {
+    color: var(--text);
+    border-color: var(--line-control);
+  }
+  .rel .k {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--text-3);
+  }
+  .rel .t {
+    font-weight: 600;
+  }
+  .rel .n {
+    font-family: var(--font-mono);
+    font-size: 22px;
+    font-weight: 600;
+    color: var(--accent);
+  }
+  .swipe {
+    display: none;
+  }
+
+  /* Follow + cite */
+  .follow-sec {
+    border-top: 1px solid var(--line);
+    margin-top: 64px;
+  }
+  .follow-in {
+    padding-block: 56px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 24px 32px;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .f-text {
+    flex: 1 1 420px;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .f-text h2 {
+    font-size: 28px;
+    letter-spacing: 0;
+  }
+  .cite-row {
+    border-top: 1px solid var(--line);
+  }
+  .cite {
+    padding-block: 28px;
+    font-family: var(--font-mono);
+    font-size: 13px;
+    color: var(--text-2);
+    overflow-wrap: anywhere;
+  }
+  /* The site footer follows directly; drop its top gap on study pages. */
+  :global(body:has(.cite-row) .site-footer) {
+    margin-top: 0;
+  }
+
+  /* ---------- Phone ---------- */
+  @media (max-width: 760px) {
+    .d-only {
+      display: none;
+    }
+    .m-only {
+      display: inline;
+    }
+    .hero {
+      background-size: 32px 32px;
+    }
+    .hero-in {
+      padding-block: 20px 22px;
+      gap: 12px;
+    }
+    .crumbs {
+      font-size: 12px;
+    }
+    .meta {
+      gap: 6px 10px;
+      font-size: 12px;
+    }
+    .topic {
+      padding: 2px 9px;
+    }
+    h1 {
+      font-size: 29px;
+      line-height: 1.15;
+      letter-spacing: -0.02em;
+    }
+    .answer {
+      font-size: 17px;
+      line-height: 1.5;
+    }
+    .placeholder-note {
+      font-size: 13px;
+      padding: 8px 12px;
+    }
+    .actions {
+      flex-wrap: nowrap;
+      overflow-x: auto;
+      gap: 8px;
+      font-size: 14px;
+      scrollbar-width: none;
+    }
+    .actions a {
+      flex: none;
+      padding: 7px 13px;
+      border-radius: 999px;
+    }
+
+    .body {
+      padding-top: 18px;
+      gap: 14px;
+    }
+    .tiles {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+    .tile {
+      border-radius: 14px;
+      padding: 14px;
+      gap: 2px;
+    }
+    .tile.headline,
+    .tile.text {
+      grid-column: 1 / -1;
+    }
+    .tile .k {
+      font-size: 11px;
+    }
+    .tile .v,
+    .tile.text .v {
+      font-family: var(--font-mono);
+      font-size: 24px;
+      line-height: 1.15;
+    }
+    .tile.headline .v {
+      font-size: 34px;
+      line-height: 1.15;
+    }
+    .tile .s {
+      font-size: 13px;
+    }
+
+    .row {
+      flex-direction: column;
+      gap: 14px;
+    }
+    .found {
+      gap: 12px;
+    }
+    .panel-p {
+      border-radius: 14px;
+      padding: 18px;
+    }
+    .panel-p h2,
+    .related h2 {
+      font-size: 20px;
+    }
+    .findings {
+      flex-basis: auto;
+      gap: 12px;
+    }
+    .findings ol {
+      gap: 12px;
+      font-size: 15px;
+    }
+    .findings li {
+      gap: 12px;
+    }
+    .caveat {
+      flex-basis: auto;
+      border-radius: 14px;
+      padding: 16px 18px;
+      gap: 8px;
+    }
+    .caveat h2 {
+      font-size: 13px;
+    }
+    .caveat p {
+      font-size: 14px;
+    }
+
+    .method {
+      gap: 12px;
+    }
+    .table-wrap {
+      display: none;
+    }
+    .ds-cards {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .ds-card {
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+    .ds-name {
+      font-weight: 600;
+      font-size: 15px;
+    }
+    .ds-meta {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: var(--text-3);
+    }
+    .ds-card a {
+      font-size: 13px;
+      align-self: flex-start;
+      min-height: 32px;
+      display: inline-flex;
+      align-items: center;
+    }
+    .cols {
+      flex-direction: column;
+      gap: 0;
+    }
+    .cols details {
+      flex-basis: auto;
+      border-top: 1px solid var(--line);
+      padding-top: 2px;
+    }
+    .collapse summary {
+      cursor: pointer;
+      min-height: 44px;
+    }
+    .collapse h3 {
+      font-size: 15px;
+    }
+    .pm::after {
+      content: '+';
+      color: var(--text-3);
+      font-family: var(--font-mono);
+    }
+    details[open] > summary .pm::after {
+      content: '−';
+    }
+    .cols ol,
+    .cols ul {
+      margin: 0 0 10px;
+      padding-left: 18px;
+      font-size: 14px;
+      gap: 4px;
+    }
+
+    .sources {
+      gap: 12px;
+    }
+    .src-head p {
+      font-size: 14px;
+      margin-top: -6px;
+    }
+    .rubric {
+      font-size: 11px;
+    }
+
+    .panel-s {
+      flex-basis: auto;
+      border-radius: 14px;
+      padding: 18px;
+      gap: 10px;
+    }
+    .panel-s h2 {
+      font-size: 17px;
+    }
+    .file {
+      padding: 11px 12px;
+      font-size: 14px;
+      min-height: 44px;
+    }
+    .ext {
+      font-size: 12px;
+    }
+    .panel-s p {
+      font-size: 14px;
+    }
+    .discuss {
+      align-self: stretch;
+    }
+    .rev-h {
+      margin-top: 4px;
+      font-size: 11px;
+    }
+    .revs {
+      font-size: 12px;
+    }
+
+    .related {
+      padding-top: 26px;
+      gap: 12px;
+    }
+    .rel-row {
+      flex-wrap: nowrap;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      gap: 10px;
+      margin-inline: calc(-1 * var(--gutter));
+      padding: 0 var(--gutter) 4px;
+      scrollbar-width: none;
+    }
+    .rel {
+      flex: none;
+      width: 240px;
+      min-width: 0;
+      scroll-snap-align: start;
+      border-radius: 14px;
+      padding: 14px;
+      gap: 6px;
+    }
+    .rel .k {
+      font-size: 11px;
+    }
+    .rel .n {
+      font-size: 20px;
+    }
+    .swipe {
+      display: block;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--text-3);
+    }
+
+    .follow-sec {
+      margin-top: 26px;
+    }
+    .follow-in {
+      padding-block: 24px;
+      flex-direction: column;
+      align-items: stretch;
+      gap: 12px;
+    }
+    .f-text {
+      flex-basis: auto;
+    }
+    .f-text h2 {
+      font-size: 21px;
+    }
+    .f-text p {
+      font-size: 14px;
+    }
+    .cite {
+      padding-block: 18px;
+      font-size: 11px;
+    }
+
+    /* Sections fade up as they scroll in (browser scroll timeline; no scripts). */
+    @supports (animation-timeline: view()) {
+      [data-rise] {
+        animation: rise linear both;
+        animation-timeline: view();
+        animation-range: entry 0% entry 35%;
+      }
+    }
+  }
+  @keyframes rise {
+    from {
+      opacity: 0;
+      transform: translateY(18px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    [data-rise] {
+      animation: none !important;
+    }
+  }
+</style>

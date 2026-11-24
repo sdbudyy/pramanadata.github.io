@@ -3,6 +3,10 @@ import Logo from './Logo.astro';
 import { NAV, SITE } from '../site.config';
 import { url, isActive } from '../lib/url';
 
+interface Props {
+  progress?: boolean; // thin reading-progress line under the bar (phones, long pages)
+}
+const { progress = false } = Astro.props;
 const here = Astro.url.pathname;
 ---
 
@@ -10,6 +14,10 @@ const here = Astro.url.pathname;
   <nav class="wrap bar" aria-label="Main">
     <a class="home" href={url()} aria-label="Pramana home">
       <Logo size={28} wordmark />
+    </a>
+
+    <a class="follow-m" href={SITE.xUrl} rel="me noopener" target="_blank">
+      <span>Follow on X</span>
     </a>
 
     <button
@@ -47,6 +55,7 @@ const here = Astro.url.pathname;
       </a>
     </div>
   </nav>
+  {progress && <span class="prog" aria-hidden="true"></span>}
 </header>
 
 <script>
@@ -136,6 +145,24 @@ const here = Astro.url.pathname;
     padding: 8px 16px;
     font-size: 15px;
   }
+  .follow-m {
+    display: none;
+    margin-left: auto;
+    min-height: 44px;
+    align-items: center;
+    text-decoration: none;
+  }
+  .follow-m span {
+    background: var(--accent);
+    color: var(--accent-ink);
+    font-weight: 600;
+    font-size: 13px;
+    padding: 6px 12px;
+    border-radius: 7px;
+  }
+  .prog {
+    display: none;
+  }
   .menu-btn {
     display: none;
     width: 44px;
@@ -165,8 +192,30 @@ const here = Astro.url.pathname;
   }
 
   @media (max-width: 760px) {
-    .menu-btn {
+    .bar {
+      min-height: 52px;
+      gap: 14px;
+    }
+    .menu-btn,
+    .follow-m {
       display: inline-flex;
+    }
+    .menu .follow {
+      display: none;
+    }
+    @supports (animation-timeline: scroll()) {
+      .prog {
+        display: block;
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: -1px;
+        height: 2px;
+        background: var(--accent);
+        transform-origin: left;
+        animation: prog linear both;
+        animation-timeline: scroll(root);
+      }
     }
     .menu {
       display: none;
@@ -202,6 +251,14 @@ const here = Astro.url.pathname;
     }
     .follow {
       min-height: 48px;
+    }
+  }
+  @keyframes prog {
+    from {
+      transform: scaleX(0.04);
+    }
+    to {
+      transform: scaleX(1);
     }
   }
   @keyframes drop {
