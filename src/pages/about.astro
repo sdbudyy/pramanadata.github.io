@@ -272,7 +272,17 @@ const ROLES = ['mechanical engineering student', 'data modeller', 'hardware tink
     <section id="me" class="wrap sec me">
       <p class="part">PART 2 · WHO I AM</p>
       <div class="me-row">
-        <div class="photo"><span class="ph-lbl">PLACEHOLDER</span>Photo to come</div>
+        <img
+          class="photo"
+          src={url('about/shaurya-560.jpg')}
+          srcset={`${url('about/shaurya-280.jpg')} 280w, ${url('about/shaurya-560.jpg')} 560w`}
+          sizes="(max-width: 760px) 140px, 260px"
+          width="560"
+          height="560"
+          loading="lazy"
+          decoding="async"
+          alt="Shaurya in an orange University of Calgary T-shirt, doing a dinosaur roar pose next to the university’s red dinosaur mascot."
+        />
         <div class="me-text">
           <h2>I’m {SITE.author},<br /><span class="acc">a <span class="role" data-role>{ROLES[0]}</span></span>.</h2>
           <p class="bio">
@@ -1114,24 +1124,13 @@ const ROLES = ['mechanical engineering student', 'data modeller', 'hardware tink
   .photo {
     flex: 0 1 260px;
     min-width: 0;
+    width: 260px;
+    height: auto;
     aspect-ratio: 1 / 1;
+    object-fit: cover;
     border-radius: 24px;
-    border: 1px dashed var(--warn);
+    border: 1px solid var(--line);
     background: var(--bg-raised);
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-    align-items: center;
-    justify-content: center;
-    color: var(--text-3);
-    font-size: 14px;
-    text-align: center;
-    padding: 20px;
-  }
-  .ph-lbl {
-    font-family: var(--font-mono);
-    font-size: 11px;
-    color: var(--warn);
   }
   .me-text {
     flex: 1 1 480px;
@@ -1348,6 +1347,7 @@ const ROLES = ['mechanical engineering student', 'data modeller', 'hardware tink
     }
     .photo {
       flex: 0 0 140px;
+      width: 140px;
       border-radius: 18px;
     }
     .me-text {
