@@ -132,4 +132,20 @@ const studies = defineCollection({
   }),
 });
 
-export const collections = { studies };
+// Engineering builds. Each has a stage and a dated progress log (newest first).
+const builds = defineCollection({
+  loader: glob({ pattern: '*.yaml', base: './src/content/builds' }),
+  schema: z.object({
+    name: z.string(),
+    kind: z.string(), // e.g. "Arduino", "Data model"
+    summary: z.string(),
+    stage: z.enum(['idea', 'build', 'test', 'result']),
+    updated: z.coerce.date(),
+    placeholder: z.boolean().default(false),
+    photoAlt: z.string().optional(),
+    result: z.string().optional(), // the final finding, once stage is "result"
+    log: z.array(z.object({ date: z.coerce.date(), text: z.string() })).min(1),
+  }),
+});
+
+export const collections = { studies, builds };

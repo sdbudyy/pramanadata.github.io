@@ -1,30 +1,942 @@
 ---
+// Homepage (mockup: LayoutHomeA). Dashboard style: the latest finding's chart
+// is the hero. Changes from the mockup, per CLAUDE.md: the menu is Studies ·
+// Builds · Learn · Sandbox · About, and every Subscribe/digest call to action
+// is Follow on X (there is no newsletter).
 import Base from '../layouts/Base.astro';
-import Logo from '../components/Logo.astro';
+import { HERO_D, HERO_M, heroSvg, hbarsSvg, vbarsSvg, lineLabel, type LineView } from '../lib/chart';
+import { allStudies, studyNo, fmtDate, keyNumber, topicTone } from '../lib/studies';
+import { allBuilds, notebook, STAGES, STAGE_LABEL } from '../lib/builds';
 import { SITE } from '../site.config';
 import { url } from '../lib/url';
+
+const studies = await allStudies();
+const builds = (await allBuilds()).slice(0, 2);
+const notes = await notebook(3);
+
+const latest = studies[0];
+const lc = latest.data.chart;
+const lv = lc.views.find((v) => v.type === 'line') as LineView | undefined;
+const lead = latest.data.tiles[0];
+const callout = { value: lead.value, label: lead.note };
+const heroD = lv ? heroSvg(HERO_D, lc, lv, callout) : '';
+const heroM = lv ? heroSvg(HERO_M, lc, lv, callout) : '';
+
+const featured = studies[0];
+const side = studies.slice(1, 3);
+const topics = [...new Set(studies.map((s) => s.data.topic))];
+const fig = featured.data.figures[0];
+const drawFig = (w: number, mobile: boolean) =>
+  fig
+    ? fig.type === 'hbars'
+      ? hbarsSvg({ w, mobile }, fig.bars, fig.unit)
+      : vbarsSvg({ w, mobile }, fig.bars, fig.unit, fig.refLine)
+    : null;
+const figSvg = drawFig(600, false);
+const figSvgM = drawFig(320, true);
+const anyPlaceholder = studies.some((s) => s.data.placeholder);
+const studyUrl = (id: string) => url(`studies/${id}/`);
 ---
+
 <Base>
-  <section class="grid-bg hold">
-    <div class="wrap inner">
-      <span class="mark"><Logo size={88} label="Pramana logo" /></span>
-      <p class="eyebrow">Pramana · launching soon</p>
-      <h1>Calgary, Alberta and Canada,<br />in data. No spin.</h1>
-      <p class="muted lead">Data studies that show every source, rate how much to trust it, and log every correction. Plus a few things I’m building.</p>
-      <div class="actions">
-        <a class="btn btn-primary" href={SITE.xUrl} rel="noopener" target="_blank">Follow on X</a>
-        <a class="btn btn-ghost" href={url('learn/')}>How data gets spun</a>
+  <section class="hero grid-bg">
+    <div class="wrap hero-in">
+      <div class="hero-top">
+        <div class="hero-l">
+          <p class="eyebrow">Calgary · Engineering · Data</p>
+          <h1>I measure messy real-world systems.</h1>
+        </div>
+        <div class="hero-r">
+          <p class="lead">
+            Engineering and finance student at the University of Calgary. I build hardware, model public data on Calgary,
+            Alberta and Canada, and show my work.
+          </p>
+          <div class="actions">
+            <a class="btn btn-primary" href={studyUrl(latest.id)}>Read the latest study</a>
+            <a class="btn btn-ghost" href={SITE.xUrl} rel="me noopener" target="_blank">Follow on X</a>
+          </div>
+        </div>
       </div>
-      <p class="mono note">Placeholder homepage · the real one is built in stage 3</p>
+
+      {
+        lv && (
+          <a class="hero-fig" href={studyUrl(latest.id)}>
+            <figure>
+              <div class="fig-head">
+                <p class="fig-title">{latest.data.title}</p>
+                <p class="fig-meta">
+                  {studyNo(latest.data.number).toUpperCase()} · {fmtDate(latest.data.published).toUpperCase()}
+                  {latest.data.placeholder && <span class="sample">SAMPLE DATA</span>}
+                </p>
+              </div>
+              <svg class="d" role="img" aria-label={lineLabel(lc, lv)} viewBox={`0 0 ${HERO_D.w} ${HERO_D.h}`} set:html={heroD} />
+              <svg class="m" role="img" aria-label={lineLabel(lc, lv)} viewBox={`0 0 ${HERO_M.w} ${HERO_M.h}`} set:html={heroM} />
+              <figcaption class="fig-foot">
+                <span class="legend">
+                  <span><span class="key-a">━━</span> {lc.aLabel}</span>
+                  <span><span class="key-b">╌╌</span> {lc.bLabel}</span>
+                </span>
+                <span class="src">
+                  Source: {lc.sourceShort ?? lc.source} · {lc.unit}{lv.yMin !== 0 && `, axis from ${lv.yMin}`} ·{' '}
+                  <span class="more">method + code</span>
+                </span>
+              </figcaption>
+            </figure>
+          </a>
+        )
+      }
+    </div>
+  </section>
+
+  <section id="studies" class="wrap sec">
+    <div class="sec-head">
+      <div class="titles">
+        <h2>Data studies</h2>
+        <p class="muted">Calgary, Alberta and Canada in numbers. A new one most weeks.</p>
+      </div>
+      {
+        topics.length > 1 && (
+          <div class="chips" role="group" aria-label="Filter by topic">
+            <button type="button" data-topic="" aria-pressed="true">All</button>
+            {topics.map((t) => (
+              <button type="button" data-topic={t} aria-pressed="false">{t}</button>
+            ))}
+          </div>
+        )
+      }
+    </div>
+    {anyPlaceholder && <p class="ph-note"><span class="lbl">PLACEHOLDER STUDIES ›</span> The studies below use invented sample numbers to test the layout. None of it is a finding.</p>}
+
+    <div class="study-grid">
+      <a class="card feat" href={studyUrl(featured.id)} data-card={featured.data.topic}>
+        <div class="card-top">
+          <span class="pill" style={`background:${topicTone(featured.data.topic).bg};color:${topicTone(featured.data.topic).fg}`}>{featured.data.topic}</span>
+          <span class="date">{fmtDate(featured.data.published).toUpperCase()}</span>
+        </div>
+        <h3>{featured.data.title}</h3>
+        {
+          figSvg && figSvgM && fig && (
+            <>
+              <svg
+                class="d"
+                role="img"
+                aria-label={`${fig.caption}: ${fig.bars.map((b) => `${b.label} ${b.value}${fig.unit}`).join(', ')}`}
+                viewBox={`0 0 600 ${figSvg.h}`}
+                set:html={figSvg.inner}
+              />
+              <svg
+                class="m"
+                role="img"
+                aria-label={`${fig.caption}: ${fig.bars.map((b) => `${b.label} ${b.value}${fig.unit}`).join(', ')}`}
+                viewBox={`0 0 320 ${figSvgM.h}`}
+                set:html={figSvgM.inner}
+              />
+            </>
+          )
+        }
+        <p class="muted">{featured.data.findings[0]}</p>
+        <span class="go">Read the study →</span>
+      </a>
+      {
+        side.length > 0 && (
+          <div class="side">
+            {side.map((s) => (
+              <a class="card small" href={studyUrl(s.id)} data-card={s.data.topic}>
+                <div class="card-top">
+                  <span class="pill" style={`background:${topicTone(s.data.topic).bg};color:${topicTone(s.data.topic).fg}`}>{s.data.topic}</span>
+                  <span class="date">{fmtDate(s.data.published).toUpperCase()}</span>
+                </div>
+                <h3>{s.data.title}</h3>
+                <p class="key">{keyNumber(s)}{s.data.placeholder && <span class="tag"> sample</span>}</p>
+              </a>
+            ))}
+          </div>
+        )
+      }
+    </div>
+    <p class="empty muted" hidden>No studies on this topic yet.</p>
+    <a class="all" href={url('studies/')}>All studies →</a>
+  </section>
+
+  <section id="building" class="band">
+    <div class="wrap sec">
+      <div class="titles">
+        <h2>Now building</h2>
+        <p class="muted">Longer projects, and how far along each one is.</p>
+      </div>
+      {
+        builds.map((b) => {
+          const reached = STAGES.indexOf(b.data.stage);
+          const last = b.data.log[0];
+          return (
+            <a class="build" href={url('builds/')}>
+              <div class="photo" role="img" aria-label={b.data.photoAlt ?? `${b.data.name}: photo to come`}>
+                <span>{b.data.kind} · photo to come</span>
+              </div>
+              <div class="build-body">
+                <div class="build-head">
+                  <h3>{b.data.name}</h3>
+                  <span class="date">
+                    {b.data.stage === 'result' ? 'Finished' : 'Updated'} {fmtDate(b.data.updated)}
+                  </span>
+                </div>
+                <p class="muted">{b.data.summary}</p>
+                <ol class="stages" aria-label={`Project stage: ${STAGE_LABEL[b.data.stage]}`}>
+                  {STAGES.map((st, i) => (
+                    <li class={i <= reached ? 'on' : ''}>
+                      <span class="bar" />
+                      <span>{STAGE_LABEL[st]}</span>
+                    </li>
+                  ))}
+                </ol>
+                <p class="latest">
+                  {b.data.stage === 'result' && b.data.result ? (
+                    <><span class="lbl-a">RESULT ›</span> {b.data.result}</>
+                  ) : (
+                    <><span class="lbl-a">LATEST ›</span> {last.text}</>
+                  )}
+                </p>
+              </div>
+            </a>
+          );
+        })
+      }
+    </div>
+  </section>
+
+  <section id="notebook" class="wrap sec notebook">
+    <div class="nb-l">
+      <h2>Notebook</h2>
+      <p class="muted">Short dated notes from every project, failures included.</p>
+      <a href={url('builds/')}>Full notebook →</a>
+    </div>
+    <ol class="nb-list">
+      {
+        notes.map((n) => (
+          <li>
+            <span class="nb-meta">{fmtDate(n.date).toUpperCase()} · <span class="nb-src">{n.source}</span></span>
+            <span class="nb-text">{n.text}</span>
+          </li>
+        ))
+      }
+    </ol>
+  </section>
+
+  <section id="about" class="band">
+    <div class="wrap sec about">
+      <div class="ab-l">
+        <h2>About</h2>
+        <p class="ab-text">
+          <span class="lbl">PLACEHOLDER ›</span> [Two or three sentences in Shaurya's words: who you are, what you work on, why
+          you do this in public.]
+        </p>
+        <a href={url('about/')}>How the data is found and checked →</a>
+      </div>
+      <dl class="facts">
+        <div><dt>Studying</dt><dd>Mech. Eng. + BComm (Finance), UCalgary</dd></div>
+        <div><dt>Based in</dt><dd>Calgary, Alberta</dd></div>
+        <div><dt>Open to</dt><dd>[Placeholder: internships, collaborations, data requests]</dd></div>
+        <div>
+          <dt>Elsewhere</dt>
+          <dd class="links">
+            <a href={SITE.xUrl} rel="me noopener" target="_blank">X</a>
+            <a href="https://github.com/sdbudyy/pramanadata.github.io" rel="noopener" target="_blank">GitHub</a>
+          </dd>
+        </div>
+      </dl>
+    </div>
+  </section>
+
+  <section class="follow-sec">
+    <div class="wrap follow-in">
+      <div class="f-text">
+        <h2>Get every new study first</h2>
+        <p class="muted">Each finding goes out on X with its chart and a link back here. No newsletter, no email list.</p>
+      </div>
+      <a class="btn btn-primary" href={SITE.xUrl} rel="me noopener" target="_blank">Follow @{SITE.xHandle} on X</a>
     </div>
   </section>
 </Base>
+
+<script>
+  // Topic filter for the study cards.
+  const chips = [...document.querySelectorAll<HTMLButtonElement>('.chips button')];
+  const cards = [...document.querySelectorAll<HTMLElement>('[data-card]')];
+  const empty = document.querySelector<HTMLElement>('.empty');
+  chips.forEach((chip) =>
+    chip.addEventListener('click', () => {
+      const t = chip.dataset.topic;
+      chips.forEach((c) => c.setAttribute('aria-pressed', String(c === chip)));
+      let shown = 0;
+      cards.forEach((card) => {
+        const on = !t || card.dataset.card === t;
+        card.hidden = !on;
+        if (on) shown++;
+      });
+      if (empty) empty.hidden = shown > 0;
+    }),
+  );
+</script>
+
 <style>
-  .hold { border-bottom: 1px solid var(--line); }
-  .inner { padding-block: clamp(64px, 12vw, 128px); display: flex; flex-direction: column; gap: 20px; }
-  .mark { color: var(--text); }
-  h1 { font-size: clamp(36px, 7vw, 64px); letter-spacing: -0.03em; }
-  .lead { font-size: 19px; max-width: 640px; }
-  .actions { display: flex; flex-wrap: wrap; gap: 12px; }
-  .note { font-size: 12px; color: var(--warn); }
+  /* ---------- Hero ---------- */
+  .hero {
+    border-bottom: 1px solid var(--line);
+  }
+  .hero-in {
+    padding-block: 72px 56px;
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+  }
+  .hero-top {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 24px 64px;
+    align-items: flex-end;
+    justify-content: space-between;
+  }
+  .hero-l {
+    flex: 1 1 560px;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+  .eyebrow {
+    letter-spacing: 0.06em;
+  }
+  h1 {
+    font-size: 60px;
+    line-height: 1.05;
+    letter-spacing: -0.03em;
+  }
+  .hero-r {
+    flex: 1 1 340px;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+  .lead {
+    font-size: 18px;
+    color: var(--text-2);
+  }
+  .actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .hero-fig {
+    display: block;
+    text-decoration: none;
+    color: var(--text);
+  }
+  .hero-fig:hover {
+    color: var(--text);
+  }
+  .hero-fig figure {
+    margin: 0;
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    background: var(--bg-alt);
+    padding: 24px 24px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    transition: border-color 0.2s;
+  }
+  .hero-fig:hover figure {
+    border-color: var(--line-control);
+  }
+  .fig-head {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 8px 24px;
+    align-items: baseline;
+  }
+  .fig-title {
+    font-size: 18px;
+    font-weight: 600;
+  }
+  .fig-meta {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    color: var(--text-3);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .sample {
+    color: var(--warn);
+    border: 1px solid rgb(255 176 138 / 0.4);
+    padding: 1px 6px;
+    border-radius: 4px;
+    font-size: 12px;
+  }
+  .hero-fig svg {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+  .hero-fig svg.m {
+    display: none;
+  }
+  .fig-foot {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 8px 24px;
+    font-size: 14px;
+    color: var(--text-2);
+  }
+  .legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 20px;
+  }
+  .key-a {
+    color: var(--accent);
+  }
+  .key-b {
+    color: var(--info);
+  }
+  .src {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    color: var(--text-3);
+  }
+  .more {
+    color: var(--link);
+    text-decoration: underline;
+  }
+
+  /* ---------- Sections ---------- */
+  .sec {
+    padding-block: 72px;
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+  }
+  .band {
+    background: var(--bg-alt);
+    border-top: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+  }
+  h2 {
+    font-size: 36px;
+  }
+  .titles {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .sec-head {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 16px;
+  }
+  .chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .chips button {
+    font-size: 14px;
+    min-height: 36px;
+    padding: 6px 14px;
+    border-radius: 999px;
+    border: 1px solid var(--line-control);
+    background: transparent;
+    color: var(--text);
+    cursor: pointer;
+  }
+  .chips button[aria-pressed='true'] {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: var(--accent-ink);
+    font-weight: 600;
+  }
+  .ph-note {
+    font-size: 14px;
+    margin-top: -8px;
+  }
+  .lbl {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--warn);
+  }
+
+  .study-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 24px;
+  }
+  .card {
+    text-decoration: none;
+    color: var(--text);
+    background: var(--bg-alt);
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    display: flex;
+    flex-direction: column;
+    transition: border-color 0.2s;
+  }
+  .card:hover {
+    color: var(--text);
+    border-color: var(--line-control);
+  }
+  .card[hidden] {
+    display: none;
+  }
+  .feat {
+    flex: 2 1 560px;
+    min-width: 0;
+    padding: 28px;
+    gap: 16px;
+  }
+  .feat h3 {
+    font-size: 26px;
+    line-height: 1.25;
+    letter-spacing: 0;
+  }
+  .feat svg {
+    width: 100%;
+    height: auto;
+    max-height: 200px;
+    display: block;
+  }
+  .feat svg.m {
+    display: none;
+  }
+  .go {
+    font-weight: 600;
+    color: var(--link);
+  }
+  .side {
+    flex: 1 1 300px;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+  .small {
+    flex: 1 1 auto;
+    padding: 22px;
+    gap: 10px;
+  }
+  .small h3 {
+    font-family: var(--font-sans);
+    font-size: 18px;
+    line-height: 1.35;
+    letter-spacing: 0;
+  }
+  .card-top {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    font-size: 13px;
+  }
+  .pill {
+    padding: 2px 10px;
+    border-radius: 999px;
+    font-weight: 600;
+  }
+  .date {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    color: var(--text-3);
+  }
+  .key {
+    font-family: var(--font-mono);
+    font-size: 28px;
+    font-weight: 600;
+    color: var(--accent);
+  }
+  .tag {
+    font-size: 11px;
+    font-weight: 400;
+    color: var(--warn);
+  }
+  .all {
+    align-self: flex-start;
+    font-weight: 600;
+  }
+  .empty[hidden] {
+    display: none;
+  }
+
+  /* Builds */
+  .build {
+    text-decoration: none;
+    color: var(--text);
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    background: var(--bg);
+    display: flex;
+    flex-wrap: wrap;
+    overflow: hidden;
+    transition: border-color 0.2s;
+  }
+  .build:hover {
+    color: var(--text);
+    border-color: var(--line-control);
+  }
+  .photo {
+    flex: 1 1 280px;
+    min-width: 0;
+    min-height: 200px;
+    background: var(--bg-raised);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-3);
+    font-size: 14px;
+    font-family: var(--font-mono);
+  }
+  .build-body {
+    flex: 2 1 480px;
+    min-width: 0;
+    padding: 28px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  .build-head {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 8px;
+  }
+  .build-head h3 {
+    font-size: 22px;
+    letter-spacing: 0;
+  }
+  .stages {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    gap: 6px;
+    font-family: var(--font-mono);
+    font-size: 12px;
+  }
+  .stages li {
+    flex: 1 1 0;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    color: var(--text-3);
+  }
+  .stages .bar {
+    height: 6px;
+    border-radius: 3px;
+    background: var(--line-strong);
+  }
+  .stages li.on {
+    color: var(--text);
+  }
+  .stages li.on .bar {
+    background: var(--accent);
+  }
+  .latest {
+    font-size: 15px;
+  }
+  .lbl-a {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    color: var(--accent);
+  }
+
+  /* Notebook */
+  .notebook {
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 48px;
+  }
+  .nb-l {
+    flex: 1 1 280px;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .nb-l a {
+    margin-top: 8px;
+    font-weight: 600;
+  }
+  .nb-list {
+    flex: 999 1 600px;
+    min-width: 0;
+    list-style: none;
+    margin: 0;
+    padding: 0 0 0 24px;
+    border-left: 1px solid var(--line-control);
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+  }
+  .nb-list li {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .nb-meta {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    color: var(--text-3);
+  }
+  .nb-src {
+    color: var(--accent);
+  }
+  .nb-text {
+    font-size: 17px;
+  }
+
+  /* About */
+  .about {
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 48px;
+    align-items: flex-start;
+  }
+  .ab-l {
+    flex: 1 1 480px;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  .ab-text {
+    font-size: 18px;
+  }
+  .ab-l a {
+    font-weight: 600;
+  }
+  .facts {
+    flex: 1 1 360px;
+    min-width: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    border-top: 1px solid var(--line);
+  }
+  .facts div {
+    display: flex;
+    gap: 16px;
+    padding: 14px 0;
+    border-bottom: 1px solid var(--line);
+  }
+  .facts dt {
+    width: 120px;
+    flex: none;
+    font-family: var(--font-mono);
+    font-size: 13px;
+    color: var(--text-3);
+    padding-top: 2px;
+  }
+  .facts dd {
+    margin: 0;
+  }
+  .links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+
+  /* Follow on X (replaces the mockup's newsletter box) */
+  .follow-in {
+    padding-block: 64px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 24px 32px;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .f-text {
+    flex: 1 1 420px;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .f-text h2 {
+    font-size: 30px;
+  }
+  :global(body:has(.follow-sec) .site-footer) {
+    margin-top: 0;
+  }
+
+  /* ---------- Phone ---------- */
+  @media (max-width: 760px) {
+    .hero {
+      background-size: 32px 32px;
+    }
+    .hero-in {
+      padding-block: 28px 28px;
+      gap: 24px;
+    }
+    .hero-top {
+      gap: 16px;
+    }
+    .hero-l,
+    .hero-r {
+      flex-basis: auto;
+      gap: 12px;
+    }
+    h1 {
+      font-size: 34px;
+      line-height: 1.1;
+      letter-spacing: -0.02em;
+    }
+    .lead {
+      font-size: 16px;
+    }
+    .actions .btn {
+      flex: 1 1 auto;
+    }
+    .hero-fig figure {
+      border-radius: 14px;
+      padding: 14px;
+      gap: 10px;
+    }
+    .fig-title {
+      font-size: 15px;
+      line-height: 1.35;
+    }
+    .fig-meta {
+      font-size: 11px;
+    }
+    .hero-fig svg.d {
+      display: none;
+    }
+    .hero-fig svg.m {
+      display: block;
+    }
+    .fig-foot {
+      flex-direction: column;
+      font-size: 13px;
+    }
+    .src {
+      font-size: 11px;
+    }
+
+    .sec {
+      padding-block: 44px;
+      gap: 18px;
+    }
+    h2 {
+      font-size: 26px;
+    }
+    .chips {
+      flex-wrap: nowrap;
+      overflow-x: auto;
+      scrollbar-width: none;
+      margin-inline: calc(-1 * var(--gutter));
+      padding-inline: var(--gutter);
+    }
+    .chips button {
+      flex: none;
+      min-height: 44px;
+    }
+    .ph-note {
+      font-size: 13px;
+      margin-top: 0;
+    }
+    .study-grid,
+    .side {
+      gap: 14px;
+    }
+    .feat,
+    .side {
+      flex-basis: auto;
+    }
+    .feat {
+      padding: 18px;
+      gap: 12px;
+      border-radius: 14px;
+    }
+    .feat h3 {
+      font-size: 20px;
+    }
+    .feat svg.d {
+      display: none;
+    }
+    .feat svg.m {
+      display: block;
+      max-height: none;
+    }
+    .small {
+      padding: 16px;
+      border-radius: 14px;
+    }
+    .key {
+      font-size: 24px;
+    }
+
+    .build {
+      border-radius: 14px;
+    }
+    .photo {
+      flex-basis: 100%;
+      min-height: 140px;
+      font-size: 12px;
+    }
+    .build-body {
+      flex-basis: 100%;
+      padding: 18px;
+      gap: 12px;
+    }
+    .build-head h3 {
+      font-size: 18px;
+    }
+    .latest {
+      font-size: 14px;
+    }
+
+    .notebook,
+    .about {
+      gap: 20px;
+    }
+    .nb-l,
+    .nb-list,
+    .ab-l,
+    .facts {
+      flex-basis: 100%;
+    }
+    .nb-list {
+      padding-left: 18px;
+      gap: 20px;
+    }
+    .nb-text {
+      font-size: 15px;
+    }
+    .ab-text {
+      font-size: 16px;
+    }
+    .facts dt {
+      width: 96px;
+    }
+    .links a {
+      min-height: 32px;
+      display: inline-flex;
+      align-items: center;
+    }
+
+    .follow-in {
+      padding-block: 32px;
+      flex-direction: column;
+      align-items: stretch;
+      gap: 14px;
+    }
+    .f-text {
+      flex-basis: auto;
+    }
+    .f-text h2 {
+      font-size: 22px;
+    }
+  }
 </style>

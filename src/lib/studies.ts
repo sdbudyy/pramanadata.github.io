@@ -53,5 +53,21 @@ export function citation(study: Study, pageUrl: string) {
   return `Dave, S. (${year}). ${title} ${SITE.legalName}. ${pageUrl}`;
 }
 
+/** Topic pill colours (mockup LayoutHomeA). Lightness differs, not hue alone. */
+const TONES: Record<string, { bg: string; fg: string }> = {
+  green: { bg: '#1E3F35', fg: '#9FE0B8' },
+  orange: { bg: '#43291A', fg: '#FFB08A' },
+  blue: { bg: '#1C3A47', fg: '#9CD3F0' },
+};
+const TOPIC_TONE: Record<string, keyof typeof TONES> = {
+  Housing: 'green',
+  Population: 'green',
+  Traffic: 'orange',
+  Energy: 'orange',
+  Weather: 'blue',
+  Economy: 'blue',
+};
+export const topicTone = (topic: string) => TONES[TOPIC_TONE[topic] ?? 'green'];
+
 /** The lead tile's value, used as the "key number" on related-study cards. */
 export const keyNumber = (s: Study) => s.data.tiles[0]?.value ?? '';
