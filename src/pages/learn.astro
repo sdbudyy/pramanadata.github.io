@@ -184,6 +184,7 @@ const host = new URL(Astro.site!).host + url('learn/');
       </div>
       <div class="split">
         <figure class="card fig3">
+          <div class="avm-key" data-slot="key" set:html={av.key} />
           <div class="avm" role="img" aria-label={av.chartLabel} data-label="chartLabel" data-slot="chart" set:html={av.chart} />
           <figcaption class="cap" data-slot="caption" set:html={av.caption} />
         </figure>
@@ -1238,6 +1239,11 @@ const host = new URL(Astro.site!).host + url('learn/');
     transition: opacity 0.5s;
   }
   .avm :global(.plabel) {
+    position: relative; /* sits above the average/median lines */
+    z-index: 1;
+    background: var(--bg-alt);
+    padding: 0 2px;
+    border-radius: 3px;
     font-family: var(--font-mono);
     font-size: 11px;
     color: var(--text-2);
@@ -1275,27 +1281,11 @@ const host = new URL(Astro.site!).host + url('learn/');
     right: 0;
     transition: bottom 0.8s var(--ease);
   }
-  .avm :global(.line span) {
-    position: absolute;
-    top: -22px;
-    font-family: var(--font-mono);
-    font-size: 12px;
-    background: var(--bg-alt);
-    padding: 0 4px;
-  }
   .avm :global(.med) {
     border-top: 2px dashed var(--info);
   }
-  .avm :global(.med span) {
-    left: 8px;
-    color: var(--info);
-  }
   .avm :global(.mean) {
     border-top: 2px solid var(--accent);
-  }
-  .avm :global(.mean span) {
-    right: 8px;
-    color: var(--accent);
   }
   .avm :global(.ghost) {
     border-top: 2px dotted var(--text-3);
@@ -1317,20 +1307,64 @@ const host = new URL(Astro.site!).host + url('learn/');
     border-right: 8px solid transparent;
     border-bottom: 12px solid var(--accent);
   }
-  .avm :global(.pullnote) {
-    left: calc(30% + 14px);
-    right: auto;
-    max-width: 46%;
-    background: var(--bg-alt);
-    border: 1px solid var(--accent);
-    border-radius: 8px;
-    padding: 8px 12px;
-    font-size: 14px;
-    line-height: 1.35;
-  }
-  .avm :global(.pullnote strong) {
-    color: var(--accent);
+  .avm-key {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 20px;
     font-family: var(--font-mono);
+    font-size: 13px;
+    color: var(--text-2);
+  }
+  .avm-key :global(.kk) {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .avm-key :global(.kk b) {
+    font-weight: 600;
+  }
+  .avm-key :global(.kk i) {
+    flex: none;
+    width: 22px;
+    height: 0;
+  }
+  .avm-key :global(.mean b),
+  .avm-key :global(.pull b) {
+    color: var(--accent);
+  }
+  .avm-key :global(.mean i) {
+    border-top: 2px solid var(--accent);
+  }
+  .avm-key :global(.med b) {
+    color: var(--info);
+  }
+  .avm-key :global(.med i) {
+    border-top: 2px dashed var(--info);
+  }
+  .avm-key :global(.pull) {
+    flex-basis: 100%;
+    font-family: var(--font-sans);
+    font-size: 14px;
+    color: var(--text);
+  }
+  .avm-key :global(.pull i) {
+    width: 3px;
+    height: 16px;
+    background: var(--accent);
+    border-radius: 2px;
+    margin-inline: 9px 10px;
+  }
+  .avm-key :global(.ghost-k) {
+    flex-basis: 100%;
+    font-family: var(--font-sans);
+    font-size: 14px;
+  }
+  .avm-key :global(.ghost-k i) {
+    display: none;
+  }
+  .avm-key :global(em) {
+    font-style: normal;
+    color: var(--accent);
   }
   .press {
     background: var(--text);
@@ -2457,14 +2491,13 @@ const host = new URL(Astro.site!).host + url('learn/');
     .avm :global(.shootbar) {
       width: 80%;
     }
-    .avm :global(.pullnote) {
-      left: 8px;
-      max-width: 72%;
+    .avm-key {
       font-size: 12px;
-      padding: 6px 8px;
+      gap: 4px 14px;
     }
-    .avm :global(.line span) {
-      font-size: 11px;
+    .avm-key :global(.pull),
+    .avm-key :global(.ghost-k) {
+      font-size: 13px;
     }
     .pq {
       font-size: 17px;

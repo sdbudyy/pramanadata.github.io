@@ -197,13 +197,20 @@ export function avmView(s: AvmS) {
           }<span class="head" style="background:${pp.color}"></span><span class="${pp.cls}" style="height:${pp.h.toFixed(0)}px;background:${pp.color};${pp.capped ? 'border-top:4px dashed #FFC2A0' : ''}"></span></div>`,
       )
       .join('') +
+    // Lines and the pull arrow carry no text: their labels live in the key above
+    // the chart, so nothing can collide with the bar labels as the lines move.
     (s.hiOn
       ? `<div class="line ghost" style="bottom:${ghostPx.toFixed(0)}px"></div>` +
-        `<div class="pull" aria-hidden="true" style="bottom:${ghostPx.toFixed(0)}px;height:${Math.max(0, meanPos - ghostPx - 12).toFixed(0)}px"><span></span></div>` +
-        `<div class="line pullnote" style="bottom:${Math.min(maxPx + 52, meanPos + 14).toFixed(0)}px"><strong>+${kfmt(mean - baseMean)}</strong> One person pulled the average up from ${kfmt(baseMean)} to ${kfmt(mean)}.</div>`
+        `<div class="pull" aria-hidden="true" style="bottom:${ghostPx.toFixed(0)}px;height:${Math.max(0, meanPos - ghostPx - 12).toFixed(0)}px"><span></span></div>`
       : '') +
-    `<div class="line med" style="bottom:${(median * pxk).toFixed(0)}px"><span>MEDIAN ${kfmt(median)}</span></div>` +
-    `<div class="line mean" style="bottom:${meanPos.toFixed(0)}px"><span>AVERAGE ${kfmt(mean)}${meanPx > maxPx + 60 ? ' ↑ off the chart' : ''}</span></div>`;
+    `<div class="line med" style="bottom:${(median * pxk).toFixed(0)}px"></div>` +
+    `<div class="line mean" style="bottom:${meanPos.toFixed(0)}px"></div>`;
+  const key =
+    `<span class="kk mean"><i aria-hidden="true"></i>AVERAGE <b>${kfmt(mean)}</b>${meanPx > maxPx + 60 ? ' <em>↑ line is off the chart</em>' : ''}</span>` +
+    `<span class="kk med"><i aria-hidden="true"></i>MEDIAN <b>${kfmt(median)}</b></span>` +
+    (s.hiOn
+      ? `<span class="kk pull"><i aria-hidden="true"></i><b>+${kfmt(mean - baseMean)}</b> One person pulled the average up from ${kfmt(baseMean)} to ${kfmt(mean)}.</span>`
+      : '');
   const p = pop();
   return {
     toggle: s.hiOn
@@ -211,6 +218,7 @@ export function avmView(s: AvmS) {
       : `<button type="button" data-act="toggle" aria-pressed="false" class="btn-off">+ Invite one high earner</button>`,
     out: kfmt(s.hi),
     chart,
+    key,
     chartLabel: esc(`Incomes of ${n} renters; median ${kfmt(median)}, average ${kfmt(mean)}`),
     caption: esc(
       s.hiOn
