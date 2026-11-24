@@ -87,13 +87,18 @@ function yearLabels(L: Layout, years: string[]) {
   if (!L.mobile && n <= 12) return years.map((y, i) => ({ i, t: y }));
   const step = Math.max(1, Math.ceil((n - 1) / 4));
   const out: { i: number; t: string }[] = [];
-  for (let i = 0; i < n - 1; i += step) out.push({ i, t: i === 0 ? years[i] : `’${years[i].slice(-2)}` });
+  const gap = (L.x1 - L.x0) / (n - 1); // pixels between neighbouring years
+  for (let i = 0; i < n - 1; i += step) {
+    if ((n - 1 - i) * gap < 40) break; // would crowd the final year's label
+    out.push({ i, t: i === 0 ? years[i] : `’${years[i].slice(-2)}` });
+  }
   out.push({ i: n - 1, t: `’${years[n - 1].slice(-2)}` });
   return out;
 }
 
+// Print a value as written in the data (up to two decimals), never rounded further.
 function fmt(v: number) {
-  return Number.isInteger(v) ? String(v) : v.toFixed(1);
+  return Number.isInteger(v) ? String(v) : String(Math.round(v * 100) / 100);
 }
 
 /** The text in the value pill, e.g. "2023 · 121 / 109" on phones. */
@@ -260,4 +265,54 @@ export function vbarsSvg(
 export function lineLabel(c: ChartData & { aLabel: string; bLabel: string }, v: LineView) {
   const n = c.years.length - 1;
   return `Line chart, ${c.years[0]} to ${c.years[n]}. ${c.aLabel} goes from ${fmt(v.a[0])} to ${fmt(v.a[n])}; ${c.bLabel} goes from ${fmt(v.b[0])} to ${fmt(v.b[n])}.`;
+}
+
+// Homepage hero (mockup LayoutHomeA): the latest study's lines, with the
+// end-point gap called out. Plot stops short of the right edge to leave room.
+export const HERO_D: Layout = { w: 1150, h: 280, x0: 50, x1: 1080, yTop: 30, yBase: 250, yearY: 272, tickX: 40, font: 12, mobile: false };
+export const HERO_M: Layout = { w: 330, h: 214, x0: 30, x1: 300, yTop: 20, yBase: 190, yearY: 207, tickX: 24, font: 10, mobile: true };
+
+export function heroSvg(L: Layout, c: ChartData, v: LineView, callout: { value: string; label: string }) {
+  const n = c.years.length;
+  const base = lineSvg(L, { ...c, annotation: undefined }, v, null);
+  const x = xAt(L, n - 1, n);
+  const ya = yAt(L, v, v.a[n - 1]);
+  const yb = yAt(L, v, v.b[n - 1]);
+  const top = Math.min(ya, yb);
+  const bottom = Math.max(ya, yb);
+  const big = L.mobile ? 20 : 30;
+  const small = L.mobile ? 10 : 12;
+  // Find a spot for the value + label block that no line passes through:
+  // above the higher end point, between the two, or below the lower one.
+  const textW = Math.max(callout.value.length * big * 0.62, callout.label.length * small * 0.62);
+  const blockH = big + small + 8;
+  const x0 = x - 14 - textW;
+  const hits = (y0: number, y1: number) => {
+    for (let k = 0; k <= (n - 1) * 8; k++) {
+      const t = k / 8, i0 = Math.floor(t), i1 = Math.min(n - 1, i0 + 1), fr = t - i0;
+      const px = xAt(L, t, n);
+      if (px < x0 - 4 || px > x + 4) continue;
+      for (const arr of [v.a, v.b]) {
+        const py = yAt(L, v, arr[i0] + (arr[i1] - arr[i0]) * fr);
+        if (py > y0 - 4 && py < y1 + 4) return true;
+      }
+    }
+    return false;
+  };
+  const want = top - 10 - blockH;
+  const tops: number[] = [];
+  for (let t = 0; t + blockH <= L.yBase - 4; t += 2) tops.push(t);
+  tops.sort((p, q) => Math.abs(p - want) - Math.abs(q - want));
+  const bt = tops.find((t) => !hits(t, t + blockH)) ?? Math.max(0, want);
+  const vy = bt + big * 0.85;
+  const ly = vy + small + 6;
+  const lx = x - 14;
+  return (
+    base +
+    `<line x1="${f(x)}" y1="${f(top + 7)}" x2="${f(x)}" y2="${f(bottom - 7)}" stroke="${C.muted}" stroke-width="1" stroke-dasharray="3 3"/>` +
+    `<circle cx="${f(x)}" cy="${f(ya)}" r="${L.mobile ? 4 : 5}" fill="${C.accent}"/>` +
+    `<circle cx="${f(x)}" cy="${f(yb)}" r="${L.mobile ? 3.5 : 4.5}" fill="${C.second}"/>` +
+    `<g font-family="${MONO}" text-anchor="end"><text x="${f(x - 14)}" y="${f(vy)}" font-size="${big}" font-weight="600" fill="${C.accent}" paint-order="stroke" stroke="${C.panel}" stroke-width="6">${esc(callout.value)}</text>` +
+    `<text x="${f(lx)}" y="${f(ly)}" font-size="${small}" fill="${C.text2}" paint-order="stroke" stroke="${C.panel}" stroke-width="4">${esc(callout.label)}</text></g>`
+  );
 }
