@@ -82,8 +82,9 @@ Menu: **Studies · Builds · Learn · Sandbox · About**, plus a **Follow on X**
 3. Homepage — **done (PR #3)**. Builds are YAML in `src/content/builds/`.
 4. Learn (port the seven lessons; fix known mobile bugs) — **done (PRs #4, #5)**
 5. About — **done (PR #6)**. Still needs Shaurya's photo and disclosure line.
-6. Studies index, Builds page and log, Sandbox "coming soon" polish, 404 — **in review**
-7. Per-study X link-preview images, speed and accessibility pass
+6. Studies index, Builds page and log, Sandbox "coming soon" polish, 404 — **done (PR #7)**
+7. Per-study X link-preview images, speed and accessibility pass — **in review**. Preview cards are built by
+   `src/lib/og.ts` (satori + resvg, build time only) at `/studies/<slug>/og.png`.
 
 ## Design references
 

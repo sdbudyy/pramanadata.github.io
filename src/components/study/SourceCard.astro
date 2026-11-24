@@ -60,12 +60,14 @@ const delay = (i: number) => `${(index * 0.3 + (i + 1) * 0.1).toFixed(1)}s`;
             <div class="row">
               <dt>{c.label}</dt>
               <dd>
-                <span
-                  class="srcbar"
-                  style={`width:${v * 20}%;background:${v <= 2 ? 'var(--warn)' : 'var(--accent)'};animation-delay:${delay(i)}`}
-                />
+                <span class="track" aria-hidden="true">
+                  <span
+                    class="srcbar"
+                    style={`width:${v * 20}%;background:${v <= 2 ? 'var(--warn)' : 'var(--accent)'};animation-delay:${delay(i)}`}
+                  />
+                </span>
+                <span class="v">{v}<span class="visually-hidden"> out of 5</span></span>
               </dd>
-              <span class="v">{v}</span>
             </div>
           );
         })
@@ -164,6 +166,12 @@ const delay = (i: number) => `${(index * 0.3 + (i + 1) * 0.1).toFixed(1)}s`;
   }
   dd {
     margin: 0;
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .track {
     flex: 1;
     height: 8px;
     border-radius: 4px;
@@ -275,6 +283,9 @@ const delay = (i: number) => `${(index * 0.3 + (i + 1) * 0.1).toFixed(1)}s`;
       width: 112px;
     }
     dd {
+      gap: 10px;
+    }
+    .track {
       height: 7px;
     }
     .v {
